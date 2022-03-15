@@ -50,7 +50,7 @@ define Package/usb-composition/install
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/debuger/usb_debug -D $(1)/sbin/usb/debugger/
 	$(INSTALL_DIR) $(1)/etc/init.d
 	$(INSTALL_BIN) ./files/usb.init $(1)/etc/init.d/usb.init
-	$(INSTALL_BIN) ./files/create-symlinks.init $(1)/etc/init.d/
+	$(INSTALL_BIN) ./files/create-firmwarelinks.init $(1)/etc/init.d/
 	$(INSTALL_DIR) $(1)/etc/scripts
 	$(INSTALL_BIN) ./files/createsymlinks.sh $(1)/etc/scripts
 endef
