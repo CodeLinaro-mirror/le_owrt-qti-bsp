@@ -18,7 +18,7 @@ define Package/mkbootimg
   SECTION:=QTI
   CATEGORY:=QTI-PACKAGES
   TITLE:= mkbootimg
-  DEPENDS:= +libmincrypt
+  DEPENDS:= +core-include +libmincrypt
 endef
 
 define Package/mkbootimg/description
@@ -33,7 +33,6 @@ endef
 define Host/Prepare
 	mkdir -p $(HOST_BUILD_DIR)/
 	$(CP) $(LOCAL_SRC)/* $(HOST_BUILD_DIR)/
-	$(CP) $(LOCAL_SRC)/../include $(HOST_BUILD_DIR)/../
 endef
 
 define Host/Compile

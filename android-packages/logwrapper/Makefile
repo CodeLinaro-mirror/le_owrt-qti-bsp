@@ -15,7 +15,7 @@ define Package/logwrapper
 	SECTION:=QTI
 	CATEGORY:=QTI-PACKAGES
 	TITLE:= logwrapper
-	DEPENDS:= +libcutils +liblog
+	DEPENDS:= +core-include +libcutils
 endef
 
 define Package/logwrapper/description
@@ -25,13 +25,11 @@ endef
 define Build/Prepare
 	mkdir -p $(PKG_BUILD_DIR)
 	cp -rp $(SOURCE_DIR)/* $(PKG_BUILD_DIR)
-	cp -rp $(SOURCE_DIR)/../include $(PKG_BUILD_DIR)/../
 endef
 
 define Host/Prepare
 	mkdir -p $(HOST_BUILD_DIR)
 	cp -rp $(SOURCE_DIR)/* $(HOST_BUILD_DIR)
-	cp -rp $(SOURCE_DIR)/../include $(HOST_BUILD_DIR)/../
 endef
 
 define Build/InstallDev
