@@ -10,13 +10,14 @@ include $(INCLUDE_DIR)/package.mk
 include $(INCLUDE_DIR)/host-build.mk
 
 SOURCE_DIR:= $(TOPDIR)/src/system/core/$(PKG_NAME)/
+TARGET_CFLAGS += -DUSE_MUSL
 HOST_BUILD_DEPENDS:= liblog/host
 
 define Package/libcutils
 	SECTION:=QTI
 	CATEGORY:=QTI-PACKAGES
 	TITLE:= libcutils
-	DEPENDS:= +liblog
+	DEPENDS:= +core-include +liblog
 endef
 
 define Package/libcutils/description
@@ -26,13 +27,11 @@ endef
 define Build/Prepare
 	mkdir -p $(PKG_BUILD_DIR)
 	cp -rp $(SOURCE_DIR)/* $(PKG_BUILD_DIR)
-	cp -rp $(SOURCE_DIR)/../include $(PKG_BUILD_DIR)/../
 endef
 
 define Host/Prepare
 	mkdir -p $(HOST_BUILD_DIR)
 	cp -rp $(SOURCE_DIR)/* $(HOST_BUILD_DIR)
-	cp -rp $(SOURCE_DIR)/../include $(HOST_BUILD_DIR)/../
 endef
 
 define Build/InstallDev

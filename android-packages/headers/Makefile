@@ -4,11 +4,13 @@ PKG_NAME:=core-include
 PKG_VERSION:=1.0
 PKG_RELEASE:=1
 PKG_FIXUP:=autoreconf
+PKG_INSTALL:=1
 
 include $(INCLUDE_DIR)/package.mk
+include $(INCLUDE_DIR)/host-build.mk
 
-SOURCE_DIR := $(TOPDIR)/src/system/core/include/
-PKG_INSTALL:=1
+SOURCE_DIR:= $(TOPDIR)/src/system/core/include/
+PKG_BUILD_DEPENDS:= headers/host glib2
 
 define Package/core-include
   SECTION:=QTI
@@ -23,6 +25,13 @@ endef
 define Build/Prepare
 	mkdir -p $(PKG_BUILD_DIR)
 	cp -rp $(SOURCE_DIR)/* $(PKG_BUILD_DIR)
+	cp -rp $(SOURCE_DIR) $(PKG_BUILD_DIR)/../
+endef
+
+define Host/Prepare
+	mkdir -p $(HOST_BUILD_DIR)
+	cp -rp $(SOURCE_DIR)/* $(HOST_BUILD_DIR)
+	cp -rp $(SOURCE_DIR) $(HOST_BUILD_DIR)/../
 endef
 
 define Build/InstallDev
@@ -51,3 +60,4 @@ define Package/core-include/install
 endef
 
 $(eval $(call BuildPackage,core-include))
+$(eval $(call HostBuild))

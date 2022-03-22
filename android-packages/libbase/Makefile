@@ -11,11 +11,13 @@ include $(INCLUDE_DIR)/host-build.mk
 
 SOURCE_DIR:= $(TOPDIR)/src/system/core/base/
 
+TARGET_CFLAGS:= -DUSE_MUSL
+
 define Package/libbase
 	SECTION:=QTI
 	CATEGORY:=QTI-PACKAGES
 	TITLE:= libbase
-	DEPENDS:= +libcutils +libselinux
+	DEPENDS:= +core-include +libcutils +libselinux
 endef
 
 define Package/libbase/description
@@ -25,13 +27,11 @@ endef
 define Build/Prepare
 	mkdir -p $(PKG_BUILD_DIR)
 	cp -rp $(SOURCE_DIR)/* $(PKG_BUILD_DIR)
-	cp -rp $(SOURCE_DIR)/../include $(PKG_BUILD_DIR)/../
 endef
 
 define Host/Prepare
 	mkdir -p $(HOST_BUILD_DIR)
 	cp -rp $(SOURCE_DIR)/* $(HOST_BUILD_DIR)
-	cp -rp $(SOURCE_DIR)/../include $(HOST_BUILD_DIR)/../
 endef
 
 define Build/InstallDev
