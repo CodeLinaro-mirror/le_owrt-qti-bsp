@@ -79,4 +79,4 @@ if [ ! -d /firmware/image ]; then
         fi
 fi
 
-ln -sf /firmware/image /lib/firmware
+echo -n "/firmware/image" > /sys/module/firmware_class/parameters/path
