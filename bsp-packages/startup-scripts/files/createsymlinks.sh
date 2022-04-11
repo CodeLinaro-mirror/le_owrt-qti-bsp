@@ -51,8 +51,6 @@ create_symlinks()
         done
 }
 
-rm -rf /lib/firmware
-
 
 if [ ! -d /firmware/image ]; then
         if [ -f /proc/mtd ] && [ `cat /proc/mtd | wc -l` -ge "2" ]; then
