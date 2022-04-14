@@ -37,7 +37,9 @@ endef
 
 define Host/Install
 	$(INSTALL_DIR) $(STAGING_DIR_HOSTPKG)/bin
-	$(CP) $(HOST_BUILD_DIR)/make_ext4fs $(STAGING_DIR_HOSTPKG)/bin
+	$(INSTALL_DIR) $(STAGING_DIR_HOSTPKG)/lib
+	$(CP) $(HOST_BUILD_DIR)/.libs/make_ext4fs $(STAGING_DIR_HOSTPKG)/bin/
+	$(CP) $(HOST_BUILD_DIR)/.libs/libext4_utils.so* $(STAGING_DIR_HOSTPKG)/lib/
 endef
 
 define Build/InstallDev
