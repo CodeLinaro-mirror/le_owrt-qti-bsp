@@ -1,0 +1,13 @@
+diff --git a/QcomModulePkg/Library/BootLib/UpdateCmdLine.c b/QcomModulePkg/Library/BootLib/UpdateCmdLine.c
+index 746ff6e..afc1d84 100644
+--- a/QcomModulePkg/Library/BootLib/UpdateCmdLine.c
++++ b/QcomModulePkg/Library/BootLib/UpdateCmdLine.c
+@@ -74,7 +74,7 @@ STATIC CONST CHAR8 *AlarmBootCmdLine = " androidboot.alarmboot=true";
+ /*Send slot suffix in cmdline with which we have booted*/
+ STATIC CHAR8 *AndroidSlotSuffix = " androidboot.slot_suffix=";
+ STATIC CHAR8 *RootCmdLine = " rootwait ro init=";
+-STATIC CHAR8 *InitCmdline = INIT_BIN;
++STATIC CHAR8 *InitCmdline = "/sbin/init";
+ STATIC CHAR8 *SkipRamFs = " skip_initramfs";
+ 
+ /* Display command line related structures */
