@@ -11,7 +11,7 @@ include $(INCLUDE_DIR)/host-build.mk
 
 SOURCE_DIR:= $(TOPDIR)/src/system/core/base/
 
-TARGET_CFLAGS:= -DUSE_MUSL
+TARGET_CFLAGS += -DUSE_MUSL
 
 define Package/libbase
 	SECTION:=QTI

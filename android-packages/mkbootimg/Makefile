@@ -10,7 +10,7 @@ include $(INCLUDE_DIR)/package.mk
 LOCAL_SRC ?= $(TOPDIR)/src/system/core/$(PKG_NAME)
 
 HOST_CFLAGS += -I$(HOST_BUILD_DIR)/../include/
-TARGET_LDFLAGS := -lmincrypt
+TARGET_LDFLAGS += -lmincrypt
 PKG_BUILD_DEPENDS += mkbootimg/host
 HOST_BUILD_DEPENDS += libmincrypt/host
 
