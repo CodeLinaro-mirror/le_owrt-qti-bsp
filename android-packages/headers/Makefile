@@ -37,11 +37,13 @@ endef
 define Build/InstallDev
 	$(INSTALL_DIR) $(STAGING_DIR)
 	mkdir -p $(1)/usr/include
+	mkdir -p $(1)/usr/include/cutils
 	$(CP) $(PKG_BUILD_DIR)/android $(1)/usr/include/
 	$(CP) $(PKG_BUILD_DIR)/diskconfig $(1)/usr/include/
 	$(CP) $(PKG_BUILD_DIR)/mincrypt $(1)/usr/include/
 	$(CP) $(PKG_BUILD_DIR)/netutils $(1)/usr/include/
 	$(CP) $(PKG_BUILD_DIR)/sys $(1)/usr/include/
+	$(CP) $(PKG_BUILD_DIR)/sys $(1)/usr/include/cutils
 	$(CP) $(PKG_BUILD_DIR)/sysutils $(1)/usr/include/
 	$(CP) $(PKG_BUILD_DIR)/utils $(1)/usr/include/
 	$(CP) $(PKG_BUILD_DIR)/backtrace $(1)/usr/include/
