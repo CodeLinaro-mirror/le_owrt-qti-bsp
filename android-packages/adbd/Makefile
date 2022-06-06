@@ -11,7 +11,7 @@ SOURCE_DIR:= $(TOPDIR)/src/system/core/adb
 include $(INCLUDE_DIR)/package.mk
 include $(INCLUDE_DIR)/host-build.mk
 
-TARGET_CFLAGS = -DUSE_MUSL -I$(TOPDIR)/src/system/core/mkbootimg -I$(STAGING_DIR)/usr/include/glib-2.0 -Dstrlcpy=strlcpy
+TARGET_CFLAGS += -DUSE_MUSL -I$(TOPDIR)/src/system/core/mkbootimg -I$(STAGING_DIR)/usr/include/glib-2.0 -Dstrlcpy=strlcpy
 
 define Package/adbd
   SECTION:=Utils
