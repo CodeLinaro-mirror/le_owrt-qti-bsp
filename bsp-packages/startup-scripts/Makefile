@@ -37,7 +37,7 @@ define Package/usb-composition/install
 	$(INSTALL_DIR) $(1)/etc/usb
 	$(INSTALL_BIN) -b -m 0644 /dev/null $(1)/etc/usb/boot_hsic_comp
 	$(INSTALL_BIN) -b -m 0644 /dev/null $(1)/etc/usb/boot_hsusb_comp
-	echo 901D > $(1)/etc/usb/boot_hsusb_comp
+	echo 90DB > $(1)/etc/usb/boot_hsusb_comp
 	$(INSTALL_DIR) $(1)/sbin/usb
 	$(INSTALL_DIR) $(1)/sbin/usb/compositions
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/usb_composition $(1)/sbin/
