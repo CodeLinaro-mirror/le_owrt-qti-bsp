@@ -31,9 +31,9 @@ define Build/InstallDev
 endef
 
 define Package/safe-iop/install
-        $(INSTALL_DIR) $(1)/usr/lib
-        $(CP) $(PKG_BUILD_DIR)/.libs/libsafe_iop.so.0 $(1)/usr/lib/
-        $(CP) $(PKG_BUILD_DIR)/.libs/libsafe_iop.so.0.0.0 $(1)/usr/lib/
+	$(INSTALL_DIR) $(1)/usr/lib
+	$(CP) $(PKG_BUILD_DIR)/.libs/libsafe_iop.so.0 $(1)/usr/lib/
+	$(CP) $(PKG_BUILD_DIR)/.libs/libsafe_iop.so.0.0.0 $(1)/usr/lib/
 endef
 
 $(eval $(call BuildPackage,safe-iop))
