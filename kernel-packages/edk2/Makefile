@@ -8,9 +8,9 @@ SOURCE_DIR:= $(TOPDIR)/src/bootable/bootloader/edk2
 
 include $(INCLUDE_DIR)/package.mk
 
-MAKE_FLAGS = TARGET_ARCHITECTURE="arm" \
+MAKE_FLAGS = TARGET_ARCHITECTURE="$(ARCH)" \
+	CLANG_PREFIX="$(ARCH)-openwrt-linux-" \
 	HOST_ARCH="X64" \
-	CLANG_PREFIX="arm-openwrt-linux-" \
 	BUILDDIR="$(PKG_BUILD_DIR)" \
 	BOOTLOADER_OUT="$(PKG_BUILD_DIR)/out" \
 	ENABLE_LE_VARIANT="true" \
