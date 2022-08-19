@@ -1,0 +1,30 @@
+From 0ec6cc606681ba8334df69781367d54137ee20c2 Mon Sep 17 00:00:00 2001
+From: shoudil <quic_shoudil@quicinc.com>
+Date: Thu, 18 Aug 2022 11:52:01 +0800
+Subject: [PATCH] BaseTools: suppress compiler warnings to fix compile abort
+ issue.
+
+As warning here was treated as error which will abort whole OWRT build
+flow, so suppress the compile error to bypass.
+
+Change-Id: I80b0bf715ab6e38df80647f3534f0f672145f64f
+Signed-off-by: shoudil <quic_shoudil@quicinc.com>
+---
+ BaseTools/Source/C/Makefiles/header.makefile | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/BaseTools/Source/C/Makefiles/header.makefile b/BaseTools/Source/C/Makefiles/header.makefile
+index addfdfdb53..2a28184b4a 100644
+--- a/BaseTools/Source/C/Makefiles/header.makefile
++++ b/BaseTools/Source/C/Makefiles/header.makefile
+@@ -75,6 +75,7 @@ else
+ BUILD_CFLAGS = -MD -fshort-wchar -fno-strict-aliasing -fwrapv \
+ -fno-delete-null-pointer-checks -Wall -Werror \
+ -Wno-deprecated-declarations \
++-Wno-stringop-truncation \
+ -Wno-unused-result -nostdlib -g
+ endif
+ BUILD_LFLAGS =
+-- 
+2.25.1
+
