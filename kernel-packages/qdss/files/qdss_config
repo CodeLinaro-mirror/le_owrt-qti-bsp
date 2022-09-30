@@ -1,0 +1,71 @@
+#! /bin/sh
+
+# Copyright (c) 2022 Qualcomm Innovation Center, Inc. All rights reserved.
+# SPDX-License-Identifier: BSD-3-Clause-Clear
+
+adjust_sdxlemur_tmc_permission()
+{
+    #add permission for block_size, mem_type, mem_size nodes to collect diag over QDSS by ODL
+    echo "++++ $0 -> adjust_permission START" > /dev/kmsg
+    chmod 660 /sys/devices/platform/6048000.tmc/coresight-tmc-etr/block_size
+    chmod 660 /sys/devices/platform/6048000.tmc/coresight-tmc-etr/buffer_size
+    #chown diag:root /dev/byte-cntr
+    echo "++++ $0 -> adjust_permission END" > /dev/kmsg
+}
+
+adjust_sdxpinn_tmc_permission()
+{
+    #add permission for block_size, mem_type, mem_size nodes to collect diag over QDSS by ODL
+    echo "++++ $0 -> adjust_permission START" > /dev/kmsg
+    chmod 660 /sys/devices/platform/soc/24048000.tmc/coresight-tmc-etr/block_size
+    chmod 660 /sys/devices/platform/soc/24048000.tmc/coresight-tmc-etr/buffer_size
+    #chown diag:root /dev/byte-cntr
+    echo "++++ $0 -> adjust_permission END" > /dev/kmsg
+}
+
+
+create_stm_stp_policy()
+{
+    echo "++++ $0 -> create_stp_policy START" > /dev/kmsg
+    mkdir /sys/kernel/config/stp-policy/coresight-stm:p_basic.policy
+    chmod 660 /sys/kernel/config/stp-policy/coresight-stm:p_basic.policy
+    mkdir /sys/kernel/config/stp-policy/coresight-stm:p_basic.policy/default
+    chmod 660 /sys/kernel/config/stp-policy/coresight-stm:p_basic.policy/default
+    echo 0x10 > /sys/bus/coresight/devices/coresight-stm/traceid
+    echo "++++ $0 -> create_stp_policy END" > /dev/kmsg
+}
+
+create_sdxpinn_stm_stp_policy()
+{
+    echo "++++ $0 -> create_stp_policy START" > /dev/kmsg
+	mkdir /sys/kernel/config/stp-policy/coresight-stm:p_ost.policy
+	chmod 660 /sys/kernel/config/stp-policy/coresight-stm:p_ost.policy
+	mkdir /sys/kernel/config/stp-policy/coresight-stm:p_ost.policy/default
+	chmod 660 /sys/kernel/config/stp-policy/coresight-stm:p_ost.policy/default
+	echo 0x10 > /sys/bus/coresight/devices/coresight-stm/traceid
+    echo "++++ $0 -> create_stp_policy END" > /dev/kmsg
+}
+
+echo "start qdss config"
+
+soc_id=`cat /sys/devices/soc0/soc_id`
+
+case "$soc_id" in
+"458" | "483" | "509")
+	echo -n "Starting qdssconfig for SDXLEMUR: "
+	#Mkdir for coresight-stm protocol folder
+	adjust_sdxlemur_tmc_permission
+	create_stm_stp_policy
+	echo "done";
+	;;
+esac
+
+case "$soc_id" in
+"556" | "580")
+	echo -n "Starting qdssrconfig for SDXPINN: "
+	adjust_sdxpinn_tmc_permission
+	create_sdxpinn_stm_stp_policy
+	echo "done";
+	;;
+esac
+
