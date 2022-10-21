@@ -67,7 +67,7 @@ if [ ! -d /firmware/image ]; then
                         mount -t ubifs /dev/ubi1_0 /firmware -o bulk_read
                         break
 					else
-                        sleep 0.010
+                        sleep 1
                     fi
                 done
                 create_symlinks mtd
