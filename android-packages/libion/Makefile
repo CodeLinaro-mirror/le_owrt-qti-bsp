@@ -13,7 +13,7 @@ define Package/libion
   SECTION:=QTI
   CATEGORY:=QTI-PACKAGES
   TITLE:=Libion Android
-  DEPENDS:= +liblog +linux-msm-headers-5.4
+  DEPENDS:= +liblog
 endef
 
 define Package/libion/Description
