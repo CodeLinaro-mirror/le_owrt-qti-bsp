@@ -35,13 +35,12 @@
 START=04
 STOP=95
 
-USE_PROCD=1
 
-start_service() {
+start() {
 		/sbin/start_usb init
 }
 
-stop_service() {
+stop() {
         echo "Stopping USB Composition"
         # commands to kill application
 }
