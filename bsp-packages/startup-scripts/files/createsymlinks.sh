@@ -78,3 +78,4 @@ if [ ! -d /firmware/image ]; then
 fi
 
 echo -n "/firmware/image" > /sys/module/firmware_class/parameters/path
+mkdir -p /lib/modules/$(uname -r)
