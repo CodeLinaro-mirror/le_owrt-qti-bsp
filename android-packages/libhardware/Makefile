@@ -35,6 +35,8 @@ define Build/InstallDev
 	$(INSTALL_DIR) $(STAGING_DIR)
 	mkdir -p  $(1)/usr/lib
 	mkdir -p  $(1)/usr/include
+	$(INSTALL_DIR) $(1)/usr/lib/pkgconfig
+	$(CP) ${PKG_BUILD_DIR}/hardware.pc $(1)/usr/lib/pkgconfig/
 	$(CP) $(PKG_BUILD_DIR)/.libs/libhardware.so* $(1)/usr/lib/
 	$(CP) $(PKG_BUILD_DIR)/include/* $(1)/usr/include/
 endef
