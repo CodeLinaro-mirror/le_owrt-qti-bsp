@@ -34,8 +34,8 @@ define Build/Compile
 endef
 
 define Package/postboot/install
-	$(INSTALL_DIR) $(1)/etc/scripts/postboot
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/init.post_boot.sh $(1)/etc/scripts/postboot
+	$(INSTALL_DIR) $(1)/etc/scripts
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/init.post_boot.sh $(1)/etc/scripts/
 
 	$(INSTALL_DIR) $(1)/etc/init.d
 	$(INSTALL_BIN) ./files/postboot.init $(1)/etc/init.d/

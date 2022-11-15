@@ -31,12 +31,14 @@
 # IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
 # IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-START=35
-STOP=64
-USE_PROCD=1
-start_service() {
+
+START=98
+STOP=01
+
+start() {
 	/etc/scripts/init.post_boot.sh
 }
-stop_service() {
+
+stop() {
 	echo "Stopping postboot init"
 }
