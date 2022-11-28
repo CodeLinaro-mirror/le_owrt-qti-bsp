@@ -1,0 +1,28 @@
+#!/bin/sh /etc/rc.common
+
+#Copyright (c) 2022 Qualcomm Innovation Center, Inc. All rights reserved.
+#SPDX-License-Identifier: BSD-3-Clause-Clear
+
+START=10
+STOP=89
+
+USE_PROCD=1
+PROCD_DEBUG=1
+
+start_service() {
+	if [ -x "/sbin/leprop-service" ]; then
+#		/bin/mkdir -p -m 777 /dev/socket
+		procd_open_instance
+		procd_set_param command /sbin/leprop-service
+		procd_set_param respawn 3600 1 0
+		procd_set_param nice -20
+#		procd_set_param user leprop
+#		procd_set_param group leprop
+		procd_close_instance
+	fi
+}
+
+stop_service() {
+	echo "Stopping leprop-service service"
+	# commands to kill application
+}
