@@ -13,6 +13,8 @@ SOURCE_DIR:= $(TOPDIR)/src/system/core/$(PKG_NAME)/
 TARGET_CFLAGS += -DUSE_MUSL
 HOST_BUILD_DEPENDS:= liblog/host
 
+CONFIGURE_ARGS += --with-host-os=linux --disable-static --enable-leproperties
+
 define Package/libcutils
 	SECTION:=QTI
 	CATEGORY:=QTI-PACKAGES
@@ -38,8 +40,10 @@ define Build/InstallDev
 	$(INSTALL_DIR) $(STAGING_DIR)
 	mkdir -p  $(STAGING_DIR)/usr/lib
 	mkdir -p  $(STAGING_DIR)/usr/share/pkgconfig
+	mkdir -p  $(STAGING_DIR)/usr/include/cutils
 	$(CP) $(PKG_BUILD_DIR)/.libs/libcutils.so* $(STAGING_DIR)/usr/lib/
 	$(CP) $(PKG_BUILD_DIR)/libcutils.pc $(STAGING_DIR)/usr/share/pkgconfig
+	$(CP) $(PKG_BUILD_DIR)/property_ops.h $(STAGING_DIR)/usr/include/cutils/
 endef
 
 define Package/libcutils/install
