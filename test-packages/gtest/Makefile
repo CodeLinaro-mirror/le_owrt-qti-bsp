@@ -10,7 +10,7 @@ PKG_LICENSE:=BSD-3-Clause
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_URL=https://git.codelinaro.org/clo/la/platform/external/chromium_org/testing/gtest.git
 PKG_SOURCE_VERSION:=caf_migration/LA.AF.1.1.1
-PKG_MIRROR_HASH:=ecc37ead5c1efd1d28bfe5e81ae598f505fb8066a116473a9b6fe1ad5641fcb9
+PKG_MIRROR_HASH:=dc19f95271adbe6dac647671f911c7cc9c8c5a3a193771b7b8304aef08a61cab
 
 include $(INCLUDE_DIR)/package.mk
 include $(INCLUDE_DIR)/cmake.mk
