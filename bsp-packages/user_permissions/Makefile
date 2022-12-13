@@ -14,7 +14,8 @@ define Package/user_permissions
   TITLE:=User & Group Permissions
   USERID:=system=1000:system=1000 radio=1001:radio=1001 adb=2000:adb=2000 \
 			wifi=1010:wifi=1010 input=1004:input=1004 qrtr=2906:qrtr=2906 \
-			:wakelock=3010 :readproc=3009 :kmsg=2901 :inet=3003 :net_admin=3005 :qwes=3013
+			diag=2901:diag=2901 diag=2901:rebooters=1301 \
+			:wakelock=3010 :readproc=3009 :kmsg=2902 :inet=3003 :net_admin=3005 :qwes=3013
 endef
 
 define Package/user_permissions/description
