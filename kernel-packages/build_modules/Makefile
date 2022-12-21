@@ -1,6 +1,6 @@
 MAKE_OPTS= \
-	ARCH="arm64" \
-	CROSS_COMPILE="aarch64-linux-gnu-" \
+	ARCH=$(ARCH) \
+	CROSS_COMPILE=$(CROSS_COMPILE) \
 	M=$(M)
 
 modules:
