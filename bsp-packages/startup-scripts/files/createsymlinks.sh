@@ -79,3 +79,12 @@ fi
 
 echo -n "/firmware/image" > /sys/module/firmware_class/parameters/path
 mkdir -p /lib/modules/$(uname -r)
+
+if [ -f /proc/mtd ] && [ `cat /proc/mtd | wc -l` -ge "2" ]; then
+	if [ ! -d /persist ]; then
+		echo "creating /persist"
+		mkdir -p /persist
+	fi
+	mount -t ubifs ubi0:persist /persist -o bulk_read
+	echo "persist is mounted to /persist"
+fi
