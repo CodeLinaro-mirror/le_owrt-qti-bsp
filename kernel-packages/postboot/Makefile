@@ -1,12 +1,15 @@
 include $(TOPDIR)/rules.mk
-include $(INCLUDE_DIR)/target.mk
 
 PKG_NAME:=postboot
 PKG_VERSION:=1.0
 PKG_RELEASE:=1
 PKG_FIXUP:=autoreconf
 
-LOCAL_SRC := $(TOPDIR)/src/system/core/rootdir/$(KERNEL_PLATFORM_TARGET)
+ifeq ($(KERNEL_PLATFORM_TARGET),sdxbaagha)
+LOCAL_SRC := $(TOPDIR)/src/system/core/rootdir/sdxbaagha
+else
+LOCAL_SRC := $(TOPDIR)/src/system/core/rootdir/sdxpinn
+endif
 
 include $(INCLUDE_DIR)/package.mk
 
