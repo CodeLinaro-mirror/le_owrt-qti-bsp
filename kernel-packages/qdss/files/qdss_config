@@ -19,7 +19,7 @@ adjust_sdxpinn_tmc_permission()
     echo "++++ $0 -> adjust_permission START" > /dev/kmsg
     chmod 660 /sys/devices/platform/soc/24048000.tmc/coresight-tmc-etr/block_size
     chmod 660 /sys/devices/platform/soc/24048000.tmc/coresight-tmc-etr/buffer_size
-    #chown diag:root /dev/byte-cntr
+    chown diag:root /dev/byte-cntr
     echo "++++ $0 -> adjust_permission END" > /dev/kmsg
 }
 
@@ -1490,6 +1490,15 @@ enable_sdxpinn_debug()
     echo "++++ $0 -> enable_sdxpinn_debug END" > /dev/kmsg
 }
 
+enable_sdxbaagha_debug()
+{
+	echo "++++ $0 -> enable_sdxbaagha_debug START" > /dev/kmsg
+	adjust_sdxpinn_tmc_permission
+	create_sdxpinn_stm_stp_policy
+	echo "++++ $0 -> enable_sdxbaagha_debug_debug END" > /dev/kmsg
+
+}
+
 echo "start qdss config"
 
 soc_id=`cat /sys/devices/soc0/soc_id`
@@ -1514,3 +1523,12 @@ case "$soc_id" in
 	;;
 esac
 
+case "$soc_id" in
+"570" | "571")
+	echo -n "Starting qdssconfig for SDXBAAGHA: "
+	echo "++++ $0 -> START qdssconfig for SDXBAAGHA" > /dev/kmsg
+	enable_sdxbaagha_debug
+	echo "++++ $0 -> END qdssconfig for SDXPBAAGHA" > /dev/kmsg
+	echo "done";
+	;;
+esac
