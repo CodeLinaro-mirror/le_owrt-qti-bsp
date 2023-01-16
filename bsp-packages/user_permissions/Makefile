@@ -31,7 +31,10 @@ define Build/Compile
 endef
 
 define Package/$(PKG_NAME)/install
-	@true
+	$(INSTALL_DIR) $(1)/etc/init.d
+	$(INSTALL_BIN) ./files/user_permissions.init $(1)/etc/init.d/
+	$(INSTALL_DIR) $(1)/etc/scripts
+	$(INSTALL_BIN) ./files/user_permissions.sh $(1)/etc/scripts/
 endef
 
 $(eval $(call BuildPackage,user_permissions))
