@@ -35,12 +35,10 @@
 START=03
 STOP=96
 
-USE_PROCD=1
-
-start_service() {
+start() {
 	/etc/scripts/createsymlinks.sh
 }
 
-stop_service() {
+stop() {
 	umount /firmware
 }
