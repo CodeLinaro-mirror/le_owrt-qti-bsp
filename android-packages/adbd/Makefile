@@ -44,9 +44,12 @@ define Package/adbd/install
 	$(INSTALL_DIR) $(1)/usr/lib
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/.libs/libadbd.so* $(1)/usr/lib/
 	$(INSTALL_DIR) $(1)/sbin
+	$(INSTALL_DIR) $(1)/etc/initscripts
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/.libs/adbd $(1)/sbin/
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/launch_adbd $(1)/sbin/
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/start_pcie $(1)/etc/initscripts/
 	$(INSTALL_DIR) $(1)/etc/init.d
+	$(INSTALL_BIN) ./files/pcie.init $(1)/etc/init.d/
 	$(INSTALL_BIN) ./files/adbd.init $(1)/etc/init.d/
 endef
 

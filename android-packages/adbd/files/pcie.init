@@ -1,0 +1,17 @@
+#!/bin/sh /etc/rc.common
+
+#Copyright (c) 2023 Qualcomm Innovation Center, Inc. All rights reserved.
+#SPDX-License-Identifier: BSD-3-Clause-Clear
+
+START=07
+STOP=92
+
+
+start() {
+        /etc/initscripts/start_pcie
+}
+
+stop() {
+        echo "Stopping pcie service"
+}
+
