@@ -10,6 +10,10 @@ PKG_LICENSE:=BSD-3-Clause & Apache-2.0
 LOCAL_SRC ?= $(TOPDIR)/src/system/core/leproperties
 include $(INCLUDE_DIR)/package.mk
 
+ifeq ($(BOARD), sdx35)
+	TARGET_CFLAGS += -DPROP_TRIGGER
+endif
+
 define Package/$(PKG_NAME)
 	SECTION:=utils
 	CATEGORY:=Utilities
@@ -32,6 +36,8 @@ define Package/$(PKG_NAME)/install
 	$(INSTALL_DIR) $(1)/usr/bin
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/sbin/* $(1)/sbin/
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/* $(1)/usr/bin/
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/proptrigger.conf $(1)/etc/
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/proptrigger.sh $(1)/etc/
 	$(INSTALL_BIN) ./files/leproperties.init $(1)/etc/init.d/
 endef
 
