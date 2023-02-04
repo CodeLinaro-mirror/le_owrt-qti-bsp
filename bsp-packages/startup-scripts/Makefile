@@ -6,6 +6,7 @@ PKG_RELEASE:=1
 
 include $(INCLUDE_DIR)/package.mk
 include $(INCLUDE_DIR)/host-build.mk
+include $(INCLUDE_DIR)/target.mk
 
 SOURCE_DIR:= $(TOPDIR)/src/system/core/usb
 
@@ -37,7 +38,7 @@ define Package/usb-composition/install
 	$(INSTALL_DIR) $(1)/etc/usb
 	$(INSTALL_BIN) -b -m 0644 /dev/null $(1)/etc/usb/boot_hsic_comp
 	$(INSTALL_BIN) -b -m 0644 /dev/null $(1)/etc/usb/boot_hsusb_comp
-	echo 90DB > $(1)/etc/usb/boot_hsusb_comp
+	echo $(USB_COMPOSITION) > $(1)/etc/usb/boot_hsusb_comp
 	$(INSTALL_DIR) $(1)/sbin/usb
 	$(INSTALL_DIR) $(1)/sbin/usb/compositions
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/usb_composition $(1)/sbin/
