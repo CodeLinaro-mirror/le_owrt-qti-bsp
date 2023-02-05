@@ -88,3 +88,15 @@ if [ -f /proc/mtd ] && [ `cat /proc/mtd | wc -l` -ge "2" ]; then
 	mount -t ubifs ubi0:persist /persist -o bulk_read
 	echo "persist is mounted to /persist"
 fi
+
+# Mount userdata and overlayfs
+if [ -f /proc/mtd ] && [ `cat /proc/mtd | wc -l` -ge "2" ]; then
+	mount -t ubifs /dev/ubi0_1 /data -o bulk_read,rw
+else
+	mount -t ext4 /dev/block/bootdevice/by-name/userdata /data
+fi
+
+mkdir -p /data/overlay-work
+mkdir -p /data/overlay-work/etc-upper
+mkdir -p /data/overlay-work/.etc-work
+mount -t overlay -o lowerdir=/etc,upperdir=/data/overlay-work/etc-upper,workdir=/data/overlay-work/.etc-work overlay /etc
