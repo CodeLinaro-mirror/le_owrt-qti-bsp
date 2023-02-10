@@ -36,3 +36,12 @@ if [ -c /dev/kmsg ]; then
 	chown root:kmsg /dev/kmsg
 	chmod 0664 /dev/kmsg
 fi
+if [ -f /sys/power/wake_lock ]; then
+        chown nobody:system /sys/power/wake_lock
+        chmod 0660 /sys/power/wake_lock
+fi
+if [ -f /sys/power/wake_unlock ]; then
+        chown nobody:system /sys/power/wake_unlock
+        chmod 0660 /sys/power/wake_unlock
+fi
+
