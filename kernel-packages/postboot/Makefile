@@ -5,7 +5,7 @@ PKG_VERSION:=1.0
 PKG_RELEASE:=1
 PKG_FIXUP:=autoreconf
 
-ifeq ($(KERNEL_PLATFORM_TARGET),sdxbaagha)
+ifeq ($(BOARD),sdx35)
 LOCAL_SRC := $(TOPDIR)/src/system/core/rootdir/sdxbaagha
 else
 LOCAL_SRC := $(TOPDIR)/src/system/core/rootdir/sdxpinn
