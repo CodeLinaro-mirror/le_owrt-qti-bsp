@@ -103,3 +103,9 @@ mkdir -p /data/overlay-work/lib-upper
 mkdir -p /data/overlay-work/.lib-work
 mount -t overlay -o lowerdir=/lib/modules,upperdir=/data/overlay-work/lib-upper,workdir=/data/overlay-work/.lib-work overlay /lib/modules
 mkdir -p /lib/modules/$(uname -r)
+
+# Need Restorecon for /persist & /firmware
+RESTORECON=/sbin/restorecon
+${RESTORECON} -RF /persist /firmware
+
+
