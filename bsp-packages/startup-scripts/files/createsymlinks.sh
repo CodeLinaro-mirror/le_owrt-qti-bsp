@@ -106,6 +106,6 @@ mkdir -p /lib/modules/$(uname -r)
 
 # Need Restorecon for /persist & /firmware
 RESTORECON=/sbin/restorecon
-${RESTORECON} -RF /persist /firmware
+${RESTORECON} -RF /persist /firmware /data /etc
 
 
