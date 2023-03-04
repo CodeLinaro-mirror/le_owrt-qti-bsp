@@ -64,7 +64,7 @@ if [ ! -d /firmware/image ]; then
                 do
                     if [ -c $device ]
 					then
-                        mount -t ubifs /dev/ubi1_0 /firmware -o bulk_read
+                        mount -t ubifs /dev/ubi1_0 /firmware -o bulk_read,ro
                         break
 					else
                         sleep 1
@@ -72,7 +72,7 @@ if [ ! -d /firmware/image ]; then
                 done
                 create_symlinks mtd
         else
-                mount /dev/mmcblk0p1 /firmware
+                mount /dev/mmcblk0p1 /firmware -o ro
                 create_symlinks mmc
         fi
 fi
