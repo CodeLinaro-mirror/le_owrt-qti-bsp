@@ -99,10 +99,6 @@ mkdir -p /data/overlay-work
 mkdir -p /data/overlay-work/etc-upper
 mkdir -p /data/overlay-work/.etc-work
 mount -t overlay -o lowerdir=/etc,upperdir=/data/overlay-work/etc-upper,workdir=/data/overlay-work/.etc-work overlay /etc
-mkdir -p /data/overlay-work/lib-upper
-mkdir -p /data/overlay-work/.lib-work
-mount -t overlay -o lowerdir=/lib/modules,upperdir=/data/overlay-work/lib-upper,workdir=/data/overlay-work/.lib-work overlay /lib/modules
-mkdir -p /lib/modules/$(uname -r)
 
 # Need Restorecon for /persist & /firmware
 RESTORECON=/sbin/restorecon
