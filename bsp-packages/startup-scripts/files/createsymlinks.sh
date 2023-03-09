@@ -88,6 +88,17 @@ if [ -f /proc/mtd ] && [ `cat /proc/mtd | wc -l` -ge "2" ]; then
 	echo "persist is mounted to /persist"
 fi
 
+#Mount cache
+if [ ! -d /cache ]; then
+        echo "creating /cache dir"
+        mkdir -p /cache
+fi
+if [ -f /proc/mtd ] && [ `cat /proc/mtd | wc -l` -ge "2" ]; then
+        mount -t ubifs ubi0:cachefs /cache -o bulk_read
+else
+        mount -t ext4 /dev/block/bootdevice/by-name/cache /cache -o noatime,data=ordered,noauto_da_alloc,discard,noexec,nodev,nosuid,noauto
+fi
+
 # Mount userdata and overlayfs
 if [ -f /proc/mtd ] && [ `cat /proc/mtd | wc -l` -ge "2" ]; then
 	mount -t ubifs /dev/ubi0_1 /data -o bulk_read,rw
