@@ -36,6 +36,10 @@ if [ -c /dev/kmsg ]; then
 	chown root:kmsg /dev/kmsg
 	chmod 0664 /dev/kmsg
 fi
+if [ -d /dev/dma_heap ]; then
+	chown system:system /dev/dma_heap
+	chmod 0640 /dev/dma_heap
+fi
 if [ -f /sys/power/wake_lock ]; then
         chown nobody:system /sys/power/wake_lock
         chmod 0660 /sys/power/wake_lock
