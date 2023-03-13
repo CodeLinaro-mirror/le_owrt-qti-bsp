@@ -49,7 +49,7 @@ mount_partition()
         if [ -e ${device} ]; then
                 # Mounting sd-card with user "root" and group "sdcard" with proper umask permissions
                 #so that non-root applications can access sdcard by adding to "sdcard" group.
-                if ! mount -t auto "${device}" "${destdir}" -o uid=0,gid=1015,umask=002,nodev,noexec,nosuid; then
+                if ! mount -t auto "${device}" "${destdir}" -o  context=u:r:mnt.miscfile,uid=0,gid=1015,umask=002,nodev,noexec,nosuid; then
                         # failed to mount
                         echo "Mounting sdcard failed !!!"
                         exit 1
