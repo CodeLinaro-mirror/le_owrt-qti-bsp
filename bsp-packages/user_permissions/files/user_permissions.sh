@@ -53,3 +53,7 @@ if [ -d /mnt/sdcard ]; then
         chmod 0755 /mnt/sdcard
 fi
 
+if [ -f /sys/kernel/boot_kpi/kpi_values ]; then
+        chown radio:radio /sys/kernel/boot_kpi/kpi_values
+        chmod 0660 /sys/kernel/boot_kpi/kpi_values
+fi
