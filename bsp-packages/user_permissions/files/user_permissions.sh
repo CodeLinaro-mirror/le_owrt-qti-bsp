@@ -44,4 +44,8 @@ if [ -f /sys/power/wake_unlock ]; then
         chown nobody:system /sys/power/wake_unlock
         chmod 0660 /sys/power/wake_unlock
 fi
+if [ -d /mnt/sdcard ]; then
+        chown root:sdcard /mnt/sdcard
+        chmod 0755 /mnt/sdcard
+fi
 
