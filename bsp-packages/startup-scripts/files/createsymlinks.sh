@@ -102,6 +102,6 @@ mount -t overlay -o lowerdir=/etc,upperdir=/data/overlay-work/etc-upper,workdir=
 
 # Need Restorecon for /persist & /firmware
 RESTORECON=/sbin/restorecon
-${RESTORECON} -RF /persist /firmware
+${RESTORECON} -RF /persist /firmware /data /etc
 
 
