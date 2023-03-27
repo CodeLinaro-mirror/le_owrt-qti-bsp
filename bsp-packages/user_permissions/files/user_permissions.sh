@@ -38,7 +38,7 @@ if [ -c /dev/kmsg ]; then
 fi
 if [ -d /dev/dma_heap ]; then
 	chown system:system /dev/dma_heap
-	chmod 0640 /dev/dma_heap
+	chmod 0740 /dev/dma_heap
 fi
 if [ -f /sys/power/wake_lock ]; then
         chown nobody:system /sys/power/wake_lock
