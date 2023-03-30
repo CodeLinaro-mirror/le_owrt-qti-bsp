@@ -3,8 +3,8 @@
 #Copyright (c) 2023 Qualcomm Innovation Center, Inc. All rights reserved.
 #SPDX-License-Identifier: BSD-3-Clause-Clear
 
-START=07
-STOP=92
+START=04
+STOP=95
 
 
 start() {
