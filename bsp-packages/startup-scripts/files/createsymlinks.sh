@@ -64,7 +64,7 @@ if [ ! -d /firmware/image ]; then
                 do
                     if [ -c $device ]
 					then
-                        mount -t ubifs /dev/ubi1_0 /firmware -o bulk_read,ro
+                        mount -t ubifs /dev/ubi1_0 /firmware  -o bulk_read,ro,context=u:r:qcfirmware.miscfile
                         break
 					else
                         sleep 1
@@ -72,7 +72,7 @@ if [ ! -d /firmware/image ]; then
                 done
                 create_symlinks mtd
         else
-                mount /dev/mmcblk0p1 /firmware -o ro
+                mount /dev/mmcblk0p1 /firmware  context=u:r:qcfirmware.miscfile -o ro,context=u:r:qcfirmware.miscfile
                 create_symlinks mmc
         fi
 fi
@@ -113,6 +113,6 @@ mount -t overlay -o lowerdir=/etc,upperdir=/data/overlay-work/etc-upper,workdir=
 
 # Need Restorecon for /persist & /firmware
 RESTORECON=/sbin/restorecon
-${RESTORECON} -RF /persist /firmware /data /etc
+${RESTORECON} -RF /persist /data /etc
 
 
