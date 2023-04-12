@@ -16,6 +16,7 @@ define Package/core-include
   SECTION:=QTI
   CATEGORY:=QTI-PACKAGES
   TITLE:= core-include
+  DEPENDS:=+libcap
 endef
 
 define Package/core-include/description
@@ -42,7 +43,6 @@ define Build/InstallDev
 	$(CP) $(PKG_BUILD_DIR)/diskconfig $(1)/usr/include/
 	$(CP) $(PKG_BUILD_DIR)/mincrypt $(1)/usr/include/
 	$(CP) $(PKG_BUILD_DIR)/netutils $(1)/usr/include/
-	$(CP) $(PKG_BUILD_DIR)/sys $(1)/usr/include/
 	$(CP) $(PKG_BUILD_DIR)/sys $(1)/usr/include/cutils
 	$(CP) $(PKG_BUILD_DIR)/sysutils $(1)/usr/include/
 	$(CP) $(PKG_BUILD_DIR)/utils $(1)/usr/include/
@@ -60,6 +60,5 @@ endef
 define Package/core-include/install
 	@true
 endef
-
 $(eval $(call BuildPackage,core-include))
 $(eval $(call HostBuild))
