@@ -13,6 +13,10 @@ include $(INCLUDE_DIR)/host-build.mk
 
 TARGET_CFLAGS += -DUSE_MUSL -I$(TOPDIR)/src/system/core/mkbootimg -I$(STAGING_DIR)/usr/include/glib-2.0 -Dstrlcpy=strlcpy
 
+ifeq ($(USER_VARIANT),1)
+CONFIGURE_ARGS += --disable-adb-root
+endif
+
 define Package/adbd
   SECTION:=Utils
   CATEGORY:=QTI-PACKAGES
