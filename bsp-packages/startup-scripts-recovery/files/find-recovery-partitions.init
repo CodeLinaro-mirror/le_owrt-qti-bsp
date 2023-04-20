@@ -1,0 +1,16 @@
+#!/bin/sh /etc/rc.common
+
+#Copyright (c) 2023 Qualcomm Innovation Center, Inc. All rights reserved.
+#SPDX-License-Identifier: BSD-3-Clause-Clear
+
+
+START=03
+STOP=96
+
+start() {
+        /etc/scripts/find_recovery_partitions.sh
+}
+
+stop() {
+        echo "Stopping service .."
+}
