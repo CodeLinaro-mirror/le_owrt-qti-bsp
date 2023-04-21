@@ -203,4 +203,7 @@ mkdir -p /data/overlay-work/etc-upper
 mkdir -p /data/overlay-work/.etc-work
 mount -t overlay -o lowerdir=/etc,upperdir=/data/overlay-work/etc-upper,workdir=/data/overlay-work/.etc-work overlay /etc
 
+echo 901D > /etc/usb/boot_hsusb_comp
+sync -f /etc/usb/boot_hsusb_comp
+
 exit
