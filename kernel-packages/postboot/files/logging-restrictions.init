@@ -1,0 +1,16 @@
+#!/bin/sh /etc/rc.common
+
+#Copyright (c) 2023 Qualcomm Innovation Center, Inc. All rights reserved.
+#SPDX-License-Identifier: BSD-3-Clause-Clear
+
+START=98
+STOP=01
+
+start() {
+	echo 2 > /proc/sys/kernel/kptr_restrict
+	echo 1 > /proc/sys/kernel/dmesg_restrict
+}
+
+stop() {
+	echo "Stopping logging-restrictions init"
+}

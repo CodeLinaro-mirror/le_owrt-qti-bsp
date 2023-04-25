@@ -36,6 +36,17 @@ define Build/Compile
 	@true
 endef
 
+ifeq ($(USER_VARIANT),1)
+define Package/postboot/install
+	$(INSTALL_DIR) $(1)/etc/scripts
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/init.post_boot.sh $(1)/etc/scripts/
+	$(INSTALL_DIR) $(1)/etc/init.d
+	$(INSTALL_BIN) ./files/postboot.init $(1)/etc/init.d/
+	$(INSTALL_BIN) ./files/logging-restrictions.init $(1)/etc/init.d/
+endef
+
+else
+
 define Package/postboot/install
 	$(INSTALL_DIR) $(1)/etc/scripts
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/init.post_boot.sh $(1)/etc/scripts/
@@ -43,6 +54,7 @@ define Package/postboot/install
 	$(INSTALL_DIR) $(1)/etc/init.d
 	$(INSTALL_BIN) ./files/postboot.init $(1)/etc/init.d/
 endef
+endif
 
 $(eval $(call BuildPackage,postboot))
 
