@@ -53,6 +53,7 @@ define Package/usb-composition/install
 	$(INSTALL_BIN) ./files/usb.init $(1)/etc/init.d/usb.init
 	$(INSTALL_BIN) ./files/create-firmwarelinks.init $(1)/etc/init.d/
 	$(INSTALL_DIR) $(1)/etc/scripts
+	$(INSTALL_DIR) $(1)/mnt/sdcard
 	$(INSTALL_BIN) ./files/createsymlinks.sh $(1)/etc/scripts
 	$(INSTALL_BIN) ./files/automountsdcard.sh $(1)/etc/scripts
 	$(INSTALL_DIR) $(1)/etc/hotplug.d/block
