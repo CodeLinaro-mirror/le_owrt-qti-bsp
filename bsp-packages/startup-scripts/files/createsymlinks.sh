@@ -72,7 +72,7 @@ if [ ! -d /firmware/image ]; then
                 done
                 create_symlinks mtd
         else
-                mount /dev/mmcblk0p1 /firmware  context=u:r:qcfirmware.miscfile -o ro,context=u:r:qcfirmware.miscfile
+		mount /dev/mmcblk0p1 /firmware -o ro,context=u:r:qcfirmware.miscfile
                 create_symlinks mmc
         fi
 fi
