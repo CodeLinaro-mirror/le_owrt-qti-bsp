@@ -198,12 +198,9 @@ fi
 
 FindAndMountMTD misc /misc
 
-mkdir -p /data/overlay-work
-mkdir -p /data/overlay-work/etc-upper
-mkdir -p /data/overlay-work/.etc-work
-mount -t overlay -o lowerdir=/etc,upperdir=/data/overlay-work/etc-upper,workdir=/data/overlay-work/.etc-work overlay /etc
-
-echo 901D > /etc/usb/boot_hsusb_comp
-sync -f /etc/usb/boot_hsusb_comp
+mkdir -p /data/overlay-work-rec
+mkdir -p /data/overlay-work-rec/etc-upper
+mkdir -p /data/overlay-work-rec/.etc-work
+mount -t overlay -o lowerdir=/etc,upperdir=/data/overlay-work-rec/etc-upper,workdir=/data/overlay-work-rec/.etc-work overlay /etc
 
 exit
