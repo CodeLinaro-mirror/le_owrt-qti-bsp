@@ -46,7 +46,7 @@ endef
 
 define Package/adbd/install
 	$(INSTALL_DIR) $(1)/usr/lib
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/.libs/libadbd.so* $(1)/usr/lib/
+	$(CP) $(PKG_BUILD_DIR)/.libs/libadbd.so* $(1)/usr/lib/
 	$(INSTALL_DIR) $(1)/sbin
 	$(INSTALL_DIR) $(1)/etc/initscripts
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/.libs/adbd $(1)/sbin/

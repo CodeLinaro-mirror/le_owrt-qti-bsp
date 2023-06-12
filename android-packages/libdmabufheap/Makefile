@@ -40,7 +40,7 @@ endef
 
 define Package/libdmabufheap/install
 	$(INSTALL_DIR) $(1)/usr/lib
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/.libs/libdmabufheap.so* $(1)/usr/lib/
+	$(CP) $(PKG_BUILD_DIR)/.libs/libdmabufheap.so* $(1)/usr/lib/
 	$(INSTALL_DIR) $(1)/etc/hotplug.d/dma_heap
 	$(INSTALL_DATA) $(KMEM_RULES_DIR)/kmem-dmaheap-rules $(1)/etc/hotplug.d/dma_heap
 endef

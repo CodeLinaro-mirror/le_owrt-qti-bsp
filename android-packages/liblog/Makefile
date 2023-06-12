@@ -42,7 +42,7 @@ endef
 
 define Package/liblog/install
 	$(INSTALL_DIR) $(1)/usr/lib
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/.libs/liblog.so* $(1)/usr/lib/
+	$(CP) $(PKG_BUILD_DIR)/.libs/liblog.so* $(1)/usr/lib/
 endef
 
 $(eval $(call BuildPackage,liblog))
