@@ -54,8 +54,8 @@ if [ -d /mnt/sdcard ]; then
 fi
 
 if [ -f /sys/kernel/boot_kpi/kpi_values ]; then
-        chown radio:radio /sys/kernel/boot_kpi/kpi_values
-        chmod 0660 /sys/kernel/boot_kpi/kpi_values
+        chown root:radio /sys/kernel/boot_kpi/kpi_values
+        chmod 0664 /sys/kernel/boot_kpi/kpi_values
 fi
 
 while [ 1 ]
