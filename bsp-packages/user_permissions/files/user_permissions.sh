@@ -57,3 +57,8 @@ if [ -f /sys/kernel/boot_kpi/kpi_values ]; then
         chown radio:radio /sys/kernel/boot_kpi/kpi_values
         chmod 0660 /sys/kernel/boot_kpi/kpi_values
 fi
+
+if [ -b /dev/block/bootdevice/by-name/recoveryinfo ]; then
+        chown root:disk /dev/block/bootdevice/by-name/recoveryinfo
+        chmod 0660 /dev/block/bootdevice/by-name/recoveryinfo
+fi

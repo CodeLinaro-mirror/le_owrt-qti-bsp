@@ -16,7 +16,7 @@ define Package/user_permissions
 			wifi=1010:wifi=1010 input=1004:input=1004 qrtr=2906:qrtr=2906 \
 			diag=2901:diag=2901 diag=2901:rebooters=1301 leprop=5002:leprop=5002 \
 			:wakelock=3010 :readproc=3009 :kmsg=2902 :inet=3003 :net_admin=3005 :qwes=3013 \
-           		:netdev=996 :net_raw=3004 :sdcard=1015
+			:netdev=996 :net_raw=3004 :sdcard=1015 :disk=6
 endef
 
 define Package/user_permissions/description
