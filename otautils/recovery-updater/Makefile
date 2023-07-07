@@ -35,6 +35,7 @@ define Build/Prepare
 endef
 
 define Build/Compile
+@true
 endef
 
 define Package/recovery-updater/install
