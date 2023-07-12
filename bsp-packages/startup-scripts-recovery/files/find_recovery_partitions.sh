@@ -184,7 +184,7 @@ echo -n > $fstab_file
 if [ -f /proc/mtd ] && [ `cat /proc/mtd | wc -l` -ge "2" ]; then
     fstype="UBI"
     create_symlinks mtd
-    eval FindAndAttachUBI system 5
+    eval FindAndAttachUBI system 4
     eval FindAndMountUBI rootfs  /system  1
     eval FindAndMountUBI usrfs   /data    0
     eval FindAndMountUBI cachefs /cache   0
