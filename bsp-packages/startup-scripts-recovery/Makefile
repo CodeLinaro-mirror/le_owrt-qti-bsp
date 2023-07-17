@@ -53,6 +53,7 @@ define Package/usb-composition-recovery/install
 	$(INSTALL_BIN) ../startup-scripts/files/usb.init $(1)/etc/init.d/usb.init
 	$(INSTALL_BIN) ./files/find-recovery-partitions.init $(1)/etc/init.d/
 	$(INSTALL_DIR) $(1)/etc/scripts
+	$(INSTALL_DIR) $(1)/mnt/sdcard
 	$(INSTALL_BIN) ./files/find_recovery_partitions.sh $(1)/etc/scripts
 	$(INSTALL_BIN) ../startup-scripts/files/automountsdcard.sh $(1)/etc/scripts
 	$(INSTALL_DIR) $(1)/etc/hotplug.d/block
