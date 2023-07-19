@@ -54,7 +54,7 @@ endef
 
 define Package/ext4_utils/install
 	$(INSTALL_DIR) $(1)/usr/lib
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/.libs/libext4_utils.so* $(1)/usr/lib/
+	$(CP) $(PKG_BUILD_DIR)/.libs/libext4_utils.so* $(1)/usr/lib/
 endef
 
 $(eval $(call BuildPackage,ext4_utils))
