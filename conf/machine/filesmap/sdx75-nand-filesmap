@@ -58,7 +58,7 @@ cpucp.elf               cpucpfw
 km41.mbn                keymaster
 qupv3fw.elf             qupfw
 shrm.elf                shrm
-
+qdsp6sw_dtbs.elf        mpss_dtb
 
 # filename + .bak       backup partition
 
