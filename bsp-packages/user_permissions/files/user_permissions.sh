@@ -58,7 +58,19 @@ if [ -f /sys/kernel/boot_kpi/kpi_values ]; then
         chmod 0660 /sys/kernel/boot_kpi/kpi_values
 fi
 
-if [ -b /dev/block/bootdevice/by-name/recoveryinfo ]; then
-        chown root:disk /dev/block/bootdevice/by-name/recoveryinfo
-        chmod 0660 /dev/block/bootdevice/by-name/recoveryinfo
-fi
+while [ 1 ]
+do
+
+        if [ -d /dev/block/bootdevice/by-name ]; then
+                if [ -b /dev/block/bootdevice/by-name/recoveryinfo ]; then
+                        chown root:disk /dev/block/bootdevice/by-name/recoveryinfo
+                        chmod 0660 /dev/block/bootdevice/by-name/recoveryinfo
+
+                        break
+                else
+                        exit
+                fi
+        else
+                sleep 1
+        fi
+done
