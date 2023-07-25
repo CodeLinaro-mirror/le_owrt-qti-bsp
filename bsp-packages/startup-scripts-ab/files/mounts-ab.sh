@@ -29,7 +29,7 @@ create_symlinks()
 if [ ! -d /firmware/image ]; then
         if [ -f /proc/mtd ] && [ `cat /proc/mtd | wc -l` -ge "2" ]; then
 
-                  mtd_block_number=`cat /proc/mtd | grep -i modem_a | sed 's/^mtd//' | awk -F ':' '{print $1}'`
+                  mtd_block_number=`cat /proc/mtd | grep -i -w modem | sed 's/^mtd//' | awk -F ':' '{print $1}'`
                   echo "MTD : Detected block device : firmware for modem_a "
 
                   ubiattach -m $mtd_block_number -d 1 /dev/ubi_ctrl
