@@ -89,7 +89,7 @@ fi
 
 # Mount userdata and overlayfs
 if [ -f /proc/mtd ] && [ `cat /proc/mtd | wc -l` -ge "2" ]; then
-        mount -t ubifs /dev/ubi0_1 /data -o bulk_read,rw
+        mount -t ubifs ubi0:usrfs /data -o bulk_read,rw
 else
         mount -t ext4 /dev/block/bootdevice/by-name/userdata /data
 fi
