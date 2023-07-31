@@ -74,3 +74,10 @@ do
                 sleep 1
         fi
 done
+
+#In case of MTD, change permissions for mtd block device
+if [ -f /proc/mtd ] && [ `cat /proc/mtd | wc -l` -ge "2" ]; then
+        mtd_block_number=`cat /proc/mtd | grep -i recoveryinfo | sed 's/^mtd//' | awk -F ':' '{print $1}'`
+        chown system:disk /dev/mtd$mtd_block_number
+        chmod 660 /dev/mtd$mtd_block_number
+fi
