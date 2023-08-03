@@ -10,6 +10,9 @@ PKG_LICENSE:=BSD-3-Clause
 LOCAL_SRC ?= $(TOPDIR)/src/system/core/powerapp
 include $(INCLUDE_DIR)/package.mk
 
+ifeq ($(BOARD), sdx35)
+	TARGET_CFLAGS += -DIS_KUNO
+endif
 
 define Package/$(PKG_NAME)
 	SECTION:=utils
