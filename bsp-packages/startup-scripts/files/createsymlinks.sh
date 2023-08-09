@@ -111,8 +111,22 @@ mkdir -p /data/overlay-work/etc-upper
 mkdir -p /data/overlay-work/.etc-work
 mount -t overlay -o lowerdir=/etc,upperdir=/data/overlay-work/etc-upper,workdir=/data/overlay-work/.etc-work overlay /etc
 
-# Need Restorecon for /persist & /firmware
+
 RESTORECON=/sbin/restorecon
-${RESTORECON} -RF /persist /data /etc
+${RESTORECON} -RF  /etc
 
 
+# For  Boot KPI we will call restorcon only  for the first boot
+# any new files will get labeled on creation
+
+if [ ! -f /persist/.autolabeled ]; then
+     # Need Restorecon for /persist
+     ${RESTORECON} -RF /persist
+     touch  /persist/.autolabeled
+fi
+
+if [ ! -f /data/.autolabeled ]; then
+        # Need Restorecon for /data
+        ${RESTORECON} -RF /data
+        touch  /data/.autolabeled
+fi

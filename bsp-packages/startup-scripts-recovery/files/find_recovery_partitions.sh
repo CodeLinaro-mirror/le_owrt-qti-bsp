@@ -179,6 +179,15 @@ FindAndMountMTD () {
    UpdateRecoveryVolume $1 $2 "mtd" /dev/$mtd_block_device
 }
 
+FindAndUpdateMisc () {
+   partition=$1
+   dir=$2
+   mmc_block_device=/dev/block/bootdevice/by-name/$partition
+
+   echo "EMMC : Looking for emmc device : $dir for $partition" > /dev/kmsg
+   UpdateRecoveryVolume $1 $2 "emmc" $mmc_block_device
+}
+
 echo -n > $fstab_file
 
 if [ -f /proc/mtd ] && [ `cat /proc/mtd | wc -l` -ge "2" ]; then
@@ -188,15 +197,15 @@ if [ -f /proc/mtd ] && [ `cat /proc/mtd | wc -l` -ge "2" ]; then
     eval FindAndMountUBI rootfs  /system  1
     eval FindAndMountUBI usrfs   /data    0
     eval FindAndMountUBI cachefs /cache   0
+    eval FindAndMountMTD misc    /misc
 else
     fstype="EXT4"
     create_symlinks mmc
     eval FindAndMountEXT4 system   /system   1
     eval FindAndMountEXT4 userdata /data     0
     eval FindAndMountEXT4 cache    /cache    0
+    eval FindAndUpdateMisc misc    /misc
 fi
-
-FindAndMountMTD misc /misc
 
 mkdir -p /data/overlay-work-rec
 mkdir -p /data/overlay-work-rec/etc-upper

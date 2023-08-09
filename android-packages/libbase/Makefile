@@ -46,7 +46,7 @@ endef
 
 define Package/libbase/install
 	$(INSTALL_DIR) $(1)/usr/lib
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/.libs/libbase.so* $(1)/usr/lib/
+	$(CP) $(PKG_BUILD_DIR)/.libs/libbase.so* $(1)/usr/lib/
 endef
 
 $(eval $(call BuildPackage,libbase))
