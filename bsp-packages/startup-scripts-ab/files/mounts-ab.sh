@@ -83,22 +83,19 @@ if [ ! -d /cache ]; then
 fi
 if [ -f /proc/mtd ] && [ `cat /proc/mtd | wc -l` -ge "2" ]; then
         mount -t ubifs ubi0:cachefs /cache -o bulk_read,context=u:r:cache.miscfile
-else
-        mount -t ext4 /dev/block/bootdevice/by-name/cache /cache -o noatime,data=ordered,noauto_da_alloc,discard,noexec,nodev,nosuid,noauto,context=u:r:cache.miscfile
-fi
-
-# Mount userdata and overlayfs
-if [ -f /proc/mtd ] && [ `cat /proc/mtd | wc -l` -ge "2" ]; then
+        mount -t ubifs ubi0:systemrw /overlay -o bulk_read
         mount -t ubifs ubi0:usrfs /data -o bulk_read,rw
 else
+        mount -t ext4 /dev/block/bootdevice/by-name/cache /cache -o noatime,data=ordered,noauto_da_alloc,discard,noexec,nodev,nosuid,noauto,context=u:r:cache.miscfile
+        mount -t ext4 /dev/block/bootdevice/by-name/systemrw /overlay -o noatime,data=ordered,noauto_da_alloc,discard,noexec,nodev,nosuid,noauto
         mount -t ext4 /dev/block/bootdevice/by-name/userdata /data
 fi
 
-mkdir -p /data/overlay-work$CURRENT_SLOT
-mkdir -p /data/overlay-work/etc-upper$CURRENT_SLOT
-mkdir -p /data/overlay-work/.etc-work$CURRENT_SLOT
-mount -t overlay -o lowerdir=/etc,upperdir=/data/overlay-work/etc-upper$CURRENT_SLOT,workdir=/data/overlay-work/.etc-work$CURRENT_SLOT overlay /etc
+mkdir -p /overlay/etc-upper$CURRENT_SLOT
+mkdir -p /overlay/.etc-work$CURRENT_SLOT
+mount -t overlay -o lowerdir=/etc,upperdir=/overlay/etc-upper$CURRENT_SLOT,workdir=/overlay/.etc-work$CURRENT_SLOT overlay /etc
 
 # Need Restorecon for /persist & /firmware
 RESTORECON=/sbin/restorecon
-${RESTORECON} -RF /persist /data /etc
+${RESTORECON} -RF /persist /data
+${RESTORECON} -R /etc/ -e /etc/rc.d
