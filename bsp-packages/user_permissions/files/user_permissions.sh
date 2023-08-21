@@ -81,3 +81,18 @@ if [ -f /proc/mtd ] && [ `cat /proc/mtd | wc -l` -ge "2" ]; then
         chown system:disk /dev/mtd$mtd_block_number
         chmod 660 /dev/mtd$mtd_block_number
 fi
+
+if [ -f /sys/power/state ]; then
+        chown root:system /sys/power/state
+        chmod 0660 /sys/power/state
+fi
+
+if [ -f /sys/power/autosleep ]; then
+        chown root:system /sys/power/autosleep
+        chmod 0660 /sys/power/autosleep
+fi
+
+if [ -c /dev/input/event0 ]; then
+        chown system:plugdev /dev/input/event0
+        chmod 0664 /dev/input/event0
+fi
