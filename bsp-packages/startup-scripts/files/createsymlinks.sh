@@ -94,9 +94,11 @@ if [ ! -d /cache ]; then
         mkdir -p /cache
 fi
 if [ -f /proc/mtd ] && [ `cat /proc/mtd | wc -l` -ge "2" ]; then
-        mount -t ubifs ubi0:cachefs /cache -o bulk_read
+        mount -t ubifs ubi0:cachefs /cache -o bulk_read,context=u:r:cache.miscfile
+
 else
-        mount -t ext4 /dev/block/bootdevice/by-name/cache /cache -o noatime,data=ordered,noauto_da_alloc,discard,noexec,nodev,nosuid,noauto
+        mount -t ext4 /dev/block/bootdevice/by-name/cache /cache -o noatime,data=ordered,noauto_da_alloc,discard,noexec,nodev,nosuid,noauto,context=u:r:cache.miscfile
+
 fi
 
 # Mount userdata and overlayfs
@@ -111,8 +113,22 @@ mkdir -p /data/overlay-work/etc-upper
 mkdir -p /data/overlay-work/.etc-work
 mount -t overlay -o lowerdir=/etc,upperdir=/data/overlay-work/etc-upper,workdir=/data/overlay-work/.etc-work overlay /etc
 
-# Need Restorecon for /persist & /firmware
+
 RESTORECON=/sbin/restorecon
-${RESTORECON} -RF /persist /data /etc
+${RESTORECON} -RF  /etc
 
 
+# For  Boot KPI we will call restorcon only  for the first boot
+# any new files will get labeled on creation
+
+if [ ! -f /persist/.autolabeled ]; then
+     # Need Restorecon for /persist
+     ${RESTORECON} -RF /persist
+     touch  /persist/.autolabeled
+fi
+
+if [ ! -f /data/.autolabeled ]; then
+        # Need Restorecon for /data
+        ${RESTORECON} -RF /data
+        touch  /data/.autolabeled
+fi

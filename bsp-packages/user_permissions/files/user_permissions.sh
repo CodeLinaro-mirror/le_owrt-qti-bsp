@@ -37,8 +37,8 @@ if [ -c /dev/kmsg ]; then
 	chmod 0664 /dev/kmsg
 fi
 if [ -d /dev/dma_heap ]; then
-	chown system:system /dev/dma_heap
-	chmod 0740 /dev/dma_heap
+	chown -R root:system /dev/dma_heap
+	chmod -R 0760 /dev/dma_heap
 fi
 if [ -f /sys/power/wake_lock ]; then
         chown root:system /sys/power/wake_lock
@@ -58,7 +58,26 @@ if [ -f /sys/kernel/boot_kpi/kpi_values ]; then
         chmod 0660 /sys/kernel/boot_kpi/kpi_values
 fi
 
-if [ -b /dev/block/bootdevice/by-name/recoveryinfo ]; then
-        chown root:disk /dev/block/bootdevice/by-name/recoveryinfo
-        chmod 0660 /dev/block/bootdevice/by-name/recoveryinfo
+while [ 1 ]
+do
+
+        if [ -d /dev/block/bootdevice/by-name ]; then
+                if [ -b /dev/block/bootdevice/by-name/recoveryinfo ]; then
+                        chown root:disk /dev/block/bootdevice/by-name/recoveryinfo
+                        chmod 0660 /dev/block/bootdevice/by-name/recoveryinfo
+
+                        break
+                else
+                        exit
+                fi
+        else
+                sleep 1
+        fi
+done
+
+#In case of MTD, change permissions for mtd block device
+if [ -f /proc/mtd ] && [ `cat /proc/mtd | wc -l` -ge "2" ]; then
+        mtd_block_number=`cat /proc/mtd | grep -i recoveryinfo | sed 's/^mtd//' | awk -F ':' '{print $1}'`
+        chown system:disk /dev/mtd$mtd_block_number
+        chmod 660 /dev/mtd$mtd_block_number
 fi
