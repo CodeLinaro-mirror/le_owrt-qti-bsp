@@ -1,4 +1,4 @@
-include ota-common.mk
+include $(TOPDIR)/owrt-qti-bsp/include/ota-common.mk
 
 OTA_TARGET_FILES_UBI = "target-files-ubi.zip"
 OTA_TARGET_FILES_UBI_2k = "target-files-ubi-2k.zip"
