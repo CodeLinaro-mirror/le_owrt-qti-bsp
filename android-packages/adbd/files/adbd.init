@@ -45,7 +45,7 @@ start_service() {
 }
 
 stop_service() {
-        echo "Stopping sdbd service"
+        echo "Stopping adbd service"
         # commands to kill application
 }
 
