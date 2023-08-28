@@ -93,9 +93,13 @@ if [ ! -d /cache ]; then
         echo "creating /cache dir"
         mkdir -p /cache
 fi
+
+soc_name=`cat /sys/devices/soc0/machine`
 if [ -f /proc/mtd ] && [ `cat /proc/mtd | wc -l` -ge "2" ]; then
         mount -t ubifs ubi0:cachefs /cache -o bulk_read,context=u:r:cache.miscfile
-        mount -t ubifs ubi0:systemrw /overlay -o bulk_read
+        if [ $soc_machine != "SDXBAAGHA" ]; then
+            mount -t ubifs ubi0:systemrw /overlay -o bulk_read
+        fi
         mount -t ubifs /dev/ubi0_1 /data -o bulk_read,rw
 else
         mount -t ext4 /dev/block/bootdevice/by-name/cache /cache -o noatime,data=ordered,noauto_da_alloc,discard,noexec,nodev,nosuid,noauto,context=u:r:cache.miscfile
@@ -103,9 +107,16 @@ else
         mount -t ext4 /dev/block/bootdevice/by-name/userdata /data
 fi
 
-mkdir -p /overlay/etc-upper
-mkdir -p /overlay/.etc-work
-mount -t overlay -o lowerdir=/etc,upperdir=/overlay/etc-upper,workdir=/overlay/.etc-work overlay /etc
+if [ $soc_machine == "SDXBAAGHA" ]; then
+    mkdir -p /data/overlay-work
+    mkdir -p /data/overlay-work/etc-upper
+    mkdir -p /data/overlay-work/.etc-work
+    mount -t overlay -o lowerdir=/etc,upperdir=/data/overlay-work/etc-upper,workdir=/data/overlay-work/.etc-work overlay /etc
+else
+    mkdir -p /overlay/etc-upper
+    mkdir -p /overlay/.etc-work
+    mount -t overlay -o lowerdir=/etc,upperdir=/overlay/etc-upper,workdir=/overlay/.etc-work overlay /etc
+fi
 
 RESTORECON=/sbin/restorecon
 ${RESTORECON} -R  /etc -e /etc/rc.d
