@@ -94,7 +94,7 @@ if [ ! -d /cache ]; then
         mkdir -p /cache
 fi
 
-soc_name=`cat /sys/devices/soc0/machine`
+soc_machine=`cat /sys/devices/soc0/machine`
 if [ -f /proc/mtd ] && [ `cat /proc/mtd | wc -l` -ge "2" ]; then
         mount -t ubifs ubi0:cachefs /cache -o bulk_read,context=u:r:cache.miscfile
         if [ $soc_machine != "SDXBAAGHA" ]; then
