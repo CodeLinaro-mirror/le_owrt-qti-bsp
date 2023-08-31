@@ -53,7 +53,7 @@ sec.elf                 sec
 fw_ipa_gsi_6.0_p.elf    ipa_fw
 logfs_ufs_8mb.bin       logfs
 cmnlib64.mbn            cmnlib64
-qdsp6sw.mbn             core_nhlos_a
+qdsp6sw.mbn             core_nhlos
 cpucp.elf               cpucpfw
 km41.mbn                keymaster
 qupv3fw.elf             qupfw
