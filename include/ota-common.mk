@@ -1,3 +1,6 @@
+OTA_SCRIPTS_PATH = ${BUILD_DIR}/OTA/ota-scripts
+RELEASE_TOOLS_PATH = $(TOPDIR)/src/OTA/build/tools/releasetools
+
 define Ota/Build/releasetools-native
 	rm -rf $(BUILD_DIR)/OTA
 	mkdir -p $(OTA_SCRIPTS_PATH)
