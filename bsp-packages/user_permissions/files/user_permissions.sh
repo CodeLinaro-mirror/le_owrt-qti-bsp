@@ -68,7 +68,7 @@ do
 
                         break
                 else
-                        exit
+                        break
                 fi
         else
                 sleep 1
