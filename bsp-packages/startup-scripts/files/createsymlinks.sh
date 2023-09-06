@@ -94,10 +94,10 @@ if [ ! -d /cache ]; then
         mkdir -p /cache
 fi
 
-soc_machine=`cat /sys/devices/soc0/machine`
+soc_id=`cat /sys/devices/soc0/soc_id`
 if [ -f /proc/mtd ] && [ `cat /proc/mtd | wc -l` -ge "2" ]; then
         mount -t ubifs ubi0:cachefs /cache -o bulk_read,context=u:r:cache.miscfile
-        if [ $soc_machine != "SDXBAAGHA" ]; then
+        if [ $soc_id != "570" ] && [ $soc_id != "571" ]; then
             mount -t ubifs ubi0:systemrw /overlay -o bulk_read
         fi
         mount -t ubifs /dev/ubi0_1 /data -o bulk_read,rw
@@ -107,7 +107,7 @@ else
         mount -t ext4 /dev/block/bootdevice/by-name/userdata /data
 fi
 
-if [ $soc_machine == "SDXBAAGHA" ]; then
+if [ $soc_id == "570" ] || [ $soc_id == "571" ]; then
     mkdir -p /data/overlay-work
     mkdir -p /data/overlay-work/etc-upper
     mkdir -p /data/overlay-work/.etc-work
