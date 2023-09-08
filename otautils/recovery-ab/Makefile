@@ -11,6 +11,9 @@ SOURCE_DIR:=$(TOPDIR)/src/OTA/recovery
 
 CONFIGURE_ARGS += TARGET_SUPPORTS_AB=true
 CONFIGURE_ARGS += TARGET_NAND_AB_BOOT=true
+ifeq ($(CONFIG_TARGET_sdx75), y)
+CONFIGURE_ARGS += TARGET_SUPPORTS_MIRROR_AB_COPY=true
+endif
 
 define Package/libfusesideload
   SECTION:=libs
@@ -55,6 +58,14 @@ define Package/updater-ab
   DEPENDS:= +abctl +librecovery-updater-msm +libbase +libstdcpp +libbz2 +libmincrypt +libopenssl +zlib +ext4_utils +liblog
 endef
 
+define Package/mirror-copy-ab
+  SECTION:=external
+  CATEGORY:=OTA
+  TITLE:=mirror-copy-ab
+  DEPENDS:= +abctl +librecovery-updater-msm +libbase +libstdcpp +libbz2 +libmincrypt +libopenssl +zlib +ext4_utils +liblog
+
+endef
+
 define Build/Prepare
 	mkdir -p $(PKG_BUILD_DIR)
 	cp -r $(SOURCE_DIR)/* $(PKG_BUILD_DIR)
@@ -95,8 +106,16 @@ define Package/updater-ab/install
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/updater/updater $(1)/usr/bin/updater
 endef
 
+define Package/mirror-copy-ab/install
+	$(INSTALL_DIR) $(1)/usr/bin/
+	$(INSTALL_DIR) $(1)/etc/init.d/
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/mirror_copy/mirror_copy $(1)/usr/bin/mirror_copy
+	$(INSTALL_BIN) ./files/mirror_copy.init $(1)/etc/init.d/mirror_copy.init
+endef
+
 $(eval $(call BuildPackage,recovery-ab))
 $(eval $(call BuildPackage,libfusesideload))
 $(eval $(call BuildPackage,edify-ab))
 $(eval $(call BuildPackage,applypatch-ab))
 $(eval $(call BuildPackage,updater-ab))
+$(eval $(call BuildPackage,mirror-copy-ab))
