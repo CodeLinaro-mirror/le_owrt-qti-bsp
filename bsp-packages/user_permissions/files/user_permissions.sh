@@ -37,8 +37,8 @@ if [ -c /dev/kmsg ]; then
 	chmod 0664 /dev/kmsg
 fi
 if [ -d /dev/dma_heap ]; then
-	chown system:system /dev/dma_heap
-	chmod 0740 /dev/dma_heap
+	chown -R root:system /dev/dma_heap
+	chmod -R 0770 /dev/dma_heap
 fi
 if [ -f /sys/power/wake_lock ]; then
         chown root:system /sys/power/wake_lock
@@ -54,13 +54,47 @@ if [ -d /mnt/sdcard ]; then
 fi
 
 if [ -f /sys/kernel/boot_kpi/kpi_values ]; then
-        chown radio:radio /sys/kernel/boot_kpi/kpi_values
-        chmod 0660 /sys/kernel/boot_kpi/kpi_values
+        chown root:radio /sys/kernel/boot_kpi/kpi_values
+        chmod 0664 /sys/kernel/boot_kpi/kpi_values
 fi
 
-if [ -b /dev/block/bootdevice/by-name/recoveryinfo ]; then
-        chown root:disk /dev/block/bootdevice/by-name/recoveryinfo
-        chmod 0660 /dev/block/bootdevice/by-name/recoveryinfo
+while [ 1 ]
+do
+
+        if [ -d /dev/block/bootdevice/by-name ]; then
+                if [ -b /dev/block/bootdevice/by-name/recoveryinfo ]; then
+                        chown root:disk /dev/block/bootdevice/by-name/recoveryinfo
+                        chmod 0660 /dev/block/bootdevice/by-name/recoveryinfo
+
+                        break
+                else
+                        exit
+                fi
+        else
+                sleep 1
+        fi
+done
+
+#In case of MTD, change permissions for mtd block device
+if [ -f /proc/mtd ] && [ `cat /proc/mtd | wc -l` -ge "2" ]; then
+        mtd_block_number=`cat /proc/mtd | grep -i recoveryinfo | sed 's/^mtd//' | awk -F ':' '{print $1}'`
+        chown system:disk /dev/mtd$mtd_block_number
+        chmod 660 /dev/mtd$mtd_block_number
+fi
+
+if [ -f /sys/power/state ]; then
+        chown root:system /sys/power/state
+        chmod 0660 /sys/power/state
+fi
+
+if [ -f /sys/power/autosleep ]; then
+        chown root:system /sys/power/autosleep
+        chmod 0660 /sys/power/autosleep
+fi
+
+if [ -c /dev/input/event0 ]; then
+        chown system:plugdev /dev/input/event0
+        chmod 0664 /dev/input/event0
 fi
 
 if [ -f /sys/power/state ]; then

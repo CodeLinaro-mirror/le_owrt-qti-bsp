@@ -1,0 +1,12 @@
+#!/bin/sh /etc/rc.common
+
+START=27
+STOP=72
+
+start(){
+        sleep 5
+}
+
+stop(){
+        echo "Stopping test_script"
+}

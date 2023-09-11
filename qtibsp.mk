@@ -6,3 +6,12 @@ ifeq ($(BOARD),sdx65)
 else ifeq ($(BOARD),sdx75)
 	QTIBSP+= procrank
 endif
+
+## Enablement of DM_veity supported  utilties
+## this are mostly Host base utilties which will
+##  run on system image and update verity data
+ifeq ($(CONFIG_PACKAGE_dmverity-utils),y)
+	QTIBSP+= dmverity-utils image-utils verity-fec
+# Issue with libs usage need to enable later	
+#libfec-rs libfec 	
+endif
