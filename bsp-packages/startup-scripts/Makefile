@@ -51,6 +51,9 @@ define Package/usb-composition/install
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/debuger/usb_debug -D $(1)/sbin/usb/debugger/
 	$(INSTALL_DIR) $(1)/etc/init.d
 	$(INSTALL_BIN) ./files/usb.init $(1)/etc/init.d/usb.init
+ifeq ($(BOARD), sdx35)
+	$(INSTALL_BIN) ./files/zram.init $(1)/etc/init.d/
+endif
 	$(INSTALL_BIN) ./files/create-firmwarelinks.init $(1)/etc/init.d/
 ifeq ($(BOARD),sdx75)
 	$(INSTALL_BIN) ./files/block_procd.init $(1)/etc/init.d/
@@ -58,6 +61,9 @@ endif
 	$(INSTALL_DIR) $(1)/etc/scripts
 	$(INSTALL_DIR) $(1)/mnt/sdcard
 	$(INSTALL_BIN) ./files/createsymlinks.sh $(1)/etc/scripts
+ifeq ($(BOARD), sdx35)
+	$(INSTALL_BIN) ./files/init.zram.sh $(1)/etc/scripts
+endif
 	$(INSTALL_BIN) ./files/automountsdcard.sh $(1)/etc/scripts
 	$(INSTALL_DIR) $(1)/etc/hotplug.d/block
 	$(INSTALL_DATA) ./files/automountsdcard $(1)/etc/hotplug.d/block/
