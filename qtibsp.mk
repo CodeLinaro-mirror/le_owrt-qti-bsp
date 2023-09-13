@@ -4,7 +4,7 @@ QTIBSP:=adbd powerapp core-include ext4_utils fs_mgr libbase libcutils liblog li
 ifeq ($(BOARD),sdx65)
 	QTIBSP+= edk2
 else ifeq ($(BOARD),sdx75)
-	QTIBSP+= procrank
+	QTIBSP+= procrank binder
 endif
 
 ## Enablement of DM_veity supported  utilties
