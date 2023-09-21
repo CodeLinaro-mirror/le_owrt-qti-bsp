@@ -105,6 +105,7 @@ else
         mount -t ext4 /dev/block/bootdevice/by-name/cache /cache -o noatime,data=ordered,noauto_da_alloc,discard,noexec,nodev,nosuid,noauto,context=u:r:cache.miscfile
         mount -t ext4 /dev/block/bootdevice/by-name/systemrw /overlay -o noatime,data=ordered,noauto_da_alloc,discard,noexec,nodev,nosuid,noauto
         mount -t ext4 /dev/block/bootdevice/by-name/userdata /data
+        mount -t ext4 /dev/block/bootdevice/by-name/persist /persist -o noatime,data=ordered,noauto_da_alloc,discard,noexec,nodev,nosuid,noauto,context=u:r:persist.miscfile
 fi
 
 if [ $soc_id == "570" ] || [ $soc_id == "571" ]; then
