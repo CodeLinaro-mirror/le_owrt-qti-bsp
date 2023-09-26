@@ -1,0 +1,20 @@
+From bbaeba462c2a5f89f118b78e328491be7df9cc24 Fri Jul 17 22:02:53 2023
+From: Ravi Kumar Siddojigari <quic_rsiddoji@quicinc.com>
+Date: Fri, 17 Jul 2023 22:02:53 +0530
+Subject: [PATCH] Fix error label at end of compound statement issue
+
+default statement in switch case should not be blank
+some compiles will show error so adding NOP
+
+--- a/dotprod.c	2023-07-21 16:13:59.937598254 +0530
++++ b/dotprod.c	2023-07-21 16:13:47.633047151 +0530
+@@ -65,6 +65,7 @@
+   case ALTIVEC:
+     return freedp_av(p);
+ #endif
++    ;
+   }
+ }
+ -- 
+1.9.1
+

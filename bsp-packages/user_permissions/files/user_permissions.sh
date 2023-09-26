@@ -54,8 +54,8 @@ if [ -d /mnt/sdcard ]; then
 fi
 
 if [ -f /sys/kernel/boot_kpi/kpi_values ]; then
-        chown radio:radio /sys/kernel/boot_kpi/kpi_values
-        chmod 0660 /sys/kernel/boot_kpi/kpi_values
+        chown root:radio /sys/kernel/boot_kpi/kpi_values
+        chmod 0664 /sys/kernel/boot_kpi/kpi_values
 fi
 
 while [ 1 ]
@@ -68,7 +68,7 @@ do
 
                         break
                 else
-                        exit
+                        break
                 fi
         else
                 sleep 1
@@ -80,4 +80,19 @@ if [ -f /proc/mtd ] && [ `cat /proc/mtd | wc -l` -ge "2" ]; then
         mtd_block_number=`cat /proc/mtd | grep -i recoveryinfo | sed 's/^mtd//' | awk -F ':' '{print $1}'`
         chown system:disk /dev/mtd$mtd_block_number
         chmod 660 /dev/mtd$mtd_block_number
+fi
+
+if [ -f /sys/power/state ]; then
+        chown root:system /sys/power/state
+        chmod 0660 /sys/power/state
+fi
+
+if [ -f /sys/power/autosleep ]; then
+        chown root:system /sys/power/autosleep
+        chmod 0660 /sys/power/autosleep
+fi
+
+if [ -c /dev/input/event0 ]; then
+        chown system:plugdev /dev/input/event0
+        chmod 0664 /dev/input/event0
 fi

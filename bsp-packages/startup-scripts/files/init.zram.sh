@@ -1,6 +1,6 @@
-#!/bin/sh /etc/rc.common
+#! /bin/sh
 
-#Copyright (c) 2021-2022 Qualcomm Innovation Center, Inc. All rights reserved.
+#Copyright (c) 2023 Qualcomm Innovation Center, Inc. All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted (subject to the limitations in the
@@ -32,20 +32,21 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
 # IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-START=10
-STOP=89
-
-USE_PROCD=1
-
-start_service() {
-        procd_open_instance
-        procd_set_param command /sbin/adbd
-        procd_set_param respawn ${respawn_threshold:-3600} ${respawn_timeout:-5} ${respawn_retry:-10}
-        procd_close_instance
+enable_zram_config()
+{
+    #Enable ZRAM based on RAM size
+    echo 100 > /proc/sys/vm/swappiness
+    if [ -d /sys/block/zram0 ]; then
+        MemTotalStr=`cat /proc/meminfo | grep MemTotal`
+        MemTotal=${MemTotalStr:16:8}
+        if [ $MemTotal -gt 131072 ]; then
+            echo 33554432 > /sys/block/zram0/disksize
+        else
+            echo 16777216 > /sys/block/zram0/disksize
+        fi
+        mkswap /dev/zram0
+        swapon /dev/zram0 -p 32758
+    fi
 }
 
-stop_service() {
-        echo "Stopping adbd service"
-        # commands to kill application
-}
-
+enable_zram_config

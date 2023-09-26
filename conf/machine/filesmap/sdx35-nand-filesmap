@@ -33,32 +33,29 @@
 
 NON-HLOS.ubi            modem
 xbl_s_nand.melf         sbl
-tools.fv                toolsfv
-quantumsdk.fv           quantumsdk
+tools32.fv              toolsfv
+quantumsdk32.fv         quantumsdk
 Quantum.fv              quantumfv
 tz.mbn                  tz
 devcfg.mbn              tz_devcfg
 apdp.mbn                apdp
-cdt.bin                 cdt
 xbl_config.elf          xbl_config
 xbl_ramdump.elf         xbl_ramdump
-multi_image.mbn         multi_oem
-multi_image_qti.mbn     multi_qti
+multi_oem.mbn           multi_oem
+multi_qti.mbn           multi_qti
 aop.mbn                 aop
 aop_devcfg.mbn          aop_devcfg
-hypvm.mbn               qhee
 abl.elf                 abl
 uefi.elf                uefi
 sec.elf                 sec
-fw_ipa_gsi_6.0_p.elf    ipa_fw
+fw_ipa_gsi_5.2_le.elf   ipa_fw
 logfs_ufs_8mb.bin       logfs
-cmnlib64.mbn            cmnlib64
-qdsp6sw.mbn             core_nhlos
+cmnlib.mbn              cmnlib
 cpucp.elf               cpucpfw
-km41.mbn                keymaster
+km41_32.mbn             keymaster
 qupv3fw.elf             qupfw
 shrm.elf                shrm
-qdsp6sw_dtbs.elf        mpss_dtb
+qdsp6m.qdb              qdsp
 
 # filename + .bak       backup partition
 

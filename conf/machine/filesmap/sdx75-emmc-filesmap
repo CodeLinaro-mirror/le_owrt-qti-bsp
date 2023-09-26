@@ -47,10 +47,10 @@ ipa_fws.elf             /dev/block/bootdevice/by-name/ipa_fw
 logfs_ufs_8mb.bin       /dev/block/bootdevice/by-name/logfs
 aop_devcfg.mbn          /dev/block/bootdevice/by-name/aop_devcfg
 cmnlib64.mbn            /dev/block/bootdevice/by-name/cmnlib64
-qdsp6sw.mbn             /dev/block/bootdevice/by-name/core_nhlos_a
+qdsp6sw.mbn             /dev/block/bootdevice/by-name/core_nhlos
 cpucp.elf               /dev/block/bootdevice/by-name/cpucp
 fw_ipa_gsi_6.0_p.elf    /dev/block/bootdevice/by-name/ipa_fw
 km41.mbn                /dev/block/bootdevice/by-name/keymaster
 qupv3fw.elf             /dev/block/bootdevice/by-name/qupfw
-shrm.elf                /dev/block/bootdevice/by-name/shrm.elf
+shrm.elf                /dev/block/bootdevice/by-name/shrm
 xbl_s.melf              /dev/block/bootdevice/by-name/xbl

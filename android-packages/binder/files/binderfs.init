@@ -1,0 +1,25 @@
+#!/bin/sh /etc/rc.common
+
+#Copyright (c) 2023 Qualcomm Innovation Center, Inc. All rights reserved.
+#SPDX-License-Identifier: BSD-3-Clause-Clear
+
+START=14
+STOP=85
+
+USE_PROCD=1
+PROCD_DEBUG=1
+
+start_service() {
+                mkdir -p /dev/binderfs
+                mount -t binder binder /dev/binderfs
+                chmod 0666 /dev/binderfs/hwbinder
+                chmod 0666 /dev/binderfs/binder
+                chmod 0666 /dev/binderfs/vndbinder
+                ln -sf /dev/binderfs/binder /dev/binder
+                ln -sf /dev/binderfs/hwbinder /dev/hwbinder
+                ln -sf /dev/binderfs/vndbinder /dev/vndbinder
+}
+
+stop_service() {
+        echo "Stopping binderfs service"
+}
