@@ -18,7 +18,7 @@ RM := rm -rf
 all:  append2simg  simg2img  img2simg
 
 append2simg:
-	 $(CXX)   $(VERITY_CFLAGS)  $(VERITY_LDFLAGS) -I$(STAGING_DIR_HOSTPKG)/include  -L$(STAGING_DIR_HOSTPKG)/lib  append2simg.c  -o append2simg   -lcrypto -lsparse  -lz
+	 $(CXX)  --static $(VERITY_CFLAGS)  $(VERITY_LDFLAGS) -I$(STAGING_DIR_HOSTPKG)/include  -L$(STAGING_DIR_HOSTPKG)/lib  append2simg.c  -o append2simg   -lcrypto -lsparse  -lz
 
 simg2img:
 	 $(CXX)   $(VERITY_CFLAGS)  $(VERITY_LDFLAGS) -I$(STAGING_DIR_HOSTPKG)/include  -L$(STAGING_DIR_HOSTPKG)/lib  simg2img.c  -o simg2img   -lcrypto -lsparse  -lz
