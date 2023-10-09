@@ -1,4 +1,4 @@
-QTIBSP:=adbd powerapp core-include ext4_utils fs_mgr libbase libcutils liblog libmincrypt mkbootimg libsparse leproperties logwrapper usb-composition user_permissions libdmabufheap postboot binder
+QTIBSP:=adbd powerapp core-include ext4_utils fs_mgr libbase libcutils liblog libmincrypt mkbootimg libsparse leproperties logwrapper usb-composition user_permissions libdmabufheap postboot bouncycastle
 
 ## add target specific packages
 ifeq ($(BOARD),sdx65)
