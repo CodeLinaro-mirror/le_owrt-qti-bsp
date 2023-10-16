@@ -22,7 +22,7 @@ define Package/recovery
   SECTION:=external
   CATEGORY:=OTA
   TITLE:=recovery
-  DEPENDS:=+libbase +libbz2 +libopenssl +ext4_utils +libmincrypt +libstdcpp +zlib +minadbd
+  DEPENDS:=+libbase +libbz2 +libopenssl +ext4_utils +libmincrypt +libstdcpp +zlib +adbd
 endef
 
 ifeq ($(CONFIG_OTA_PACKAGE_VERIFICATION), y)
@@ -85,7 +85,7 @@ define Package/recovery/install
 	$(Package/recovery/generate_public_key)
 	$(INSTALL_DIR) $(1)/usr/bin/
 	$(INSTALL_DIR) $(1)/etc/init.d/
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/.libs/recovery $(1)/usr/bin/recovery
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/recovery $(1)/usr/bin/recovery
 	$(INSTALL_BIN) ./files/recovery.init $(1)/etc/init.d/recovery.init
 endef
 

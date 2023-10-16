@@ -25,7 +25,7 @@ define Package/recovery-ab
   SECTION:=external
   CATEGORY:=OTA
   TITLE:=recovery-ab
-  DEPENDS:= +abctl +minadbd +libbase +libsparse +libbz2 +adbd +libopenssl +ext4_utils +libmincrypt +libstdcpp +zlib
+  DEPENDS:= +abctl +libbase +libsparse +libbz2 +adbd +libopenssl +ext4_utils +libmincrypt +libstdcpp +zlib
 endef
 
 ifeq ($(CONFIG_OTA_PACKAGE_VERIFICATION), y)
@@ -87,7 +87,7 @@ define Package/recovery-ab/install
 	$(Package/recovery-ab/generate_public_key)
 	$(INSTALL_DIR) $(1)/usr/bin/
 	$(INSTALL_DIR) $(1)/etc/init.d/
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/.libs/recovery $(1)/usr/bin/recovery
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/recovery $(1)/usr/bin/recovery
 	$(INSTALL_BIN) ./files/fstab_AB_cache_ext4 $(1)/etc/recovery_volume_config
 endef
 
