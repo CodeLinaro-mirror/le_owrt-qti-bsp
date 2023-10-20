@@ -4,7 +4,7 @@ QTIBSP:=adbd powerapp core-include ext4_utils fs_mgr libbase libcutils liblog li
 ifeq ($(BOARD),sdx65)
 	QTIBSP+= edk2
 else ifeq ($(BOARD),sdx75)
-	QTIBSP+= procrank
+	QTIBSP+= procrank lsusb
 endif
 
 ## Enablement of DM_veity supported  utilties
@@ -12,6 +12,6 @@ endif
 ##  run on system image and update verity data
 ifeq ($(CONFIG_PACKAGE_dmverity-utils),y)
 	QTIBSP+= dmverity-utils image-utils verity-fec
-# Issue with libs usage need to enable later	
-#libfec-rs libfec 	
+# Issue with libs usage need to enable later
+#libfec-rs libfec
 endif
