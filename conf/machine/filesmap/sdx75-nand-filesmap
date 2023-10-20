@@ -59,26 +59,3 @@ km41.mbn                keymaster
 qupv3fw.elf             qupfw
 shrm.elf                shrm
 qdsp6sw_dtbs.elf        mpss_dtb
-
-# filename + .bak       backup partition
-
-#sbl1.mbn.bak            sbl1bak
-#tz.mbn.bak              tzbak
-#rpm.mbn.bak             rpmbak
-#appsboot.mbn.bak        abootbak
-
-# For multiple file firmware images that differ from *.mbn and *.bin
-# you can specify filename.* to direct all files to the same location.
-# For example for modem.mdt, modem.b00, modem.b01,... modem.bxx files
-# writting 'modem.*   location' will direct all files to 'location'.
-# If still some files need to go to different location give the full
-# file name also, for example 'modem.b01   other_location'
-
-# filename              location
-
-mba.*                   /firmware/image
-modem.*                 /firmware/image
-bdwlan30.bin            /firmware/image
-nvm_tlv_3.0.bin         /firmware/image
-otp30.bin               /firmware/image
-qwlan30.bin             /firmware/image

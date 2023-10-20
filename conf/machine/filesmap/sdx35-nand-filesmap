@@ -29,53 +29,33 @@
 #Copyright (c) 2023 Qualcomm Innovation Center, Inc. All rights reserved.
 #SPDX-License-Identifier: BSD-3-Clause-Clear
 
-# filename              partition
+# filename                    partition
 
-NON-HLOS.ubi            modem
-xbl_s_nand.melf         sbl
-tools32.fv              toolsfv
-quantumsdk32.fv         quantumsdk
-Quantum.fv              quantumfv
-tz.mbn                  tz
-devcfg.mbn              tz_devcfg
-apdp.mbn                apdp
-xbl_config.elf          xbl_config
-xbl_ramdump.elf         xbl_ramdump
-multi_oem.mbn           multi_oem
-multi_qti.mbn           multi_qti
-aop.mbn                 aop
-aop_devcfg.mbn          aop_devcfg
-abl.elf                 abl
-uefi.elf                uefi
-sec.elf                 sec
-fw_ipa_gsi_5.2_le.elf   ipa_fw
-logfs_ufs_8mb.bin       logfs
-cmnlib.mbn              cmnlib
-cpucp.elf               cpucpfw
-km41_32.mbn             keymaster
-qupv3fw.elf             qupfw
-shrm.elf                shrm
-qdsp6m.qdb              qdsp
-
-# filename + .bak       backup partition
-
-#sbl1.mbn.bak            sbl1bak
-#tz.mbn.bak              tzbak
-#rpm.mbn.bak             rpmbak
-#appsboot.mbn.bak        abootbak
-
-# For multiple file firmware images that differ from *.mbn and *.bin
-# you can specify filename.* to direct all files to the same location.
-# For example for modem.mdt, modem.b00, modem.b01,... modem.bxx files
-# writting 'modem.*   location' will direct all files to 'location'.
-# If still some files need to go to different location give the full
-# file name also, for example 'modem.b01   other_location'
-
-# filename              location
-
-mba.*                   /firmware/image
-modem.*                 /firmware/image
-bdwlan30.bin            /firmware/image
-nvm_tlv_3.0.bin         /firmware/image
-otp30.bin               /firmware/image
-qwlan30.bin             /firmware/image
+NON-HLOS.ubi                  modem
+xbl_s_nand.melf               sbl
+tools32.fv                    toolsfv
+quantumsdk32.fv               quantumsdk
+Quantum.fv                    quantumfv
+tz.mbn                        tz
+devcfg.mbn                    tz_devcfg
+devcfg_low_ddr.mbn            tz_devcfg
+apdp.mbn                      apdp
+xbl_config.elf                xbl_config
+xbl_ramdump.elf               xbl_ramdump
+multi_oem.mbn                 multi_oem
+multi_qti.mbn                 multi_qti
+aop.mbn                       aop
+aop_devcfg.mbn                aop_devcfg
+abl.elf                       abl
+uefi.elf                      uefi
+sec.elf                       sec
+fw_ipa_gsi_5.2_le.elf         ipa_fw
+fw_ipa_gsi_5.2_le_fusion.elf  ipa_fw
+logfs_ufs_8mb.bin             logfs
+cmnlib.mbn                    cmnlib
+cpucp.elf                     cpucpfw
+cdt_pcie.bin                  cdt
+km41_32.mbn                   keymaster
+qupv3fw.elf                   qupfw
+shrm.elf                      shrm
+qdsp6m.qdb                    qdsp
