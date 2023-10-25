@@ -8,6 +8,10 @@ SOURCE_DIR:= $(TOPDIR)/src/frameworks/binder
 TARGET_CFLAGS+= -DUSE_MUSL
 CONFIGURE_ARGS+= --with-glib
 
+ifeq ($(BOARD), sdx35)
+	TARGET_CFLAGS+= -DBINDER_IPC_32BIT
+endif
+
 include $(INCLUDE_DIR)/package.mk
 
 define Package/binder

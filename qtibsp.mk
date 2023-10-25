@@ -1,10 +1,10 @@
-QTIBSP:=adbd powerapp core-include ext4_utils fs_mgr libbase libcutils liblog libmincrypt mkbootimg libsparse leproperties logwrapper usb-composition user_permissions libdmabufheap postboot
+QTIBSP:=adbd powerapp core-include ext4_utils fs_mgr libbase libcutils liblog libmincrypt mkbootimg libsparse leproperties logwrapper usb-composition user_permissions libdmabufheap postboot bouncycastle
 
 ## add target specific packages
 ifeq ($(BOARD),sdx65)
 	QTIBSP+= edk2
 else ifeq ($(BOARD),sdx75)
-	QTIBSP+= procrank binder
+	QTIBSP+= procrank
 endif
 
 ## Enablement of DM_veity supported  utilties

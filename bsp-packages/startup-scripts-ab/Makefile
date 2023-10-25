@@ -51,13 +51,15 @@ define Package/usb-composition-ab/install
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/debuger/usb_debug -D $(1)/sbin/usb/debugger/
 	$(INSTALL_DIR) $(1)/etc/init.d
 	$(INSTALL_BIN) ../startup-scripts/files/usb.init $(1)/etc/init.d/
-	$(INSTALL_BIN) ./files/partition-symlinks.init $(1)/etc/init.d/
 	$(INSTALL_BIN) ./files/ab-updater.init $(1)/etc/init.d/
 	$(INSTALL_BIN) ./files/mounts-ab.init $(1)/etc/init.d/
 	$(INSTALL_DIR) $(1)/etc/scripts
 	$(INSTALL_DIR) $(1)/mnt/sdcard
 	$(INSTALL_BIN) ./files/mounts-ab.sh $(1)/etc/scripts
+ifneq ($(BOARD), sdx35)
+	$(INSTALL_BIN) ./files/partition-symlinks.init $(1)/etc/init.d/
 	$(INSTALL_BIN) ./files/partition-symlinks.sh $(1)/etc/scripts
+endif
 	$(INSTALL_BIN) ../startup-scripts/files/automountsdcard.sh $(1)/etc/scripts
 	$(INSTALL_DIR) $(1)/etc/hotplug.d/block
 	$(INSTALL_DATA) ../startup-scripts/files/automountsdcard $(1)/etc/hotplug.d/block/
