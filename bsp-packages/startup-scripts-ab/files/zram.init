@@ -1,4 +1,4 @@
-#! /bin/sh
+#!/bin/sh /etc/rc.common
 
 #Copyright (c) 2023 Qualcomm Innovation Center, Inc. All rights reserved.
 #
@@ -32,21 +32,9 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
 # IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-enable_zram_config()
-{
-    #Enable ZRAM based on RAM size
-    echo 100 > /proc/sys/vm/swappiness
-    if [ -d /sys/block/zram0 ]; then
-        MemTotalStr=`cat /proc/meminfo | grep MemTotal`
-        MemTotal=${MemTotalStr:16:8}
-        if [ $MemTotal -gt 131072 ]; then
-            echo 67108864 > /sys/block/zram0/disksize
-        else
-            echo 16777216 > /sys/block/zram0/disksize
-        fi
-        mkswap /dev/zram0
-        swapon /dev/zram0 -p 32758
-    fi
+START=11
+
+start() {
+	/etc/scripts/init.zram.sh
 }
 
-enable_zram_config
