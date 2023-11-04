@@ -10,7 +10,7 @@ OTA_FULL_UPDATE_UBI_AB_PATH = $(IMAGE_PRODUCTS_DIR)-ab/$(OTA_FULL_UPDATE_UBI_AB)
 OTA_FULL_UPDATE_UBI_AB_PATH_2k = $(IMAGE_PRODUCTS_DIR)-ab/$(OTA_FULL_UPDATE_UBI_AB_2k)
 OTA_TARGET_FILES_UBI_AB_PATH = $(IMAGE_PRODUCTS_DIR)-ab/$(OTA_TARGET_FILES_UBI_AB)
 OTA_TARGET_FILES_UBI_AB_PATH_2k = $(IMAGE_PRODUCTS_DIR)-ab/$(OTA_TARGET_FILES_UBI_AB_2k)
-MACHINE_FILESMAP_FULL_PATH_UBI = $(TOPDIR)/owrt-qti-bsp/conf/machine/filesmap/$(BOARD)-nand-ab-filesmap
+MACHINE_FILESMAP_FULL_PATH_UBI_AB = $(TOPDIR)/owrt-qti-bsp/conf/machine/filesmap/$(BOARD)-nand-ab-filesmap
 
 SIGN_OTA_PACKAGE = ""
 MIRROR_SYNC = ""
@@ -60,7 +60,7 @@ define Ota/Build/target-files-zip-ubi-ab
 	echo "recovery image rootfs: $(IMAGE_ROOTFS)-ab/../recovery/root-$(BOARD)"
 
 	# if exists copy filesmap into RADIO directory
-	[[ ! -z ${MACHINE_FILESMAP_FULL_PATH_UBI} ]] && install -m 755 ${MACHINE_FILESMAP_FULL_PATH_UBI} ${OTA_TARGET_IMAGE_ROOTFS_UBI_AB}/RADIO/filesmap
+	[[ ! -z ${MACHINE_FILESMAP_FULL_PATH_UBI_AB} ]] && install -m 755 ${MACHINE_FILESMAP_FULL_PATH_UBI_AB} ${OTA_TARGET_IMAGE_ROOTFS_UBI_AB}/RADIO/filesmap
 
 	cp $(IMAGE_PRODUCTS_DIR)-ab/boot.img ${OTA_TARGET_IMAGE_ROOTFS_UBI_AB}/BOOTABLE_IMAGES/boot.img
 	cp $(IMAGE_PRODUCTS_DIR)-ab/boot.img ${OTA_TARGET_IMAGE_ROOTFS_UBI_AB}/BOOTABLE_IMAGES/recovery.img
