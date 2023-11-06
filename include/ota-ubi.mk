@@ -23,15 +23,18 @@ ifeq ($(CONFIG_TARGET_sdx35), y)
 endif
 
 define Ota/Build/gen_ota_full_zip_ubi
-	cd $(BUILD_DIR)/OTA/ota-scripts; \
+	(cd $(BUILD_DIR)/OTA/ota-scripts; \
 	rm -rf update_ubi.zip; \
 	if [ $(1) == 2k ]; then \
 		./full_ota.sh ${OTA_TARGET_FILES_UBI_PATH_2k} ${IMAGE_ROOTFS_UBI} ubi --block $(IMAGE_BY_IMAGE) --system_path ${IMAGE_SYSTEM_MOUNT_POINT_UBI} $(SIGN_OTA_PACKAGE); \
 		$(CP) update_ubi.zip ${OTA_FULL_UPDATE_UBI_PATH_2k}; \
+		mv ota_debug.txt ota_debug_ubi_2k.txt; \
 	else \
 		./full_ota.sh ${OTA_TARGET_FILES_UBI_PATH} ${IMAGE_ROOTFS_UBI} ubi --block $(IMAGE_BY_IMAGE) --system_path ${IMAGE_SYSTEM_MOUNT_POINT_UBI} $(SIGN_OTA_PACKAGE); \
 		$(CP) update_ubi.zip ${OTA_FULL_UPDATE_UBI_PATH}; \
-	fi
+		mv ota_debug.txt ota_debug_ubi.txt; \
+	fi; \
+	)
 endef
 
 define Ota/Build/target-files-zip-ubi
