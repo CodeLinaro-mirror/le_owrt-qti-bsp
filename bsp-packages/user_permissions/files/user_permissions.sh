@@ -82,6 +82,12 @@ if [ -f /proc/mtd ] && [ `cat /proc/mtd | wc -l` -ge "2" ]; then
         chmod 660 /dev/mtd$mtd_block_number
 fi
 
+if [ -f /proc/mtd ] && [ `cat /proc/mtd | wc -l` -ge "2" ]; then
+        mtd_block_number=`cat /proc/mtd | grep -i misc | sed 's/^mtd//' | awk -F ':' '{print $1}'`
+        chown system:disk /dev/mtd$mtd_block_number
+        chmod 660 /dev/mtd$mtd_block_number
+fi
+
 if [ -f /sys/power/state ]; then
         chown root:system /sys/power/state
         chmod 0660 /sys/power/state

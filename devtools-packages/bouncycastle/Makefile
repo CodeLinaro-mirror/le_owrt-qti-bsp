@@ -12,6 +12,7 @@ PKG_MIRROR_HASH:=6041b4c02eb2ff63080d9c3414202c7c6e00dccb9fecad2cd189f32d9ba3cb0
 PKG_SOURCE:=$(PKG_SOURCE_SUBDIR).tar.xz
 PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_VERSION)
 
+LOCAL_SRC:=$(TOPDIR)/src/system/extras/verity
 
 include $(INCLUDE_DIR)/package.mk
 include $(INCLUDE_DIR)/host-build.mk
@@ -68,18 +69,19 @@ define Build/Compile
 	#--------------------------------
 	# create Signer Utilities
 	#--------------------------------
-	find $(PKG_BUILD_DIR)  -name "*.java" > $(PKG_BUILD_DIR)/sources/VeritySigner_source
+	find $(LOCAL_SRC)  -name "*.java" > $(PKG_BUILD_DIR)/sources/VeritySigner_source
+
 	/usr/bin/javac -J-Xmx1024M -Xmaxerrs 9999999 -encoding UTF-8  \
 	-g -classpath $(PKG_BUILD_DIR)/libs/bcprov_bcpkix_jar.jar  \
 	-d $(PKG_BUILD_DIR)/classes @$(PKG_BUILD_DIR)/sources/VeritySigner_source
 
 	/usr/bin/jar -cfm $(PKG_BUILD_DIR)/VeritySigner.jar $(PKG_BUILD_DIR)/VeritySigner.mf -C $(PKG_BUILD_DIR)/classes .
-
+   
 	echo "#! /bin/sh " >> $(PKG_BUILD_DIR)/verity_signer
 	echo "   "  >> $(PKG_BUILD_DIR)/verity_signer
 
-	echo "java -Xmx512M -jar $(PKG_BUILD_DIR)/VeritySigner.jar   xxx@   " >> $(PKG_BUILD_DIR)/verity_signer
-	sed  -i  s/xxx/`echo -e '\x24'`/ $(PKG_BUILD_DIR)/verity_signer
+	$(shell echo "java -Xmx512M -jar $(PKG_BUILD_DIR)/VeritySigner.jar   xxx@   " >> $(PKG_BUILD_DIR)/verity_signer)
+	$(shell sed  -i  s/xxx/`echo -e '\x24'`/ $(PKG_BUILD_DIR)/verity_signer)
 	#--------------------------------
 	# create VerityVerifier JAR
 	#--------------------------------

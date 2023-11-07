@@ -26,10 +26,14 @@ create_symlinks()
 }
 
 
+soc_id=`cat /sys/devices/soc0/soc_id`
 if [ ! -d /firmware/image ]; then
         if [ -f /proc/mtd ] && [ `cat /proc/mtd | wc -l` -ge "2" ]; then
-
-                  mtd_block_number=`cat /proc/mtd | grep -i -w modem | sed 's/^mtd//' | awk -F ':' '{print $1}'`
+                  if [ $soc_id == "570" ] || [ $soc_id == "571" ]; then
+                    mtd_block_number=`cat /proc/mtd | grep -i -w modem_a | sed 's/^mtd//' | awk -F ':' '{print $1}'`
+                  else
+                    mtd_block_number=`cat /proc/mtd | grep -i -w modem | sed 's/^mtd//' | awk -F ':' '{print $1}'`
+                  fi
                   echo "MTD : Detected block device : firmware for modem_a "
 
                   ubiattach -m $mtd_block_number -d 1 /dev/ubi_ctrl
@@ -91,9 +95,16 @@ else
         mount -t ext4 /dev/block/bootdevice/by-name/userdata /data
 fi
 
-mkdir -p /overlay/etc-upper$CURRENT_SLOT
-mkdir -p /overlay/.etc-work$CURRENT_SLOT
-mount -t overlay -o lowerdir=/etc,upperdir=/overlay/etc-upper$CURRENT_SLOT,workdir=/overlay/.etc-work$CURRENT_SLOT overlay /etc
+if [ $soc_id == "570" ] || [ $soc_id == "571" ]; then
+    mkdir -p /data/overlay-work
+    mkdir -p /data/overlay-work/etc-upper$CURRENT_SLOT
+    mkdir -p /data/overlay-work/.etc-work$CURRENT_SLOT
+    mount -t overlay -o lowerdir=/etc,upperdir=/data/overlay-work/etc-upper$CURRENT_SLOT,workdir=/data/overlay-work/.etc-work$CURRENT_SLOT overlay /etc
+else
+    mkdir -p /overlay/etc-upper$CURRENT_SLOT
+    mkdir -p /overlay/.etc-work$CURRENT_SLOT
+    mount -t overlay -o lowerdir=/etc,upperdir=/overlay/etc-upper$CURRENT_SLOT,workdir=/overlay/.etc-work$CURRENT_SLOT overlay /etc
+fi
 
 # Need Restorecon for /persist & /firmware
 RESTORECON=/sbin/restorecon
