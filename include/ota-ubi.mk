@@ -1,5 +1,6 @@
 include $(TOPDIR)/owrt-qti-bsp/include/ota-common.mk
 
+.NOTPARALLEL:
 OTA_TARGET_FILES_UBI = "target-files-ubi.zip"
 OTA_TARGET_FILES_UBI_2k = "target-files-ubi-2k.zip"
 IMAGE_SYSTEM_MOUNT_POINT_UBI = "/system"

@@ -1,3 +1,4 @@
+.NOTPARALLEL:
 OTA_TARGET_FILES_EXT4 = "target-files-ext4.zip"
 OTA_TARGET_FILES_EXT4_DEST = "target-files-ext4-dest.zip"
 OTA_FULL_UPDATE_EXT4 = "full_update_ext4.zip"
