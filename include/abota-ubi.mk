@@ -25,16 +25,18 @@ ifeq ($(CONFIG_TARGET_sdx75), y)
 endif
 
 define Ota/Build/gen_ota_full_zip_ubi_ab
-	cd $(BUILD_DIR)/OTA/ota-scripts; \
+	(cd $(BUILD_DIR)/OTA/ota-scripts; \
 	rm -rf update_ubi_ab.zip; \
 	if [ $(1) == 2k ]; then \
 		./full_ota.sh ${OTA_TARGET_FILES_UBI_AB_PATH_2k} ${IMAGE_ROOTFS}-ab ubi --block --system_path ${IMAGE_SYSTEM_MOUNT_POINT_UBI} $(SIGN_OTA_PACKAGE) $(MIRROR_SYNC); \
 		cp update_ubi.zip ${OTA_FULL_UPDATE_UBI_AB_PATH_2k}; \
+		mv ota_debug.txt ota_debug_ubi_ab_2k.txt; \
 	else \
 		./full_ota.sh ${OTA_TARGET_FILES_UBI_AB_PATH} ${IMAGE_ROOTFS}-ab ubi --block --system_path ${IMAGE_SYSTEM_MOUNT_POINT_UBI} $(SIGN_OTA_PACKAGE) $(MIRROR_SYNC); \
 		cp update_ubi.zip ${OTA_FULL_UPDATE_UBI_AB_PATH}; \
-	fi
-
+		mv ota_debug.txt ota_debug_ubi_ab.txt; \
+	fi; \
+	)
 endef
 
 

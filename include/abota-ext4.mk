@@ -7,7 +7,7 @@ IMAGE_SYSTEM_MOUNT_POINT_EXT4 = "/system"
 OTA_TARGET_FILES_EXT4_AB_PATH = $(IMAGE_PRODUCTS_DIR)-ab/$(OTA_TARGET_FILES_EXT4_AB)
 OTA_FULL_UPDATE_EXT4_AB_PATH = $(IMAGE_PRODUCTS_DIR)-ab/$(OTA_FULL_UPDATE_EXT4_AB)
 OTA_TARGET_IMAGE_ROOTFS_EXT4_AB = ${BUILD_DIR}/OTA/ota-target-image-ext4-ab
-MACHINE_FILESMAP_FULL_PATH_EXT4 = $(TOPDIR)/owrt-qti-bsp/conf/machine/filesmap/$(BOARD)-emmc-ab-filesmap
+MACHINE_FILESMAP_FULL_PATH_EXT4_AB = $(TOPDIR)/owrt-qti-bsp/conf/machine/filesmap/$(BOARD)-emmc-ab-filesmap
 
 SIGN_OTA_PACKAGE = ""
 MIRROR_SYNC = ""
@@ -20,10 +20,12 @@ ifeq ($(CONFIG_TARGET_sdx75), y)
 endif
 
 define Ota/Build/gen_ota_full_zip_ext4_ab
-	cd $(BUILD_DIR)/OTA/ota-scripts; \
+	(cd $(BUILD_DIR)/OTA/ota-scripts; \
 	rm -rf update_ext4.zip; \
 	./full_ota.sh ${OTA_TARGET_FILES_EXT4_AB_PATH} ${IMAGE_ROOTFS}-ab ext4 --block --system_path ${IMAGE_SYSTEM_MOUNT_POINT_EXT4} $(SIGN_OTA_PACKAGE) $(MIRROR_SYNC); \
-	cp update_ext4.zip ${OTA_FULL_UPDATE_EXT4_AB_PATH}
+	cp update_ext4.zip ${OTA_FULL_UPDATE_EXT4_AB_PATH}; \
+	mv ota_debug.txt ota_debug_ext4_ab.txt; \
+	)
 endef
 
 define Ota/Build/target-files-zip-ext4-ab
@@ -47,7 +49,7 @@ define Ota/Build/target-files-zip-ext4-ab
 	echo "recovery image rootfs: $(IMAGE_ROOTFS)-ab/../recovery/root-$(BOARD)"
 
 	# if exists copy filesmap into RADIO directory
-	[[ ! -z ${MACHINE_FILESMAP_FULL_PATH_EXT4} ]] && install -m 755 ${MACHINE_FILESMAP_FULL_PATH_EXT4} ${OTA_TARGET_IMAGE_ROOTFS_EXT4_AB}/RADIO/filesmap
+	[[ ! -z ${MACHINE_FILESMAP_FULL_PATH_EXT4_AB} ]] && install -m 755 ${MACHINE_FILESMAP_FULL_PATH_EXT4_AB} ${OTA_TARGET_IMAGE_ROOTFS_EXT4_AB}/RADIO/filesmap
 
 	cp $(IMAGE_PRODUCTS_DIR)-ab/boot.img $(OTA_TARGET_IMAGE_ROOTFS_EXT4_AB)/BOOTABLE_IMAGES/boot.img
 	cp $(IMAGE_PRODUCTS_DIR)-ab/boot.img $(OTA_TARGET_IMAGE_ROOTFS_EXT4_AB)/BOOTABLE_IMAGES/recovery.img
