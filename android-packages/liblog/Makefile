@@ -9,7 +9,8 @@ include $(INCLUDE_DIR)/package.mk
 include $(INCLUDE_DIR)/host-build.mk
 
 SOURCE_DIR:= $(TOPDIR)/src/system/core/$(PKG_NAME)/
-TARGET_CFLAGS += -DUSE_MUSL -I$(STAGING_DIR)/usr/include/glib-2.0 -Dstrlcpy=strlcpy
+TARGET_CFLAGS += -DUSE_MUSL -Dstrlcpy=strlcpy
+CONFIGURE_ARGS += --with-logd-logging 
 
 define Package/liblog
 	SECTION:=QTI
