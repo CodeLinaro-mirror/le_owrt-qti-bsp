@@ -1,3 +1,4 @@
+.NOTPARALLEL:
 OTA_TARGET_FILES_EXT4 = "target-files-ext4.zip"
 OTA_TARGET_FILES_EXT4_DEST = "target-files-ext4-dest.zip"
 OTA_FULL_UPDATE_EXT4 = "full_update_ext4.zip"
@@ -47,10 +48,12 @@ define Ota/Build/releasetools-native
 endef
 
 define Ota/Build/gen_ota_full_zip_ext4
-	cd $(BUILD_DIR)/OTA/ota-scripts; \
+	(cd $(BUILD_DIR)/OTA/ota-scripts; \
 	rm -rf update_ext4.zip; \
 	./full_ota.sh ${OTA_TARGET_FILES_EXT4_PATH} ${IMAGE_ROOTFS} ext4 --block --system_path ${IMAGE_SYSTEM_MOUNT_POINT_EXT4} $(SIGN_OTA_PACKAGE); \
-	cp update_ext4.zip ${OTA_FULL_UPDATE_EXT4_PATH}
+	cp update_ext4.zip ${OTA_FULL_UPDATE_EXT4_PATH}; \
+	mv ota_debug.txt ota_debug_ext4.txt; \
+	)
 endef
 
 define Ota/Build/target-files-zip-ext4

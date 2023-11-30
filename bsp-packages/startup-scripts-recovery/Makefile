@@ -58,6 +58,10 @@ define Package/usb-composition-recovery/install
 	$(INSTALL_BIN) ../startup-scripts/files/automountsdcard.sh $(1)/etc/scripts
 	$(INSTALL_DIR) $(1)/etc/hotplug.d/block
 	$(INSTALL_DATA) ../startup-scripts/files/automountsdcard $(1)/etc/hotplug.d/block/
+ifeq ($(BOARD), sdx35)
+	$(INSTALL_BIN) ../startup-scripts/files/zram.init $(1)/etc/init.d/
+	$(INSTALL_BIN) ../startup-scripts/files/init.zram.sh $(1)/etc/scripts
+endif
 
 endef
 
