@@ -11,6 +11,7 @@ include $(INCLUDE_DIR)/host-build.mk
 SOURCE_DIR:=$(TOPDIR)/src/OTA/recovery
 
 PKG_BUILD_DEPENDS += recovery/host
+HOST_BUILD_DEPENDS += bzip2/host
 
 define Package/libfusesideload
   SECTION:=libs
