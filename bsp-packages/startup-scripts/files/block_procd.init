@@ -4,7 +4,7 @@ START=27
 STOP=72
 
 start(){
-        sleep 5
+        sleep 7
 }
 
 stop(){
