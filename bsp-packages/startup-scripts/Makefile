@@ -63,7 +63,8 @@ ifeq ($(BOARD), sdx35)
 	$(INSTALL_BIN) ./files/zram.init $(1)/etc/init.d/
 	$(INSTALL_BIN) ./files/init.zram.sh $(1)/etc/scripts
 endif
-
+	$(INSTALL_BIN) ./files/ntp.init $(1)/etc/init.d/
+	$(INSTALL_BIN) ./files/ntp.config.sh $(1)/etc/init.d/
 endef
 
 $(eval $(call BuildPackage,usb-composition))
