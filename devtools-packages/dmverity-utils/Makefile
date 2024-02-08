@@ -13,7 +13,7 @@ include $(INCLUDE_DIR)/host-build.mk
 
 LOCAL_SRC:= $(TOPDIR)/src/system/extras/verity
 
-PKG_BUILD_DEPENDS := dmverity-utils/host   image-utils/host
+PKG_BUILD_DEPENDS :=  image-utils/host
 #libfec/host  libfec-rs/host 
 HOST_BUILD_DEPENDS := libsparse/host
 define Package/dmverity-utils
@@ -32,8 +32,6 @@ endef
 define Host/Prepare
 	mkdir -p $(HOST_BUILD_DIR)
 	cp -rp $(LOCAL_SRC)/*  $(HOST_BUILD_DIR)
-	cp  files/Makefile     $(HOST_BUILD_DIR)
-
 endef
 
 define Host/Compile
@@ -46,7 +44,6 @@ define Host/Install
 	#--------------------
 	# DM-Verity HOST install
 	#---------------------
-	cp -rf  $(HOST_BUILD_DIR)/build_verity_tree $(STAGING_DIR_HOSTPKG)/bin/
 	cp -rf  $(HOST_BUILD_DIR)/build_verity_metadata.py $(STAGING_DIR_HOSTPKG)/bin/
 	cp -rf  $(HOST_BUILD_DIR)/verity.pk8      $(STAGING_DIR_HOSTPKG)/bin/
 	cp -rf  $(HOST_BUILD_DIR)/verity.x509.pem   $(STAGING_DIR_HOSTPKG)/bin/

@@ -46,6 +46,7 @@ define Host/Install
 	cp -rf  $(HOST_BUILD_DIR)/append2simg   $(STAGING_DIR_HOSTPKG)/bin/
 	cp -rf  $(HOST_BUILD_DIR)/simg2img      $(STAGING_DIR_HOSTPKG)/bin/
 	cp -rf  $(HOST_BUILD_DIR)/img2simg      $(STAGING_DIR_HOSTPKG)/bin/
+	cp -rf  $(HOST_BUILD_DIR)/img2simg      $(STAGING_DIR_HOST)/bin/
 	cp -rf  $(HOST_BUILD_DIR)/simg2simg.c   $(STAGING_DIR_HOSTPKG)/bin/
 endef
 
