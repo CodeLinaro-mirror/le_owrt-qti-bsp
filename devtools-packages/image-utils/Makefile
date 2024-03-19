@@ -29,6 +29,7 @@ define Host/Prepare
 	cp -rp $(LOCAL_SRC)/simg2img.c     $(HOST_BUILD_DIR)
 	cp -rp $(LOCAL_SRC)/img2simg.c     $(HOST_BUILD_DIR)
 	cp -rp $(LOCAL_SRC)/simg2simg.c    $(HOST_BUILD_DIR)
+	cp -rp $(LOCAL_SRC)/squashfs2sparse.c  $(HOST_BUILD_DIR)
 	cp  files/Makefile       $(HOST_BUILD_DIR)
 
 endef
@@ -47,6 +48,7 @@ define Host/Install
 	cp -rf  $(HOST_BUILD_DIR)/simg2img      $(STAGING_DIR_HOSTPKG)/bin/
 	cp -rf  $(HOST_BUILD_DIR)/img2simg      $(STAGING_DIR_HOSTPKG)/bin/
 	cp -rf  $(HOST_BUILD_DIR)/img2simg      $(STAGING_DIR_HOST)/bin/
+	cp -rf  $(HOST_BUILD_DIR)/squashfs2sparse  $(STAGING_DIR_HOST)/bin/
 	cp -rf  $(HOST_BUILD_DIR)/simg2simg.c   $(STAGING_DIR_HOSTPKG)/bin/
 endef
 
