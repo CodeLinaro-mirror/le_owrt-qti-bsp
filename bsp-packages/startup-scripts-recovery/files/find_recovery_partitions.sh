@@ -150,6 +150,13 @@ FindAndMountUBI () {
    done
 }
 
+CreateNormalRootfsSymlink () {
+   volume=$1
+   gluebi_mtd_block_number=`cat $mtd_file | grep -w $volume | sed 's/^mtd//' | awk -F ':' '{print $1}'`
+   target_dev=/dev/mtdblock$gluebi_mtd_block_number
+   ln -sf $target_dev /dev/block/bootdevice/by-name/$1
+}
+
 FindAndMountEXT4 () {
    partition=$1
    dir=$2
@@ -198,8 +205,9 @@ if [ -f /proc/mtd ] && [ `cat /proc/mtd | wc -l` -ge "2" ]; then
         eval FindAndAttachUBI system 4
     else
         eval FindAndAttachUBI system 5
-    fi 
+    fi
     eval FindAndMountUBI rootfs  /system  1
+    eval CreateNormalRootfsSymlink rootfs
     eval FindAndMountUBI usrfs   /data    0
     eval FindAndMountUBI cachefs /cache   0
     eval FindAndMountMTD misc    /misc

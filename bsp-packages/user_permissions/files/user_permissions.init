@@ -37,7 +37,7 @@ STOP=90
 
 start() {
         /etc/scripts/user_permissions.sh
-
+	echo 600 > /proc/sys/net/unix/max_dgram_qlen
 }
 
 stop() {
