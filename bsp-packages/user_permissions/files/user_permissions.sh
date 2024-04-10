@@ -102,4 +102,3 @@ if [ -c /dev/input/event0 ]; then
         chown system:plugdev /dev/input/event0
         chmod 0664 /dev/input/event0
 fi
-
