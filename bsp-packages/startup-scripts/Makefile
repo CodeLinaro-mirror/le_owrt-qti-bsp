@@ -65,6 +65,8 @@ ifeq ($(BOARD), sdx35)
 endif
 	$(INSTALL_BIN) ./files/ntp.init $(1)/etc/init.d/
 	$(INSTALL_BIN) ./files/ntp.config.sh $(1)/etc/init.d/
+	$(INSTALL_DIR) $(1)/etc/hotplug.d/usb
+	$(INSTALL_DATA) $(SOURCE_DIR)/usb-bind-rules $(1)/etc/hotplug.d/usb
 endef
 
 $(eval $(call BuildPackage,usb-composition))

@@ -64,11 +64,14 @@ define Ota/Build/target-files-zip-ubi
 	[[ ! -z ${MACHINE_FILESMAP_FULL_PATH_UBI} ]] && install -m 755 ${MACHINE_FILESMAP_FULL_PATH_UBI} ${OTA_TARGET_IMAGE_ROOTFS_UBI}/RADIO/filesmap
 
 	cp $(IMAGE_PRODUCTS_DIR)/boot.img $(OTA_TARGET_IMAGE_ROOTFS_UBI)/BOOTABLE_IMAGES/boot.img
+	stat --printf="boot_image_size=%s\n" ${IMAGE_PRODUCTS_DIR}/boot.img >> ${OTA_TARGET_IMAGE_ROOTFS_UBI}/META/misc_info.txt
 	cp $(IMAGE_PRODUCTS_DIR)/boot.img $(OTA_TARGET_IMAGE_ROOTFS_UBI)/BOOTABLE_IMAGES/recovery.img
 	if echo $(1) | grep -q "2k"; then \
 		cp $(IMAGE_PRODUCTS_DIR)/sysfs-$(1).ubifs $(OTA_TARGET_IMAGE_ROOTFS_UBI)/BOOTABLE_IMAGES/system.img; \
+		stat --printf="system_image_size=%s\n" ${IMAGE_PRODUCTS_DIR}/sysfs-$(1).ubifs >> ${OTA_TARGET_IMAGE_ROOTFS_UBI}/META/misc_info.txt; \
 	else \
 		cp $(IMAGE_PRODUCTS_DIR)/sysfs.ubifs $(OTA_TARGET_IMAGE_ROOTFS_UBI)/BOOTABLE_IMAGES/system.img; \
+		stat --printf="system_image_size=%s\n" ${IMAGE_PRODUCTS_DIR}/sysfs.ubifs >> ${OTA_TARGET_IMAGE_ROOTFS_UBI}/META/misc_info.txt; \
 	fi
 	echo dm_verity_nand=1 >> ${OTA_TARGET_IMAGE_ROOTFS_UBI}/META/misc_info.txt
 	if [ $(CONFIG_OTA_RECOVERY_UPDATE) == y ]; then \

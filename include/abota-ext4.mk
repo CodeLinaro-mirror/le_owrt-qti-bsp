@@ -52,8 +52,10 @@ define Ota/Build/target-files-zip-ext4-ab
 	[[ ! -z ${MACHINE_FILESMAP_FULL_PATH_EXT4_AB} ]] && install -m 755 ${MACHINE_FILESMAP_FULL_PATH_EXT4_AB} ${OTA_TARGET_IMAGE_ROOTFS_EXT4_AB}/RADIO/filesmap
 
 	cp $(IMAGE_PRODUCTS_DIR)-ab/boot.img $(OTA_TARGET_IMAGE_ROOTFS_EXT4_AB)/BOOTABLE_IMAGES/boot.img
+	stat --printf="boot_image_size=%s\n" ${IMAGE_PRODUCTS_DIR}-ab/boot.img >> ${OTA_TARGET_IMAGE_ROOTFS_EXT4_AB}/META/misc_info.txt
 	cp $(IMAGE_PRODUCTS_DIR)-ab/boot.img $(OTA_TARGET_IMAGE_ROOTFS_EXT4_AB)/BOOTABLE_IMAGES/recovery.img
 	cp $(IMAGE_PRODUCTS_DIR)-ab/system.img $(OTA_TARGET_IMAGE_ROOTFS_EXT4_AB)/IMAGES/system.img
+	stat --printf="system_image_size=%s\n" ${IMAGE_PRODUCTS_DIR}-ab/system.img >> ${OTA_TARGET_IMAGE_ROOTFS_EXT4_AB}/META/misc_info.txt
 	cp $(IMAGE_PRODUCTS_DIR)-ab/system.map $(OTA_TARGET_IMAGE_ROOTFS_EXT4_AB)/IMAGES/system.map
 	cp $(IMAGE_PRODUCTS_DIR)-ab/userdata.img $(OTA_TARGET_IMAGE_ROOTFS_EXT4_AB)/IMAGES/userdata.img
 	cp $(IMAGE_PRODUCTS_DIR)-ab/userdata.map $(OTA_TARGET_IMAGE_ROOTFS_EXT4_AB)/IMAGES/userdata.map
