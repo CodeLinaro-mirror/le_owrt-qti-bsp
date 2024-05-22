@@ -66,11 +66,14 @@ define Ota/Build/target-files-zip-ubi-ab
 	[[ ! -z ${MACHINE_FILESMAP_FULL_PATH_UBI_AB} ]] && install -m 755 ${MACHINE_FILESMAP_FULL_PATH_UBI_AB} ${OTA_TARGET_IMAGE_ROOTFS_UBI_AB}/RADIO/filesmap
 
 	cp $(IMAGE_PRODUCTS_DIR)-ab/boot.img ${OTA_TARGET_IMAGE_ROOTFS_UBI_AB}/BOOTABLE_IMAGES/boot.img
+	stat --printf="boot_image_size=%s\n" ${IMAGE_PRODUCTS_DIR}-ab/boot.img >> ${OTA_TARGET_IMAGE_ROOTFS_UBI_AB}/META/misc_info.txt
 	cp $(IMAGE_PRODUCTS_DIR)-ab/boot.img ${OTA_TARGET_IMAGE_ROOTFS_UBI_AB}/BOOTABLE_IMAGES/recovery.img
 	if [ $(1) == 2k ]; then \
 		cp $(IMAGE_PRODUCTS_DIR)-ab/sysfs-2k.ubifs ${OTA_TARGET_IMAGE_ROOTFS_UBI_AB}/BOOTABLE_IMAGES/system.img; \
+		stat --printf="system_image_size=%s\n" ${IMAGE_PRODUCTS_DIR}-ab/sysfs-$(1).ubifs >> ${OTA_TARGET_IMAGE_ROOTFS_UBI_AB}/META/misc_info.txt; \
 	else \
 		cp $(IMAGE_PRODUCTS_DIR)-ab/sysfs.ubifs ${OTA_TARGET_IMAGE_ROOTFS_UBI_AB}/BOOTABLE_IMAGES/system.img; \
+		stat --printf="system_image_size=%s\n" ${IMAGE_PRODUCTS_DIR}-ab/sysfs.ubifs >> ${OTA_TARGET_IMAGE_ROOTFS_UBI_AB}/META/misc_info.txt; \
 	fi
 	echo dm_verity_nand=1 >> ${OTA_TARGET_IMAGE_ROOTFS_UBI_AB}/META/misc_info.txt
 

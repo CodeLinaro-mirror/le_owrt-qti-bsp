@@ -43,8 +43,9 @@ define Ota/Build/target-files-zip-sqsh
 	[[ ! -z ${MACHINE_FILESMAP_FULL_PATH_SQSH} ]] && install -m 755 ${MACHINE_FILESMAP_FULL_PATH_SQSH} ${OTA_TARGET_IMAGE_ROOTFS_SQSH}/RADIO/filesmap
 
 	cp $(IMAGE_PRODUCTS_DIR)/boot.img $(OTA_TARGET_IMAGE_ROOTFS_SQSH)/BOOTABLE_IMAGES/boot.img
-	img2simg $(IMAGE_PRODUCTS_DIR)/sysfs-2k.squashfs $(OTA_TARGET_IMAGE_ROOTFS_SQSH)/IMAGES/system.img
-
+	stat --printf="boot_image_size=%s\n" ${IMAGE_PRODUCTS_DIR}/boot.img >> ${OTA_TARGET_IMAGE_ROOTFS_SQSH}/META/misc_info.txt
+	squashfs2sparse $(IMAGE_PRODUCTS_DIR)/sysfs-2k.squashfs $(OTA_TARGET_IMAGE_ROOTFS_SQSH)/IMAGES/system.img
+	stat --printf="system_image_size=%s\n" $(OTA_TARGET_IMAGE_ROOTFS_SQSH)/IMAGES/system.img >> ${OTA_TARGET_IMAGE_ROOTFS_SQSH}/META/misc_info.txt
 	# copy the contents of system rootfs
 	cp -r $(IMAGE_ROOTFS)/. $(OTA_TARGET_IMAGE_ROOTFS_SQSH)/SYSTEM/.
 	#cd $(OTA_TARGET_IMAGE_ROOTFS_SQSH)/SYSTEM

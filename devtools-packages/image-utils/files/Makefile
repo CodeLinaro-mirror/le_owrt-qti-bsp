@@ -15,7 +15,7 @@ VERITY_LDFLAGS +=  -L$(STAGING_DIR_HOSTPKG)/lib  -L$(STAGING_DIR_HOST)/lib
 RM := rm -rf
 
 
-all:  append2simg  simg2img  img2simg
+all:  append2simg  simg2img  img2simg squashfs2sparse
 
 append2simg:
 	 $(CXX)  --static $(VERITY_CFLAGS)  $(VERITY_LDFLAGS) -I$(STAGING_DIR_HOSTPKG)/include  -L$(STAGING_DIR_HOSTPKG)/lib  append2simg.c  -o append2simg   -lcrypto -lsparse  -lz
@@ -28,6 +28,9 @@ img2simg:
 
 simg2simg:
 	$(CXX)  $(VERITY_CFLAGS)  $(VERITY_LDFLAGS) -I$(STAGING_DIR_HOSTPKG)/include  -L$(STAGING_DIR_HOSTPKG)/lib simg2simg.c   -o simg2simg -lcrypto -lsparse -lbase -lz
+
+squashfs2sparse:
+	$(CXX)  --static $(VERITY_LDFLAGS) -I$(STAGING_DIR_HOSTPKG)/include  -L$(STAGING_DIR_HOSTPKG)/lib squashfs2sparse.c -o squashfs2sparse  -lcrypto -lsparse   -lz
 
 clean:
 	$(RM) bin
