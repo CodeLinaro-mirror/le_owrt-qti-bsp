@@ -2,7 +2,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=libdivsufsort
 PKG_VERSION:=1.0
-PKG_LICENSE:=BSD-3-Clause
+PKG_LICENSE:=MIT
 PKG_RELEASE:=1
 PKG_FIXUP:=autoreconf
 
