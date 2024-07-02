@@ -4,7 +4,7 @@ PKG_NAME:=libdmabufheap
 PKG_VERSION:=1.0
 PKG_RELEASE:=1
 PKG_FIXUP:= autoreconf
-
+PKG_LICENSE:=Apache-2.0
 SOURCE_DIR := $(TOPDIR)/src/system/memory/libdmabufheap
 KMEM_RULES_DIR := $(TOPDIR)/src/system/memory
 
