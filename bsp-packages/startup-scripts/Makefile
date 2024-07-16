@@ -55,6 +55,7 @@ define Package/usb-composition/install
 	$(INSTALL_BIN) ./files/block_procd.init $(1)/etc/init.d/
 	$(INSTALL_DIR) $(1)/etc/scripts
 	$(INSTALL_DIR) $(1)/mnt/sdcard
+	ln -s /mnt/sdcard $(1)/sdcard
 	$(INSTALL_BIN) ./files/createsymlinks.sh $(1)/etc/scripts
 	$(INSTALL_BIN) ./files/automountsdcard.sh $(1)/etc/scripts
 	$(INSTALL_DIR) $(1)/etc/hotplug.d/block
