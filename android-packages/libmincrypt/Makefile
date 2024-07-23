@@ -6,6 +6,7 @@ PKG_NAME:=libmincrypt
 PKG_VERSION:=1.0
 PKG_RELEASE:=1
 PKG_FIXUP:=autoreconf
+PKG_LICENSE:=Apache-2.0
 
 # Source settings (i.e. where to find the source codes)
 # This is a custom variable, used below
