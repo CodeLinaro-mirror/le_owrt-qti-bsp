@@ -3,6 +3,7 @@ include $(TOPDIR)/rules.mk
 PKG_NAME:=usb-composition-recovery
 PKG_VERSION:=1.0
 PKG_RELEASE:=1
+PKG_LICENSE:=Apache-2.0
 
 include $(INCLUDE_DIR)/package.mk
 include $(INCLUDE_DIR)/host-build.mk
@@ -55,7 +56,7 @@ define Package/usb-composition-recovery/install
 	$(INSTALL_DIR) $(1)/etc/scripts
 	$(INSTALL_DIR) $(1)/mnt/sdcard
 	$(INSTALL_BIN) ./files/find_recovery_partitions.sh $(1)/etc/scripts
-	$(INSTALL_BIN) ../startup-scripts/files/automountsdcard.sh $(1)/etc/scripts
+	$(INSTALL_BIN) ./files/automountsdcard.sh $(1)/etc/scripts
 	$(INSTALL_DIR) $(1)/etc/hotplug.d/block
 	$(INSTALL_DATA) ../startup-scripts/files/automountsdcard $(1)/etc/hotplug.d/block/
 ifeq ($(BOARD), sdx35)

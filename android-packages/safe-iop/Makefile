@@ -4,6 +4,7 @@ PKG_NAME:=safe-iop
 PKG_VERSION:=1.0
 PKG_RELEASE:=1
 PKG_FIXUP:=autoreconf
+PKG_LICENSE:=ISC
 SOURCE_DIR:= $(TOPDIR)/src/external/safe-iop/
 
 include $(INCLUDE_DIR)/package.mk

@@ -5,7 +5,7 @@ PKG_VERSION:=1.0
 PKG_RELEASE:=1
 PKG_FIXUP:=autoreconf
 PKG_INSTALL:=1
-
+PKG_LICENSE:=Apache-2.0
 SOURCE_DIR:= $(TOPDIR)/src/system/core/adb
 
 include $(INCLUDE_DIR)/package.mk

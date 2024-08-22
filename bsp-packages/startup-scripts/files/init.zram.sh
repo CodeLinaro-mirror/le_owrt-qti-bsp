@@ -37,12 +37,16 @@ enable_zram_config()
     #Enable ZRAM based on RAM size
     echo 100 > /proc/sys/vm/swappiness
     if [ -d /sys/block/zram0 ]; then
-        MemTotalStr=`cat /proc/meminfo | grep MemTotal`
+        MemTotalStr=$(grep -m1 MemTotal /proc/meminfo)
         MemTotal=${MemTotalStr:16:8}
-        if [ $MemTotal -gt 131072 ]; then
-            echo 67108864 > /sys/block/zram0/disksize
+        if [ $MemTotal -gt $((512*1024)) ]; then
+            echo $((256*1024*1024)) > /sys/block/zram0/disksize
+        elif [ $MemTotal -gt $((256*1024)) ]; then
+            echo $((128*1024*1024)) > /sys/block/zram0/disksize
+        elif [ $MemTotal -gt $((128*1024)) ]; then
+            echo $((64*1024*1024)) > /sys/block/zram0/disksize
         else
-            echo 16777216 > /sys/block/zram0/disksize
+            echo $((16*1024*1024)) > /sys/block/zram0/disksize
         fi
         mkswap /dev/zram0
         swapon /dev/zram0 -p 32758

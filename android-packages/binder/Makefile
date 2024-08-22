@@ -7,6 +7,7 @@ PKG_FIXUP:= autoreconf
 SOURCE_DIR:= $(TOPDIR)/src/frameworks/binder
 TARGET_CFLAGS+= -DUSE_MUSL
 CONFIGURE_ARGS+= --with-glib
+PKG_LICENSE:=Apache-2.0
 
 ifeq ($(BOARD), sdx35)
 	TARGET_CFLAGS+= -DBINDER_IPC_32BIT

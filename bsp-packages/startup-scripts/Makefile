@@ -3,6 +3,7 @@ include $(TOPDIR)/rules.mk
 PKG_NAME:=usb-composition
 PKG_VERSION:=1.0
 PKG_RELEASE:=1
+PKG_LICENSE:=Apache-2.0
 
 include $(INCLUDE_DIR)/package.mk
 include $(INCLUDE_DIR)/host-build.mk
@@ -55,14 +56,13 @@ define Package/usb-composition/install
 	$(INSTALL_BIN) ./files/block_procd.init $(1)/etc/init.d/
 	$(INSTALL_DIR) $(1)/etc/scripts
 	$(INSTALL_DIR) $(1)/mnt/sdcard
+	ln -s /mnt/sdcard $(1)/sdcard
 	$(INSTALL_BIN) ./files/createsymlinks.sh $(1)/etc/scripts
 	$(INSTALL_BIN) ./files/automountsdcard.sh $(1)/etc/scripts
 	$(INSTALL_DIR) $(1)/etc/hotplug.d/block
 	$(INSTALL_DATA) ./files/automountsdcard $(1)/etc/hotplug.d/block/
-ifeq ($(BOARD), sdx35)
 	$(INSTALL_BIN) ./files/zram.init $(1)/etc/init.d/
 	$(INSTALL_BIN) ./files/init.zram.sh $(1)/etc/scripts
-endif
 	$(INSTALL_BIN) ./files/ntp.init $(1)/etc/init.d/
 	$(INSTALL_BIN) ./files/ntp.config.sh $(1)/etc/init.d/
 	$(INSTALL_DIR) $(1)/etc/hotplug.d/usb

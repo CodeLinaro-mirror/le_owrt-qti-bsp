@@ -4,6 +4,7 @@ PKG_NAME:=liblog
 PKG_VERSION:=1.0
 PKG_RELEASE:=1
 PKG_FIXUP:=autoreconf
+PKG_LICENSE:=Apache-2.0
 
 include $(INCLUDE_DIR)/package.mk
 include $(INCLUDE_DIR)/host-build.mk
