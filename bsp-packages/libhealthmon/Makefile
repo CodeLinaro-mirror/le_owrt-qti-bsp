@@ -5,6 +5,7 @@ PKG_VERSION:=1.0
 PKG_RELEASE:=1
 PKG_FIXUP:=autoreconf
 PKG_INSTALL:=1
+PKG_LICENSE:=BSD-3-Clause-Clear
 
 include $(INCLUDE_DIR)/package.mk
 

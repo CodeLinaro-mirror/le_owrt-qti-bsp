@@ -1,0 +1,18 @@
+#!/bin/sh /etc/rc.common
+
+#Copyright (c) 2024 Qualcomm Innovation Center, Inc. All rights reserved.
+#SPDX-License-Identifier: BSD-3-Clause-Clear
+
+
+START=16
+STOP=87
+
+start(){
+	echo "dummy_vote_for_reboot" > /sys/power/wake_unlock
+}
+
+stop(){
+	# put a dummy vote to prevent apps collapse during reboot
+	echo "dummy_vote_for_reboot" > /sys/power/wake_lock
+}
+
