@@ -4,6 +4,7 @@ PKG_NAME:=audio-utils
 PKG_VERSION:=1.0
 PKG_RELEASE:=1
 PKG_FIXUP:=autoreconf
+PKG_LICENSE:=Apache-2.0
 SOURCE_DIR:= $(TOPDIR)/src/frameworks/audio_utils
 
 include $(INCLUDE_DIR)/package.mk
