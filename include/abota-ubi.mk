@@ -24,6 +24,10 @@ ifeq ($(CONFIG_TARGET_sdx75), y)
 	MIRROR_SYNC = "--mirror_sync"
 endif
 
+ifeq ($(CONFIG_TARGET_sdx85), y)
+        MIRROR_SYNC = "--mirror_sync"
+endif
+
 define Ota/Build/gen_ota_full_zip_ubi_ab
 	(cd $(BUILD_DIR)/OTA/ota-scripts; \
 	rm -rf update_ubi_ab.zip; \
