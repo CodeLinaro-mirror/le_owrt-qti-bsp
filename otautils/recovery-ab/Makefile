@@ -16,6 +16,10 @@ ifeq ($(CONFIG_TARGET_sdx75), y)
 CONFIGURE_ARGS += TARGET_SUPPORTS_MIRROR_AB_COPY=true
 endif
 
+ifeq ($(CONFIG_TARGET_sdx85), y)
+CONFIGURE_ARGS += TARGET_SUPPORTS_MIRROR_AB_COPY=true
+endif
+
 define Package/libfusesideload
   SECTION:=libs
   CATEGORY:=OTA
