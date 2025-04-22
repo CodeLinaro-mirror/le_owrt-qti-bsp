@@ -13,13 +13,24 @@ include $(INCLUDE_DIR)/host-build.mk
 SOURCE_DIR:= $(TOPDIR)/src/system/extras/$(PKG_NAME)/
 
 PKG_BUILD_DEPENDS:= ext4-utils/host
+
+ifneq ($(CONFIG_PACKAGE_selinux-policy),y)
+CONFIGURE_ARGS += --disable-selinux-mode
+endif
+
+ifeq ($(CONFIG_PACKAGE_selinux-policy),y)
 HOST_BUILD_DEPENDS:= libselinux/host libsparse/host libcutils/host
+EXT4_DEPENDS:= +libselinux +libsparse +libcutils +libpcre +core-include
+else
+HOST_BUILD_DEPENDS:= libsparse/host libcutils/host
+EXT4_DEPENDS:= +libsparse +libcutils +libpcre +core-include
+endif
 
 define Package/ext4_utils
 	SECTION:=QTI
 	CATEGORY:=QTI-PACKAGES
 	TITLE:= ext4_utils
-	DEPENDS:= +libselinux +libsparse +libcutils +libpcre +core-include
+        DEPENDS:= $(EXT4_DEPENDS)
 endef
 
 define Package/ext4_utils/description
