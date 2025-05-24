@@ -6,7 +6,32 @@
 FILES=/sys/class/block/
 
 CURRENT_SLOT=$(abctl --boot_slot)
-echo "$CURRENT_SLOT"
+echo "Current running slot is :$CURRENT_SLOT" > /dev/kmsg
+
+update_permission()
+{
+	#In case of MTD, change permissions for mtd block device
+        if [ -f /proc/mtd ] && [ `cat /proc/mtd | wc -l` -ge "2" ]; then
+                mtd_block_number=`cat /proc/mtd | grep -i recoveryinfo | sed 's/^mtd//' | awk -F ':' '{print $1}'`
+                chown root:disk /dev/mtd$mtd_block_number
+                chmod 660 /dev/mtd$mtd_block_number
+         else
+		 while [ 1 ]
+		 do
+			if [ -d /dev/block/bootdevice/by-name ]; then
+				if [ -b /dev/block/bootdevice/by-name/recoveryinfo ]; then
+					chown root:disk /dev/block/bootdevice/by-name/recoveryinfo
+					chmod 0660 /dev/block/bootdevice/by-name/recoveryinfo
+					break
+				else
+					break
+				fi
+			else
+				sleep 1
+		        fi
+		done
+	fi
+}
 
 create_symlinks()
 {
@@ -25,6 +50,25 @@ create_symlinks()
         done
 }
 
+fail_reboot()
+{
+       create_symlinks $1
+       update_permission
+       TRIAL_BOOT_STATUS=$(abctl --get_trialboot_status)
+       echo "Trial boot status: $TRIAL_BOOT_STATUS" > /dev/kmsg
+       echo "Failed to mount modem partition for current running slot, rebooting the device.. " > /dev/kmsg
+       if [ $TRIAL_BOOT_STATUS == 0 ]; then
+               echo "Marking slot $CURRENT_SLOT as unbootable" > /dev/kmsg
+               #set unbootable for current slot
+               if [ $CURRENT_SLOT == "_a" ]; then
+                        abctl --set_unbootable 0;
+               else
+                        abctl --set_unbootable 1;
+               fi
+       fi
+       reboot -f
+}
+
 
 soc_id=`cat /sys/devices/soc0/soc_id`
 if [ ! -d /firmware/image ]; then
@@ -37,27 +81,42 @@ if [ ! -d /firmware/image ]; then
                   echo "MTD : Detected block device : firmware for modem_a "
 
                   ubiattach -m $mtd_block_number -d 1 /dev/ubi_ctrl
-
+                  st_1=$?
                   mtd_block_number=`cat /proc/mtd | grep -i modem_b | sed 's/^mtd//' | awk -F ':' '{print $1}'`
                   echo "MTD : Detected block device : firmware for modem_b "
 
                   ubiattach -m $mtd_block_number -d 2 /dev/ubi_ctrl
-
+		  st_2=$?
                  device=/dev/ubi1_0
+		 mtd=/dev/ubi1
                  if [ $CURRENT_SLOT == "_b" ]; then
                         device=/dev/ubi2_0
+			mtd=/dev/ubi2
                  fi
-
+		 if [[ $CURRENT_SLOT == "_a" && $st_1 != 0 ]] || [[ $CURRENT_SLOT == "_b" && $st_2 != 0 ]]; then
+			echo "ubiattach failed. Status: $st_1 $st_2" > /dev/kmsg
+			fail_reboot mtd
+		 fi
                  while [ 1 ]
                  do
                     if [ -c $device ];then
                         mount -t ubifs $device /firmware  -o bulk_read,ro,context=u:r:qcfirmware.miscfile
+                        st=$?
+                        if [[ $st != 0 ]]; then
+                                fail_reboot mtd
+                        fi
                         break
                     else
                         sleep 1
+			#check for volume information
+			#In case of empty mtd, ubinfo of vol 0 will error out
+			ubinfo $mtd -n 0
+			if [[ $? != 0 ]]; then
+				fail_reboot mtd
+			fi
                     fi
                  done
-                create_symlinks mtd
+		 create_symlinks mtd
         else
 
                 if [ $CURRENT_SLOT == "_b" ]; then
@@ -65,7 +124,12 @@ if [ ! -d /firmware/image ]; then
                 else
                         mount /dev/mmcblk0p1 /firmware
                 fi
-                create_symlinks mmc
+		st=$?
+                echo "Modem mount status: $st" > /dev/kmsg
+                if [[ $st != 0 ]]; then
+			fail_reboot mmc
+                fi
+		create_symlinks mmc
         fi
 fi
 
