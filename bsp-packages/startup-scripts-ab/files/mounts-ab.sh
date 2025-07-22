@@ -120,9 +120,9 @@ if [ ! -d /firmware/image ]; then
         else
 
                 if [ $CURRENT_SLOT == "_b" ]; then
-                        mount /dev/mmcblk0p2 /firmware
+                        mount /dev/mmcblk0p2 /firmware -o ro,context=u:r:qcfirmware.miscfile
                 else
-                        mount /dev/mmcblk0p1 /firmware
+                        mount /dev/mmcblk0p1 /firmware -o ro,context=u:r:qcfirmware.miscfile
                 fi
 		st=$?
                 echo "Modem mount status: $st" > /dev/kmsg
@@ -163,14 +163,30 @@ if [ $soc_id == "570" ] || [ $soc_id == "571" ]; then
     mkdir -p /data/overlay-work
     mkdir -p /data/overlay-work/etc-upper$CURRENT_SLOT
     mkdir -p /data/overlay-work/.etc-work$CURRENT_SLOT
+    chcon -t file.conffile /data/overlay-work/.etc-work$CURRENT_SLOT
     mount -t overlay -o lowerdir=/etc,upperdir=/data/overlay-work/etc-upper$CURRENT_SLOT,workdir=/data/overlay-work/.etc-work$CURRENT_SLOT overlay /etc
 else
     mkdir -p /overlay/etc-upper$CURRENT_SLOT
     mkdir -p /overlay/.etc-work$CURRENT_SLOT
+    chcon -t file.conffile /overlay/.etc-work$CURRENT_SLOT
     mount -t overlay -o lowerdir=/etc,upperdir=/overlay/etc-upper$CURRENT_SLOT,workdir=/overlay/.etc-work$CURRENT_SLOT overlay /etc
 fi
 
 # Need Restorecon for /persist & /firmware
 RESTORECON=/sbin/restorecon
-${RESTORECON} -RF /persist /data
 ${RESTORECON} -R /etc/ -e /etc/rc.d
+
+# For  Boot KPI we will call restorcon only  for the first boot
+# any new files will get labeled on creation
+
+if [ ! -f /persist/.autolabeled ]; then
+     # Need Restorecon for /persist
+     ${RESTORECON} -RF /persist
+     touch  /persist/.autolabeled
+fi
+
+if [ ! -f /data/.autolabeled ]; then
+        # Need Restorecon for /data
+        ${RESTORECON} -RF /data
+        touch  /data/.autolabeled
+fi
