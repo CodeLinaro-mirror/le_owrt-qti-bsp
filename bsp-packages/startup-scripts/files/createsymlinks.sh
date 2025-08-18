@@ -97,7 +97,7 @@ fi
 soc_id=`cat /sys/devices/soc0/soc_id`
 if [ -f /proc/mtd ] && [ `cat /proc/mtd | wc -l` -ge "2" ]; then
         mount -t ubifs ubi0:cachefs /cache -o bulk_read,context=u:r:cache.miscfile
-        if [ $soc_id != "570" ] && [ $soc_id != "571" ] && [ $soc_id != "717" ]; then
+        if [ $soc_id != "570" ] && [ $soc_id != "571" ] && [ $soc_id != "717" ] && [ $soc_id != "738" ]; then
             mount -t ubifs ubi0:systemrw /overlay -o bulk_read
         fi
         mount -t ubifs /dev/ubi0_1 /data -o bulk_read,rw
@@ -108,7 +108,7 @@ else
         mount -t ext4 /dev/block/bootdevice/by-name/persist /persist -o noatime,data=ordered,noauto_da_alloc,discard,noexec,nodev,nosuid,noauto,context=u:r:persist.miscfile
 fi
 
-if [ $soc_id == "570" ] || [ $soc_id == "571" ] || [ $soc_id == "717" ]; then
+if [ $soc_id == "570" ] || [ $soc_id == "571" ] || [ $soc_id == "717" ] || [ $soc_id == "738" ]; then
     mkdir -p /data/overlay-work
     mkdir -p /data/overlay-work/etc-upper
     mkdir -p /data/overlay-work/.etc-work
