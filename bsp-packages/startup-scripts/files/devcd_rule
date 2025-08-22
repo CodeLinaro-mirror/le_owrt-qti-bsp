@@ -1,0 +1,17 @@
+#!/bin/sh
+
+#Copyright (c) Qualcomm Technologies, Inc. and/or its subsidiaries.
+#SPDX-License-Identifier: BSD-3-Clause-Clear
+
+if [ "$ACTION" = "add" ] || [ "$ACTION" = "remove" ]; then
+    logger -t devcd "$DEVPATH"
+ 
+    DATA_PATH="/sys${DEVPATH}/data"
+ 
+    if [ -e "$DATA_PATH" ]; then
+        chown system:system "$DATA_PATH"
+        logger -t devcd "Permissions updated on $DATA_PATH"
+    else
+        logger -t devcd "Data file not found at $DATA_PATH"
+    fi
+fi

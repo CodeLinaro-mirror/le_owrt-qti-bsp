@@ -65,7 +65,13 @@ define Package/usb-composition/install
 	$(INSTALL_BIN) ./files/init.zram.sh $(1)/etc/scripts
 	$(INSTALL_BIN) ./files/ntp.init $(1)/etc/init.d/
 	$(INSTALL_BIN) ./files/ntp.config.sh $(1)/etc/init.d/
-ifeq ($(BOARD), sdx75)
+
+ifeq ($(BOARD), sdx85)
+	$(INSTALL_DIR) $(1)/etc/hotplug.d/devcoredump
+	$(INSTALL_DATA) ./files/devcd_rule $(1)/etc/hotplug.d/devcoredump/
+endif
+
+ifeq ($(filter $(BOARD),sdx75 sdx35),$(BOARD))
 	$(INSTALL_BIN) ./files/proxy_vote.init $(1)/etc/init.d/
 endif
 	$(INSTALL_DIR) $(1)/etc/hotplug.d/usb
