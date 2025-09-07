@@ -201,7 +201,7 @@ if [ -f /proc/mtd ] && [ `cat /proc/mtd | wc -l` -ge "2" ]; then
     fstype="UBI"
     create_symlinks mtd
     soc_id=`cat /sys/devices/soc0/soc_id`
-    if [ $soc_id -eq "570" ] || [ $soc_id -eq "571" ]; then
+    if [ $soc_id -eq "570" ] || [ $soc_id -eq "571" ] || [ $soc_id -eq "717" ]; then
         eval FindAndAttachUBI system 4
     else
         eval FindAndAttachUBI system 5

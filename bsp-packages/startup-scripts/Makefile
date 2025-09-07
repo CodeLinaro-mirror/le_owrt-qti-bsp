@@ -70,9 +70,7 @@ ifeq ($(BOARD), sdx85)
 	$(INSTALL_DIR) $(1)/etc/hotplug.d/devcoredump
 	$(INSTALL_DATA) ./files/devcd_rule $(1)/etc/hotplug.d/devcoredump/
 endif
-ifeq ($(BOARD), sdx75)
 	$(INSTALL_BIN) ./files/proxy_vote.init $(1)/etc/init.d/
-endif
 	$(INSTALL_DIR) $(1)/etc/hotplug.d/usb
 	$(INSTALL_DATA) $(SOURCE_DIR)/usb-bind-rules $(1)/etc/hotplug.d/usb
 endef

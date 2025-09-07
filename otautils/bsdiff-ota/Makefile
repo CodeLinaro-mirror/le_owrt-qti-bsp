@@ -13,12 +13,15 @@ SOURCE_DIR:=$(TOPDIR)/src/OTA/external/bsdiff/
 PKG_BUILD_DEPENDS:=bsdiff-ota/host
 HOST_BUILD_DEPENDS:=bzip2/host libdivsufsort/host
 
-HOST_LDFLAGS += -Wl,-rpath=$(STAGING_DIR_HOST)/lib
+HOST_LDFLAGS += -L$(STAGING_DIR_HOST)/lib \
+                -L$(STAGING_DIR_HOSTPKG)/lib \
+                -ldivsufsort -Wl,-rpath=$(STAGING_DIR_HOST)/lib
 
 define Package/bsdiff-ota
   SECTION:=external
   CATEGORY:=OTA
   TITLE:= Binary diff tool
+  DEPENDS:=+libdivsufsort
 endef
 
 define Build/Prepare
