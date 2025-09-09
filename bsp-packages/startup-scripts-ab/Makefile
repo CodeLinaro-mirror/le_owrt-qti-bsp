@@ -53,7 +53,7 @@ define Package/usb-composition-ab/install
 	$(INSTALL_DIR) $(1)/etc/init.d
 	$(INSTALL_BIN) ../startup-scripts/files/usb.init $(1)/etc/init.d/
 	$(INSTALL_BIN) ./files/ab-updater.init $(1)/etc/init.d/
-	$(INSTALL_BIN) ./files/mounts-ab.init $(1)/etc/init.d/
+	$(INSTALL_BIN) ./files/create-firmwarelinks-ab.init $(1)/etc/init.d/
 	$(INSTALL_DIR) $(1)/etc/scripts
 	$(INSTALL_DIR) $(1)/mnt/sdcard
 	$(INSTALL_BIN) ./files/mounts-ab.sh $(1)/etc/scripts
