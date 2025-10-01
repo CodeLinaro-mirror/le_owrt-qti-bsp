@@ -73,6 +73,8 @@ ifeq ($(BOARD), sdx85)
 	$(INSTALL_DATA) ../startup-scripts/files/devcd_rule $(1)/etc/hotplug.d/devcoredump/
 endif
 
+	$(INSTALL_BIN) ../startup-scripts/files/proxy_vote.init $(1)/etc/init.d/
+
 endef
 
 $(eval $(call BuildPackage,usb-composition-ab))
