@@ -68,6 +68,12 @@ ifeq ($(BOARD), sdx35)
 	$(INSTALL_BIN) ./files/zram.init $(1)/etc/init.d/
 	$(INSTALL_BIN) ./files/init.zram.sh $(1)/etc/scripts
 endif
+ifeq ($(BOARD), sdx85)
+	$(INSTALL_DIR) $(1)/etc/hotplug.d/devcoredump
+	$(INSTALL_DATA) ../startup-scripts/files/devcd_rule $(1)/etc/hotplug.d/devcoredump/
+endif
+
+	$(INSTALL_BIN) ../startup-scripts/files/proxy_vote.init $(1)/etc/init.d/
 
 endef
 
