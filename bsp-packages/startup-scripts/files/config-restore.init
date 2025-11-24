@@ -1,0 +1,15 @@
+#!/bin/sh /etc/rc.common
+
+#Copyright (c) Qualcomm Technologies, Inc. and/or its subsidiaries.
+#SPDX-License-Identifier: BSD-3-Clause-Clear
+
+START=11
+STOP=89
+
+start() {
+	/usr/bin/overlay_restore.sh
+}
+
+stop() {
+	echo "Stop service called."
+}
