@@ -157,6 +157,11 @@ else
         mount -t ext4 /dev/block/bootdevice/by-name/cache /cache -o noatime,data=ordered,noauto_da_alloc,discard,noexec,nodev,nosuid,noauto,context=u:r:cache.miscfile
         mount -t ext4 /dev/block/bootdevice/by-name/systemrw /overlay -o noatime,data=ordered,noauto_da_alloc,discard,noexec,nodev,nosuid,noauto
         mount -t ext4 /dev/block/bootdevice/by-name/userdata /data
+        if [[ -f /etc/os-release ]] && grep -qi "prplOs" /etc/os-release 2>/dev/null; then
+            mount -t ext4 /dev/block/bootdevice/by-name/lcm_data /lcm
+            mount -t ext4 /dev/block/bootdevice/by-name/securestore /cfg
+        fi
+
 fi
 
 if [ $soc_id == "570" ] || [ $soc_id == "571" ]; then
