@@ -88,6 +88,7 @@ define Ota/Build/target-files-zip-ext4
 	cp $(IMAGE_PRODUCTS_DIR)/boot.img $(OTA_TARGET_IMAGE_ROOTFS_EXT4)/BOOTABLE_IMAGES/recovery.img
 	cp $(IMAGE_PRODUCTS_DIR)/system.img $(OTA_TARGET_IMAGE_ROOTFS_EXT4)/IMAGES/system.img
 	stat --printf="system_image_size=%s\n" ${IMAGE_PRODUCTS_DIR}/system.img >> ${OTA_TARGET_IMAGE_ROOTFS_EXT4}/META/misc_info.txt
+	cp $(IMAGE_PRODUCTS_DIR)/system.map $(OTA_TARGET_IMAGE_ROOTFS_EXT4)/IMAGES/system.map
         cp $(IMAGE_PRODUCTS_DIR)/systemrw.img $(OTA_TARGET_IMAGE_ROOTFS_EXT4)/IMAGES/systemrw.img
         stat --printf="systemrw_image_size=%s\n" ${IMAGE_PRODUCTS_DIR}/systemrw.img >> ${OTA_TARGET_IMAGE_ROOTFS_EXT4}/META/misc_info.txt
         if [ "$(CONFIG_TARGET_sdx75)" = "y" ]; then \
