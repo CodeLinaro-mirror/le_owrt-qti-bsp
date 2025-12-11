@@ -15,6 +15,7 @@ OTA_FULL_UPDATE_UBI_2k = "full_update_ubi-2k.zip"
 OTA_FULL_UPDATE_UBI_PATH_2k = $(IMAGE_PRODUCTS_DIR)/$(OTA_FULL_UPDATE_UBI_2k)
 SIGN_OTA_PACKAGE = ""
 IMAGE_BY_IMAGE = ""
+SYSTEMRW_UPDATE = ""
 ifeq ($(CONFIG_OTA_PACKAGE_VERIFICATION), y)
 	SIGN_OTA_PACKAGE = "--sign"
 endif
@@ -23,15 +24,19 @@ ifeq ($(CONFIG_TARGET_sdx35), y)
 	IMAGE_BY_IMAGE = "--img_by_img"
 endif
 
+ifeq ($(CONFIG_TARGET_sdx75), y)
+        SYSTEMRW_UPDATE = "--systemrw_update"
+endif
+
 define Ota/Build/gen_ota_full_zip_ubi
 	(cd $(BUILD_DIR)/OTA/ota-scripts; \
 	rm -rf update_ubi.zip; \
 	if [ $(1) == 2k ]; then \
-		./full_ota.sh ${OTA_TARGET_FILES_UBI_PATH_2k} ${IMAGE_ROOTFS_UBI} ubi --block $(IMAGE_BY_IMAGE) --system_path ${IMAGE_SYSTEM_MOUNT_POINT_UBI} $(SIGN_OTA_PACKAGE); \
+		./full_ota.sh ${OTA_TARGET_FILES_UBI_PATH_2k} ${IMAGE_ROOTFS_UBI} ubi --block $(IMAGE_BY_IMAGE) $(SYSTEMRW_UPDATE) --system_path ${IMAGE_SYSTEM_MOUNT_POINT_UBI} $(SIGN_OTA_PACKAGE); \
 		$(CP) update_ubi.zip ${OTA_FULL_UPDATE_UBI_PATH_2k}; \
 		mv ota_debug.txt ota_debug_ubi_2k.txt; \
 	else \
-		./full_ota.sh ${OTA_TARGET_FILES_UBI_PATH} ${IMAGE_ROOTFS_UBI} ubi --block $(IMAGE_BY_IMAGE) --system_path ${IMAGE_SYSTEM_MOUNT_POINT_UBI} $(SIGN_OTA_PACKAGE); \
+		./full_ota.sh ${OTA_TARGET_FILES_UBI_PATH} ${IMAGE_ROOTFS_UBI} ubi --block $(IMAGE_BY_IMAGE) $(SYSTEMRW_UPDATE) --system_path ${IMAGE_SYSTEM_MOUNT_POINT_UBI} $(SIGN_OTA_PACKAGE); \
 		$(CP) update_ubi.zip ${OTA_FULL_UPDATE_UBI_PATH}; \
 		mv ota_debug.txt ota_debug_ubi.txt; \
 	fi; \
