@@ -70,7 +70,7 @@ ifeq ($(BOARD), sdx75)
 	$(INSTALL_DIR) $(1)/usr/bin
 	$(INSTALL_BIN) ./files/overlay_backup.sh $(1)/usr/bin/
 	$(INSTALL_BIN) ./files/overlay_restore.sh $(1)/usr/bin/
-	$(INSTALL_BIN) ./files/config-restore.init $(1)/etc/init.d/
+	$(INSTALL_BIN) ./files/data-config-restore.init $(1)/etc/init.d/
 endif
 
 ifeq ($(BOARD), sdx85)

@@ -19,7 +19,7 @@ inactive_slot=""
 
 
 target_path="/overlay/etc-upper$current_slot"
-
+sync
 #Restore after OTA
 if [ $# -eq 0 ]; then
 	backup_tar="/data/etc_backup.tar.gz"
@@ -35,6 +35,10 @@ if [ $# -eq 0 ]; then
         #Delete backup tar at the end
         rm -rf "$backup_tar"
         echo "Backup file deleted."
+
+	#remount
+	mount -o remount,lowerdir=/etc,upperdir=/overlay/etc-upper$current_slot,workdir=/overlay/.etc-work$current_slot /etc
+	echo "remount done "
     else
         echo "ERROR: Backup Restoration failed after OTA. " > /dev/kmsg
         if [ -x /sbin/abctl ]; then
