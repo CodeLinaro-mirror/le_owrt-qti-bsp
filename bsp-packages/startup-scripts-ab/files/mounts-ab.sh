@@ -1,8 +1,9 @@
 #! /bin/sh
 
-# Copyright (c) 2023 Qualcomm Innovation Center, Inc. All rights reserved.
+# Copyright (c) Qualcomm Technologies, Inc. and/or its subsidiaries.
 # SPDX-License-Identifier: BSD-3-Clause-Clear
 
+source /usr/bin/mount-userdata.sh
 FILES=/sys/class/block/
 
 # SELinux context options (cleared for prpl builds)
@@ -18,7 +19,9 @@ if [ -f /etc/os-release ] && grep -qi "prplOs" /etc/os-release 2>/dev/null; then
 fi
 
 CURRENT_SLOT=$(abctl --boot_slot)
-echo "Current running slot is :$CURRENT_SLOT" > /dev/kmsg
+exec >> /dev/kmsg 2>&1
+
+echo "Current running slot is :$CURRENT_SLOT"
 
 update_permission()
 {
@@ -168,10 +171,8 @@ if [ -f /proc/mtd ] && [ `cat /proc/mtd | wc -l` -ge "2" ]; then
 else
         mount -t ext4 /dev/block/bootdevice/by-name/cache /cache -o noatime,data=ordered,noauto_da_alloc,discard,noexec,nodev,nosuid,noauto$cache_context
         mount -t ext4 /dev/block/bootdevice/by-name/systemrw /overlay -o noatime,data=ordered,noauto_da_alloc,discard,noexec,nodev,nosuid,noauto
-        mount -t ext4 /dev/block/bootdevice/by-name/userdata /data
-        if [ "$prplos_build" -eq 1 ]; then
-            mount -t ext4 /dev/block/bootdevice/by-name/lcm_data /lcm
-            mount -t ext4 /dev/block/bootdevice/by-name/securestore /cfg
+        if [ $soc_id == "570" ] || [ $soc_id == "571" ]; then
+            mount -t ext4 /dev/block/bootdevice/by-name/userdata /data
         fi
 
 fi
@@ -189,6 +190,16 @@ else
     chcon -t file.conffile /overlay/.etc-work$CURRENT_SLOT
     fi
     mount -t overlay -o lowerdir=/etc,upperdir=/overlay/etc-upper$CURRENT_SLOT,workdir=/overlay/.etc-work$CURRENT_SLOT overlay /etc
+    if [ -f /proc/mtd ] && [ `cat /proc/mtd | wc -l` -ge "2" ]; then
+       echo "usrfs is a logical volume on ubi0"
+    else
+       : > "/cache/lvm.log"
+    {
+       create_lvm
+       mount_userdata
+    } >>"/cache/lvm.log" 2>&1
+    fi
+
 fi
 if [ "$prplos_build" -ne 1 ]; then
 # Need Restorecon for /persist & /firmware

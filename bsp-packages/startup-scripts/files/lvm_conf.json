@@ -1,0 +1,17 @@
+{
+  "sample_vg": "vgdata",
+  "sample_delete": [
+   { "volume_name": "securestore" }
+  ],
+  "sample_resize": [
+   { "volume_name": "lcm_data", "size": "500M" },
+   { "volume_name": "securestore", "size": "12M" }
+  ],
+  "sample_create": [
+   { "volume_name": "vol_new", "size": "100M" }
+  ],
+  "sample_update": [
+   { "volume_name": "securestore" },
+   { "volume_name": "lcm_data" }
+  ]
+}
