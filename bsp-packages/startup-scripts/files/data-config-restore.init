@@ -3,8 +3,8 @@
 #Copyright (c) Qualcomm Technologies, Inc. and/or its subsidiaries.
 #SPDX-License-Identifier: BSD-3-Clause-Clear
 
-START=11
-STOP=89
+START=03
+STOP=96
 
 start() {
 	/usr/bin/overlay_restore.sh
