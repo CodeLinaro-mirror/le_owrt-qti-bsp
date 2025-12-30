@@ -117,7 +117,7 @@ if [ ! -d /firmware/image ]; then
                     fi
                  done
 		 create_symlinks mtd
-        else
+        elif [ -b /dev/mmcblk0p1 ]; then
 
                 if [ $CURRENT_SLOT == "_b" ]; then
                         mount /dev/mmcblk0p2 /firmware -o ro,context=u:r:qcfirmware.miscfile
@@ -130,6 +130,19 @@ if [ ! -d /firmware/image ]; then
 			fail_reboot mmc
                 fi
 		create_symlinks mmc
+        else
+
+                if [ $CURRENT_SLOT == "_b" ]; then
+                        mount /dev/sde30 /firmware -o ro,context=u:r:qcfirmware.miscfile
+                else
+                        mount /dev/sde6 /firmware -o ro,context=u:r:qcfirmware.miscfile
+                fi
+                st=$?
+                echo "Modem mount status: $st" > /dev/kmsg
+                if [[ $st != 0 ]]; then
+			fail_reboot sd
+                fi
+                create_symlinks sd
         fi
 fi
 
