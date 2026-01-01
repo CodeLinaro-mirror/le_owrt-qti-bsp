@@ -34,6 +34,20 @@
 
 FILES=/sys/class/block/
 
+# SELinux context options (cleared for prpl builds)
+cache_context=",context=u:r:cache.miscfile"
+persist_context=",context=u:r:persist.miscfile"
+firmware_context=",context=u:r:qcfirmware.miscfile"
+
+# Determine if this is prplOS build
+prplos_build=0
+if [ -f /etc/os-release ] && grep -qi "prplOs" /etc/os-release 2>/dev/null; then
+    prplos_build=1
+    cache_context=""
+    persist_context=""
+    firmware_context=""
+fi
+
 create_symlinks()
 {
         for file in $FILES/$1*
@@ -64,7 +78,7 @@ if [ ! -d /firmware/image ]; then
                 do
                     if [ -c $device ]
 					then
-                        mount -t ubifs /dev/ubi1_0 /firmware  -o bulk_read,ro,context=u:r:qcfirmware.miscfile
+                        mount -t ubifs /dev/ubi1_0 /firmware  -o bulk_read,ro$firmware_context
                         break
 					else
                         sleep 1
@@ -72,7 +86,7 @@ if [ ! -d /firmware/image ]; then
                 done
                 create_symlinks mtd
         else
-		mount /dev/mmcblk0p1 /firmware -o ro,context=u:r:qcfirmware.miscfile
+		mount /dev/mmcblk0p1 /firmware -o ro$firmware_context
                 create_symlinks mmc
         fi
 fi
@@ -96,17 +110,17 @@ fi
 
 soc_id=`cat /sys/devices/soc0/soc_id`
 if [ -f /proc/mtd ] && [ `cat /proc/mtd | wc -l` -ge "2" ]; then
-        mount -t ubifs ubi0:cachefs /cache -o bulk_read,context=u:r:cache.miscfile
+        mount -t ubifs ubi0:cachefs /cache -o bulk_read$cache_context
         if [ $soc_id != "570" ] && [ $soc_id != "571" ] && [ $soc_id != "717" ] && [ $soc_id != "738" ]; then
             mount -t ubifs ubi0:systemrw /overlay -o bulk_read
         fi
         mount -t ubifs /dev/ubi0_1 /data -o bulk_read,rw
 else
-        mount -t ext4 /dev/block/bootdevice/by-name/cache /cache -o noatime,data=ordered,noauto_da_alloc,discard,noexec,nodev,nosuid,noauto,context=u:r:cache.miscfile
+        mount -t ext4 /dev/block/bootdevice/by-name/cache /cache -o noatime,data=ordered,noauto_da_alloc,discard,noexec,nodev,nosuid,noauto$cache_context
         mount -t ext4 /dev/block/bootdevice/by-name/systemrw /overlay -o noatime,data=ordered,noauto_da_alloc,discard,noexec,nodev,nosuid,noauto
         mount -t ext4 /dev/block/bootdevice/by-name/userdata /data
-        mount -t ext4 /dev/block/bootdevice/by-name/persist /persist -o noatime,data=ordered,noauto_da_alloc,discard,noexec,nodev,nosuid,noauto,context=u:r:persist.miscfile
-        if [[ -f /etc/os-release ]] && grep -qi "prplOs" /etc/os-release 2>/dev/null; then
+        mount -t ext4 /dev/block/bootdevice/by-name/persist /persist -o noatime,data=ordered,noauto_da_alloc,discard,noexec,nodev,nosuid,noauto$persist_context
+        if [ "$prplos_build" -eq 1 ]; then
             mount -t ext4 /dev/block/bootdevice/by-name/lcm_data /lcm
             mount -t ext4 /dev/block/bootdevice/by-name/securestore /cfg
         fi
@@ -122,10 +136,12 @@ if [ $soc_id == "570" ] || [ $soc_id == "571" ] || [ $soc_id == "717" ] || [ $so
 else
     mkdir -p /overlay/etc-upper
     mkdir -p /overlay/.etc-work
+    if [ "$prplos_build" -ne 1 ]; then
     chcon -t file.conffile /overlay/.etc-work
+    fi
     mount -t overlay -o lowerdir=/etc,upperdir=/overlay/etc-upper,workdir=/overlay/.etc-work overlay /etc
 fi
-
+if [ "$prplos_build" -ne 1 ]; then
 RESTORECON=/sbin/restorecon
 ${RESTORECON} -R  /etc -e /etc/rc.d
 
@@ -142,4 +158,5 @@ if [ ! -f /data/.autolabeled ]; then
         # Need Restorecon for /data
         ${RESTORECON} -RF /data
         touch  /data/.autolabeled
+fi
 fi

@@ -5,6 +5,18 @@
 
 FILES=/sys/class/block/
 
+# SELinux context options (cleared for prpl builds)
+cache_context=",context=u:r:cache.miscfile"
+firmware_context=",context=u:r:qcfirmware.miscfile"
+
+# Determine if this is prplOS build
+prplos_build=0
+if [ -f /etc/os-release ] && grep -qi "prplOs" /etc/os-release 2>/dev/null; then
+    prplos_build=1
+    cache_context=""
+    firmware_context=""
+fi
+
 CURRENT_SLOT=$(abctl --boot_slot)
 echo "Current running slot is :$CURRENT_SLOT" > /dev/kmsg
 
@@ -100,7 +112,7 @@ if [ ! -d /firmware/image ]; then
                  while [ 1 ]
                  do
                     if [ -c $device ];then
-                        mount -t ubifs $device /firmware  -o bulk_read,ro,context=u:r:qcfirmware.miscfile
+                        mount -t ubifs $device /firmware  -o bulk_read,ro$firmware_context
                         st=$?
                         if [[ $st != 0 ]]; then
                                 fail_reboot mtd
@@ -120,9 +132,9 @@ if [ ! -d /firmware/image ]; then
         else
 
                 if [ $CURRENT_SLOT == "_b" ]; then
-                        mount /dev/mmcblk0p2 /firmware -o ro,context=u:r:qcfirmware.miscfile
+                        mount /dev/mmcblk0p2 /firmware -o ro$firmware_context
                 else
-                        mount /dev/mmcblk0p1 /firmware -o ro,context=u:r:qcfirmware.miscfile
+                        mount /dev/mmcblk0p1 /firmware -o ro$firmware_context
                 fi
 		st=$?
                 echo "Modem mount status: $st" > /dev/kmsg
@@ -150,14 +162,14 @@ if [ ! -d /cache ]; then
         mkdir -p /cache
 fi
 if [ -f /proc/mtd ] && [ `cat /proc/mtd | wc -l` -ge "2" ]; then
-        mount -t ubifs ubi0:cachefs /cache -o bulk_read,context=u:r:cache.miscfile
+        mount -t ubifs ubi0:cachefs /cache -o bulk_read$cache_context
         mount -t ubifs ubi0:systemrw /overlay -o bulk_read
         mount -t ubifs ubi0:usrfs /data -o bulk_read,rw
 else
-        mount -t ext4 /dev/block/bootdevice/by-name/cache /cache -o noatime,data=ordered,noauto_da_alloc,discard,noexec,nodev,nosuid,noauto,context=u:r:cache.miscfile
+        mount -t ext4 /dev/block/bootdevice/by-name/cache /cache -o noatime,data=ordered,noauto_da_alloc,discard,noexec,nodev,nosuid,noauto$cache_context
         mount -t ext4 /dev/block/bootdevice/by-name/systemrw /overlay -o noatime,data=ordered,noauto_da_alloc,discard,noexec,nodev,nosuid,noauto
         mount -t ext4 /dev/block/bootdevice/by-name/userdata /data
-        if [[ -f /etc/os-release ]] && grep -qi "prplOs" /etc/os-release 2>/dev/null; then
+        if [ "$prplos_build" -eq 1 ]; then
             mount -t ext4 /dev/block/bootdevice/by-name/lcm_data /lcm
             mount -t ext4 /dev/block/bootdevice/by-name/securestore /cfg
         fi
@@ -173,10 +185,12 @@ if [ $soc_id == "570" ] || [ $soc_id == "571" ]; then
 else
     mkdir -p /overlay/etc-upper$CURRENT_SLOT
     mkdir -p /overlay/.etc-work$CURRENT_SLOT
+    if [ "$prplos_build" -ne 1 ]; then
     chcon -t file.conffile /overlay/.etc-work$CURRENT_SLOT
+    fi
     mount -t overlay -o lowerdir=/etc,upperdir=/overlay/etc-upper$CURRENT_SLOT,workdir=/overlay/.etc-work$CURRENT_SLOT overlay /etc
 fi
-
+if [ "$prplos_build" -ne 1 ]; then
 # Need Restorecon for /persist & /firmware
 RESTORECON=/sbin/restorecon
 ${RESTORECON} -R /etc/ -e /etc/rc.d
@@ -194,4 +208,5 @@ if [ ! -f /data/.autolabeled ]; then
         # Need Restorecon for /data
         ${RESTORECON} -RF /data
         touch  /data/.autolabeled
+fi
 fi
