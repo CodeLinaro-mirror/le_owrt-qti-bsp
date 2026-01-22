@@ -18,6 +18,7 @@ endif
 
 ifeq ($(CONFIG_TARGET_sdx85), y)
 CONFIGURE_ARGS += TARGET_SUPPORTS_MIRROR_AB_COPY=true
+CONFIGURE_ARGS += TARGET_SUPPORTS_LVM=true
 endif
 
 define Package/libfusesideload
