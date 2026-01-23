@@ -64,7 +64,6 @@ ifeq ($(filter $(BOARD),sdx75 sdx85),$(BOARD))
 	$(INSTALL_BIN) ../startup-scripts/files/data-config-restore.init $(1)/etc/init.d/
 endif
 ifneq ($(BOARD), sdx35)
-	$(INSTALL_BIN) ./files/partition-symlinks.init $(1)/etc/init.d/
 	$(INSTALL_BIN) ./files/partition-symlinks.sh $(1)/etc/scripts
 endif
 	$(INSTALL_BIN) ../startup-scripts/files/automountsdcard.sh $(1)/etc/scripts
