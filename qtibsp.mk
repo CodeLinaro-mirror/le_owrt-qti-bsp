@@ -3,7 +3,7 @@ QTIBSP:=adbd powerapp core-include ext4_utils fs_mgr libbase libcutils liblog li
 ## add target specific packages
 ifeq ($(BOARD),sdx65)
 	QTIBSP+= edk2
-else ifeq ($(filter $(BOARD),sdx75 sdx85),$(BOARD))
+else ifeq ($(filter $(BOARD),sdx75 sdx85 qmb415),$(BOARD))
 	QTIBSP+= procrank lsusb
 endif
 
