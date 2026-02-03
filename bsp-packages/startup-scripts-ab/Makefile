@@ -74,7 +74,7 @@ ifeq ($(BOARD), sdx35)
 	$(INSTALL_BIN) ./files/zram.init $(1)/etc/init.d/
 	$(INSTALL_BIN) ./files/init.zram.sh $(1)/etc/scripts
 endif
-ifeq ($(BOARD), sdx85)
+ifeq ($(filter $(BOARD),sdx85 qmb415),$(BOARD))
 	$(INSTALL_DIR) $(1)/etc/hotplug.d/devcoredump
 	$(INSTALL_DATA) ../startup-scripts/files/devcd_rule $(1)/etc/hotplug.d/devcoredump/
 endif
