@@ -1,38 +1,12 @@
 #! /bin/sh
 
-#Copyright (c) 2021-2022 Qualcomm Innovation Center, Inc. All rights reserved.
-#
-# Redistribution and use in source and binary forms, with or without
-# modification, are permitted (subject to the limitations in the
-# disclaimer below) provided that the following conditions are met:
-#
-#   * Redistributions of source code must retain the above copyright
-#     notice, this list of conditions and the following disclaimer.
-#
-#   * Redistributions in binary form must reproduce the above
-#     copyright notice, this list of conditions and the following
-#     disclaimer in the documentation and/or other materials provided
-#     with the distribution.
-#
-#   * Neither the name of Qualcomm Innovation Center, Inc. nor the names of its
-#     contributors may be used to endorse or promote products derived
-#     from this software without specific prior written permission.
-#
-# NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE
-# GRANTED BY THIS LICENSE. THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT
-# HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED
-# WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
-# MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
-# IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
-# ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE
-# GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER
-# IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
-# OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
-# IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+#Copyright (c) Qualcomm Technologies, Inc. and/or its subsidiaries.
+#SPDX-License-Identifier: BSD-3-Clause-Clear
 
+source /usr/bin/mount-userdata.sh
 FILES=/sys/class/block/
+exec >> /dev/kmsg 2>&1
+echo "Bulbul: inside script "
 
 # SELinux context options (cleared for prpl builds)
 cache_context=",context=u:r:cache.miscfile"
@@ -118,11 +92,9 @@ if [ -f /proc/mtd ] && [ `cat /proc/mtd | wc -l` -ge "2" ]; then
 else
         mount -t ext4 /dev/block/bootdevice/by-name/cache /cache -o noatime,data=ordered,noauto_da_alloc,discard,noexec,nodev,nosuid,noauto$cache_context
         mount -t ext4 /dev/block/bootdevice/by-name/systemrw /overlay -o noatime,data=ordered,noauto_da_alloc,discard,noexec,nodev,nosuid,noauto
-        mount -t ext4 /dev/block/bootdevice/by-name/userdata /data
         mount -t ext4 /dev/block/bootdevice/by-name/persist /persist -o noatime,data=ordered,noauto_da_alloc,discard,noexec,nodev,nosuid,noauto$persist_context
-        if [ "$prplos_build" -eq 1 ]; then
-            mount -t ext4 /dev/block/bootdevice/by-name/lcm_data /lcm
-            mount -t ext4 /dev/block/bootdevice/by-name/securestore /cfg
+        if [ $soc_id == "570" ] || [ $soc_id == "571" ] || [ $soc_id == "717" ] || [ $soc_id == "738" ]; then
+            mount -t ext4 /dev/block/bootdevice/by-name/userdata /data
         fi
 
 fi
@@ -140,6 +112,16 @@ else
     chcon -t file.conffile /overlay/.etc-work
     fi
     mount -t overlay -o lowerdir=/etc,upperdir=/overlay/etc-upper,workdir=/overlay/.etc-work overlay /etc
+    if [ -f /proc/mtd ] && [ `cat /proc/mtd | wc -l` -ge "2" ]; then
+       echo "usrfs is a logical volume on ubi0"
+    else
+       : > "/cache/lvm.log"
+    {
+       create_lvm
+       mount_userdata
+    } >>"/cache/lvm.log" 2>&1
+
+    fi
 fi
 if [ "$prplos_build" -ne 1 ]; then
 RESTORECON=/sbin/restorecon

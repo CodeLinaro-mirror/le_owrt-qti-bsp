@@ -77,10 +77,12 @@ endif
 ifeq ($(BOARD), sdx85)
 	$(INSTALL_DIR) $(1)/etc/hotplug.d/devcoredump
 	$(INSTALL_DATA) ../startup-scripts/files/devcd_rule $(1)/etc/hotplug.d/devcoredump/
+	$(INSTALL_BIN) ../startup-scripts/files/lvm_conf.json $(1)/etc/lvm_ota.json
 endif
 
 	$(INSTALL_BIN) ../startup-scripts/files/proxy_vote.init $(1)/etc/init.d/
-
+	$(INSTALL_DIR) $(1)/usr/bin
+	$(INSTALL_BIN) ../startup-scripts/files/mount-userdata.sh $(1)/usr/bin/
 endef
 
 $(eval $(call BuildPackage,usb-composition-ab))
