@@ -17,11 +17,21 @@ ifeq ($(USER_VARIANT),1)
 CONFIGURE_ARGS += --disable-adb-root
 endif
 
+ifneq ($(CONFIG_PACKAGE_selinux-policy),y)
+CONFIGURE_ARGS += --disable-selinux-mode
+endif
+
+ifeq ($(CONFIG_PACKAGE_selinux-policy),y)
+ADBD_DEPENDS:= +core-include +liblog +libcutils +libselinux +libmincrypt +libbase +fs_mgr +ext4_utils
+else
+ADBD_DEPENDS:= +core-include +liblog +libcutils +libmincrypt +libbase +fs_mgr +ext4_utils
+endif
+
 define Package/adbd
   SECTION:=Utils
   CATEGORY:=QTI-PACKAGES
   TITLE:=Android Debug Bridge CLI tool
-  DEPENDS:= +core-include +liblog +libcutils +libselinux +libmincrypt +libbase +fs_mgr +ext4_utils
+  DEPENDS:= $(ADBD_DEPENDS)
 endef
 
 define Package/adbd/description

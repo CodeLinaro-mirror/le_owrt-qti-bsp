@@ -57,11 +57,11 @@ define Package/usb-composition-ab/install
 	$(INSTALL_DIR) $(1)/etc/scripts
 	$(INSTALL_DIR) $(1)/mnt/sdcard
 	$(INSTALL_BIN) ./files/mounts-ab.sh $(1)/etc/scripts
-ifeq ($(BOARD), sdx75)
+ifeq ($(filter $(BOARD),sdx75 sdx85),$(BOARD))
 	$(INSTALL_DIR) $(1)/usr/bin
 	$(INSTALL_BIN) ../startup-scripts/files/overlay_backup.sh $(1)/usr/bin/
 	$(INSTALL_BIN) ../startup-scripts/files/overlay_restore.sh $(1)/usr/bin/
-	$(INSTALL_BIN) ../startup-scripts/files/config-restore.init $(1)/etc/init.d/
+	$(INSTALL_BIN) ../startup-scripts/files/data-config-restore.init $(1)/etc/init.d/
 endif
 ifneq ($(BOARD), sdx35)
 	$(INSTALL_BIN) ./files/partition-symlinks.init $(1)/etc/init.d/

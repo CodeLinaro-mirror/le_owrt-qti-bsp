@@ -40,7 +40,7 @@ enable_zram_config()
         MemTotalStr=`cat /proc/meminfo | grep MemTotal`
         MemTotal=${MemTotalStr:16:8}
         if [ $MemTotal -gt 131072 ]; then
-            echo 67108864 > /sys/block/zram0/disksize
+            echo $((96*1024*1024)) > /sys/block/zram0/disksize
         else
             echo 16777216 > /sys/block/zram0/disksize
         fi

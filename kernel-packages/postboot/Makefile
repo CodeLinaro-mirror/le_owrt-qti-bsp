@@ -7,6 +7,8 @@ PKG_FIXUP:=autoreconf
 
 ifeq ($(BOARD),sdx35)
 LOCAL_SRC := $(TOPDIR)/src/system/core/rootdir/sdxbaagha
+else ifeq ($(BOARD),qmb415)
+LOCAL_SRC := $(TOPDIR)/src/system/core/rootdir/qmb415
 else
 LOCAL_SRC := $(TOPDIR)/src/system/core/rootdir/sdxpinn
 endif
