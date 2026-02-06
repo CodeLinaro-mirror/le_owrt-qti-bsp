@@ -401,12 +401,13 @@ mount_userdata()
           mount -t ext4 "/dev/$VG_NAME/$LV_cfg" /cfg
           # Consider volume processing failed if /tmp/lvm_vol_progress exists
           # ToDo: Set ota_status to OTA_FAILED and fallback to previous slot 
-          if [ -x /sbin/abctl ]; then
-             if [ -f /tmp/lvm_vol_progress ]; then
+          if [ -f /tmp/lvm_vol_progress ]; then
                 echo "OTA_FAILED" > "$STATUS_FILE"
-                echo "Logical volume processing failed. Will fallback to previous slot in future builds.." >> /dev/kmsg
-                log "Logical volume processing failed. Will fall back to previous slot in future builds.."
-             fi
+                echo "Logical volume processing failed. " >> /dev/kmsg
+                log "Logical volume processing failed."
+            if [ -x /sbin/abctl ]; then
+                log "A/B build . ToDO: fallback to previous slot in case of A/B builds.."
+            fi
           fi
         fi
         ;;
