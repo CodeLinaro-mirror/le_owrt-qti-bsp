@@ -22,6 +22,9 @@ CURRENT_SLOT=$(abctl --boot_slot)
 exec >> /dev/kmsg 2>&1
 
 echo "Current running slot is :$CURRENT_SLOT"
+if [ -f /etc/scripts/partition-symlinks.sh ]; then
+    source /etc/scripts/partition-symlinks.sh
+fi
 
 update_permission()
 {
@@ -63,6 +66,10 @@ create_symlinks()
                 target_dev=/dev/$blockname
                 ln -s $target_dev $partition_name
         done
+
+        if [ -f /etc/scripts/partition-symlinks.sh ]; then
+            create_symlinks_ab "/dev/block/bootdevice/by-name/"
+        fi
 }
 
 fail_reboot()
