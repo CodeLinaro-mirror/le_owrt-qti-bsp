@@ -33,6 +33,10 @@ define Package/ext4_utils
         DEPENDS:= $(EXT4_DEPENDS)
 endef
 
+ifneq ($(PRPL_VERSION),)
+TARGET_LDFLAGS := $(filter-out -lselinux,$(TARGET_LDFLAGS))
+endif
+
 define Package/ext4_utils/description
   Ext4_utils is an open source build system meant to be both extremely fast, and, even more importantly, as user friendly as possible.
 endef
