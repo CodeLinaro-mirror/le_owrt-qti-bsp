@@ -66,7 +66,7 @@ define Package/usb-composition/install
 	$(INSTALL_BIN) ./files/ntp.init $(1)/etc/init.d/
 	$(INSTALL_BIN) ./files/ntp.config.sh $(1)/etc/init.d/
 
-ifeq ($(BOARD), sdx75)
+ifeq ($(filter $(BOARD),sdx75 sdx85),$(BOARD))
 	$(INSTALL_DIR) $(1)/usr/bin
 	$(INSTALL_BIN) ./files/overlay_backup.sh $(1)/usr/bin/
 	$(INSTALL_BIN) ./files/overlay_restore.sh $(1)/usr/bin/
