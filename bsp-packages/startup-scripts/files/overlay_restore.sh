@@ -9,6 +9,32 @@
 
 set -e
 
+update_permissions()
+{
+while [ 1 ]
+do
+        if [ -d /dev/block/bootdevice/by-name ]; then
+                if [ -b /dev/block/bootdevice/by-name/recoveryinfo ]; then
+                        chown root:disk /dev/block/bootdevice/by-name/recoveryinfo
+                        chmod 0660 /dev/block/bootdevice/by-name/recoveryinfo
+
+                        break
+                else
+                        break
+                fi
+        else
+                sleep 1
+        fi
+done
+
+#In case of MTD, change permissions for mtd block device
+if [ -f /proc/mtd ] && [ `cat /proc/mtd | wc -l` -ge "2" ]; then
+        mtd_block_number=`cat /proc/mtd | grep -i recoveryinfo | sed 's/^mtd//' | awk -F ':' '{print $1}'`
+        chown system:disk /dev/mtd$mtd_block_number
+        chmod 660 /dev/mtd$mtd_block_number
+fi
+}
+
 # Get the current boot slot
 current_slot=""
 if [ -x /sbin/abctl ]; then
@@ -19,7 +45,7 @@ inactive_slot=""
 
 
 target_path="/overlay/etc-upper$current_slot"
-
+sync
 #Restore after OTA
 if [ $# -eq 0 ]; then
 	backup_tar="/data/etc_backup.tar.gz"
@@ -28,6 +54,46 @@ if [ $# -eq 0 ]; then
 		exit 0
 	fi
 
+    #If A/B and fallback scenario -> no Restoration required. Delete backup and exit.
+    if [ -x /sbin/abctl ]; then 
+         update_permissions
+         # Get trial boot status
+         trial_status="$(abctl --get_trialboot_status 2>/dev/null || echo __ERR__)"
+
+         # Get current slot
+         slot_str="$(abctl --boot_slot 2>/dev/null || echo __ERR__)"
+         # Map _a ? 0, _b ? 1
+         if [ "$slot_str" = "_a" ]; then
+            slot_num=0
+         elif [ "$slot_str" = "_b" ]; then
+            slot_num=1
+         fi
+
+         # Get active status for current slot
+         active_line="$(abctl --get_active_status "$slot_num" 2>/dev/null || echo __ERR__)"
+         # Normalize spacing and case for robust matching
+         active_lc="$(echo "$active_line" | tr 'A-Z' 'a-z')"
+         # Detect keywords
+         is_active=false
+         case "$active_lc" in
+             *" is active"* )
+                 is_active=true
+                 ;;
+             *" is inactive"* )
+                 is_active=false
+                 ;;
+             *)
+                 is_active=false
+                 ;;
+         esac
+         # check if it is fallback scenario
+         if [ "$trial_status" -eq 1 ] && [ "$is_active" != true ]; then
+            rm -rf "$backup_tar"
+            echo "Fallback scenario. Other slot didnt boot. Backup file deleted." >> /dev/kmsg
+            exit 0
+         fi
+    fi
+
     if tar -xzpf "$backup_tar" -C "$target_path"; then
         sync
         echo "Backup restored."
@@ -35,6 +101,10 @@ if [ $# -eq 0 ]; then
         #Delete backup tar at the end
         rm -rf "$backup_tar"
         echo "Backup file deleted."
+
+	#remount
+	mount -o remount,lowerdir=/etc,upperdir=/overlay/etc-upper$current_slot,workdir=/overlay/.etc-work$current_slot /etc
+	echo "remount done "
     else
         echo "ERROR: Backup Restoration failed after OTA. " > /dev/kmsg
         if [ -x /sbin/abctl ]; then
