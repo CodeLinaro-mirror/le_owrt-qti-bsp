@@ -120,7 +120,7 @@ else
        create_lvm
        mount_userdata
     } >>"/cache/lvm.log" 2>&1
-
+    setup_ext_bind_mount
     fi
 fi
 if [ "$prplos_build" -ne 1 ]; then

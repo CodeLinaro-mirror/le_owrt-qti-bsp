@@ -419,3 +419,19 @@ mount_userdata()
         ;;
  esac
 }
+
+#bind mount /data/ext -> /ext
+setup_ext_bind_mount()
+{
+ if [[ -f /etc/os-release ]] && grep -qi "prplOs" /etc/os-release 2>/dev/null; then
+    EXT_BASE_DIR="/data/ext"
+    TARGET="/ext"
+    if [ ! -d "$EXT_BASE_DIR" ]; then
+        mkdir "$EXT_BASE_DIR"
+    fi
+
+    if [ -d "$TARGET" ]; then
+        mount -o bind "$EXT_BASE_DIR" "$TARGET"
+    fi
+ fi
+}
