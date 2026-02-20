@@ -14,8 +14,10 @@ ifeq ($(BOARD), sdx35)
 endif
 
 ifeq ($(CONFIG_PACKAGE_selinux-policy),y)
+CONFIGURE_ARGS += --enable-selinux-policy
 BIND_DEPENDS:= +liblog +libcutils +libutils +core-include +libselinux +glib2
 else
+CONFIGURE_ARGS += --disable-selinux-policy
 BIND_DEPENDS:= +liblog +libcutils +libutils +core-include +glib2
 endif
 include $(INCLUDE_DIR)/package.mk
