@@ -13,14 +13,29 @@ include $(INCLUDE_DIR)/host-build.mk
 SOURCE_DIR:= $(TOPDIR)/src/system/extras/$(PKG_NAME)/
 
 PKG_BUILD_DEPENDS:= ext4-utils/host
+
+ifneq ($(CONFIG_PACKAGE_selinux-policy),y)
+CONFIGURE_ARGS += --disable-selinux-mode
+endif
+
+ifeq ($(CONFIG_PACKAGE_selinux-policy),y)
 HOST_BUILD_DEPENDS:= libselinux/host libsparse/host libcutils/host
+EXT4_DEPENDS:= +libselinux +libsparse +libcutils +libpcre +core-include
+else
+HOST_BUILD_DEPENDS:= libsparse/host libcutils/host
+EXT4_DEPENDS:= +libsparse +libcutils +libpcre +core-include
+endif
 
 define Package/ext4_utils
 	SECTION:=QTI
 	CATEGORY:=QTI-PACKAGES
 	TITLE:= ext4_utils
-	DEPENDS:= +libselinux +libsparse +libcutils +libpcre +core-include
+        DEPENDS:= $(EXT4_DEPENDS)
 endef
+
+ifneq ($(PRPL_VERSION),)
+TARGET_LDFLAGS := $(filter-out -lselinux,$(TARGET_LDFLAGS))
+endif
 
 define Package/ext4_utils/description
   Ext4_utils is an open source build system meant to be both extremely fast, and, even more importantly, as user friendly as possible.

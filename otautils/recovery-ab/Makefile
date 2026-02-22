@@ -16,8 +16,17 @@ ifeq ($(CONFIG_TARGET_sdx75), y)
 CONFIGURE_ARGS += TARGET_SUPPORTS_MIRROR_AB_COPY=true
 endif
 
+ifeq ($(CONFIG_PACKAGE_selinux-policy),y)
+CONFIGURE_ARGS += --enable-selinux-policy
+APPLYPATCH_DEPENDS:=+libbase +libstdcpp +libbz2 +libcutils +libmincrypt +libselinux +libopenssl +zlib
+else
+CONFIGURE_ARGS += --disable-selinux-policy
+APPLYPATCH_DEPENDS:=+libbase +libstdcpp +libbz2 +libcutils +libmincrypt +libopenssl +zlib
+endif
+
 ifeq ($(CONFIG_TARGET_sdx85), y)
 CONFIGURE_ARGS += TARGET_SUPPORTS_MIRROR_AB_COPY=true
+CONFIGURE_ARGS += TARGET_SUPPORTS_LVM=true
 endif
 
 define Package/libfusesideload
@@ -53,7 +62,7 @@ define Package/applypatch-ab
   SECTION:=external
   CATEGORY:=OTA
   TITLE:=applypatch-ab
-  DEPENDS:= +libbase +libstdcpp +libbz2 +libcutils +libmincrypt +libselinux +libopenssl +zlib
+  DEPENDS:= $(APPLYPATCH_DEPENDS)
 endef
 
 define Package/updater-ab

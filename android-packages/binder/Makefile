@@ -13,13 +13,18 @@ ifeq ($(BOARD), sdx35)
 	TARGET_CFLAGS+= -DBINDER_IPC_32BIT
 endif
 
+ifeq ($(CONFIG_PACKAGE_selinux-policy),y)
+BIND_DEPENDS:= +liblog +libcutils +libutils +core-include +libselinux +glib2
+else
+BIND_DEPENDS:= +liblog +libcutils +libutils +core-include +glib2
+endif
 include $(INCLUDE_DIR)/package.mk
 
 define Package/binder
   SECTION:=QTI
   CATEGORY:=QTI-PACKAGES
   TITLE:=Binder Android
-  DEPENDS:= +liblog +libcutils +libutils +core-include +libselinux +glib2
+  DEPENDS:= $(BIND_DEPENDS)
 endef
 
 define Package/binder/Description

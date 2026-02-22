@@ -13,6 +13,10 @@ CONFIGURE_ARGS += --with-glib
 
 SOURCE_DIR:= $(TOPDIR)/src/system/extras/libhealthmon
 
+ifneq ($(PRPL_VERSION),)
+	TARGET_CFLAGS += -DFEATURE_PRPLWRT
+endif
+
 define Package/$(PKG_NAME)
 	SECTION:=QTI
 	CATEGORY:=QTI-PACKAGES

@@ -5,7 +5,7 @@
 
 
 
-create_symlinks()
+create_symlinks_ab()
 {
 while [ 1 ]
 do
@@ -33,5 +33,3 @@ for device in $devices;do
 done
 
 }
-
-create_symlinks "/dev/block/bootdevice/by-name/"
