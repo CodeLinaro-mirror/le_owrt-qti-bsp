@@ -7,6 +7,7 @@ STATUS_FILE="/cache/recovery/ota_status"
 CONFIG_JSON="${1:-/etc/lvm_ota.json}"
 UPDATER_BIN="/usr/bin/recovery"
 LOG_FILE="/cache/lvm.log"
+FWUPDATE_PACKAGE_PATH="/cache/recovery/update_package_path"
 
 # Create new volumes in same group: lcm_data: 1GB, cfg: 16M, mfgdata: 4M
 # Reduce existing volume to accomodate all above volumes (To be reduced: 1G+16M+4M=1044M)
@@ -263,8 +264,14 @@ update_vol()
      return
  fi
  log "Calling updater script.."
-
- "$UPDATER_BIN" "--update_package=/data/update.zip;--lvm_updation" || { log "updater failed"; echo "OTA_FAILED" > "$STATUS_FILE"; return; }
+  
+ # Extract the firmware update zip file path
+ UPDATE_PACKAGE=$(sed -n 's/.*--update_package=\([^;]*\).*/\1/p' $FWUPDATE_PACKAGE_PATH)
+ if [ -x /sbin/abctl ]; then
+    "$UPDATER_BIN" "--update_package=$UPDATE_PACKAGE;--lvm_updation" || { log "updater failed"; echo "OTA_FAILED" > "$STATUS_FILE"; return; }
+ else
+    "$UPDATER_BIN" "--update_package=$UPDATE_PACKAGE;--lvm_updation" --update_binary_from_device || { log "updater failed"; echo "OTA_FAILED" > "$STATUS_FILE"; return; }
+ fi
 
  status="$(cat "$STATUS_FILE" 2>/dev/null || echo "")"
  if [ "$status" != "OTA_VOL_SUCCESS" ]; then
