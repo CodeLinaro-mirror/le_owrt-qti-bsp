@@ -48,14 +48,9 @@ BTFM.bin                /dev/block/bootdevice/by-name/bluetooth
 Xbl_Ramdump.elf         /dev/block/bootdevice/by-name/xbl_ramdump
 imagefv.elf             /dev/block/bootdevice/by-name/imagefv
 uefi_sec.mbn            /dev/block/bootdevice/by-name/uefisecapp
+multi_image.mbn         /dev/block/bootdevice/by-name/multiimgoem
 multi_image_qti.mbn     /dev/block/bootdevice/by-name/multiimgqti
 cpucp.elf               /dev/block/bootdevice/by-name/cpucp
 devcfg_rfcomm.mbn       /dev/block/bootdevice/by-name/devcfg
 featenabler.mbn         /dev/block/bootdevice/by-name/featenabler
 qupv3fw.elf             /dev/block/bootdevice/by-name/qupfw
-tools.fv                /dev/block/bootdevice/by-name/toolsfv
-logfs_ufs_8mb.bin       /dev/block/bootdevice/by-name/logfs
-storsec.mbn             /dev/block/bootdevice/by-name/storsec
-quantumsdk.fv           /dev/block/bootdevice/by-name/quantumsdk
-Quantum.fv              /dev/block/bootdevice/by-name/quantumfv
-rtice.mbn               /dev/block/bootdevice/by-name/rtice

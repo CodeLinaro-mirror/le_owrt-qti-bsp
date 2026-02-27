@@ -23,6 +23,10 @@ ifeq ($(CONFIG_TARGET_sdx85), y)
         MIRROR_SYNC = "--mirror_sync"
 endif
 
+ifeq ($(CONFIG_TARGET_qmb415), y)
+        MIRROR_SYNC = "--mirror_sync"
+endif
+
 define Ota/Build/gen_ota_full_zip_ext4_ab
 	(cd $(BUILD_DIR)/OTA/ota-scripts; \
 	rm -rf update_ext4.zip; \

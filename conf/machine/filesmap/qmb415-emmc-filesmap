@@ -48,6 +48,7 @@ BTFM.bin                /dev/block/bootdevice/by-name/bluetooth
 Xbl_Ramdump.elf         /dev/block/bootdevice/by-name/xbl_ramdump
 imagefv.elf             /dev/block/bootdevice/by-name/imagefv
 uefi_sec.mbn            /dev/block/bootdevice/by-name/uefisecapp
+multi_image.mbn         /dev/block/bootdevice/by-name/multiimgoem
 multi_image_qti.mbn     /dev/block/bootdevice/by-name/multiimgqti
 cpucp.elf               /dev/block/bootdevice/by-name/cpucp
 devcfg_rfcomm.mbn       /dev/block/bootdevice/by-name/devcfg

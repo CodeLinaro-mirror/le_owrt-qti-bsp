@@ -64,7 +64,7 @@ ifeq ($(BOARD), sdx75)
 	$(INSTALL_BIN) ../startup-scripts/files/overlay_restore.sh $(1)/usr/bin/
 	$(INSTALL_BIN) ../startup-scripts/files/config-restore.init $(1)/etc/init.d/
 endif
-ifneq ($(BOARD), sdx35)
+ifneq ($(filter $(BOARD),sdx35 qmb415),$(BOARD))
 	$(INSTALL_BIN) ./files/partition-symlinks.init $(1)/etc/init.d/
 	$(INSTALL_BIN) ./files/partition-symlinks.sh $(1)/etc/scripts
 endif
@@ -79,7 +79,10 @@ ifeq ($(filter $(BOARD),sdx85 qmb415),$(BOARD))
 	$(INSTALL_DIR) $(1)/etc/hotplug.d/devcoredump
 	$(INSTALL_DATA) ../startup-scripts/files/devcd_rule $(1)/etc/hotplug.d/devcoredump/
 endif
-
+ifeq ($(BOARD), qmb415)
+	$(INSTALL_DIR) $(1)/usr/bin
+	$(INSTALL_BIN) ./files/getslotsuffix $(1)/usr/bin/
+endif
 	$(INSTALL_BIN) ../startup-scripts/files/proxy_vote.init $(1)/etc/init.d/
 
 endef

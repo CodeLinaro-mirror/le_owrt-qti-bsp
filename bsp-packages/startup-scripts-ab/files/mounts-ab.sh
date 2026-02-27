@@ -133,7 +133,7 @@ if [ ! -d /firmware/image ]; then
         else
 
                 if [ $CURRENT_SLOT == "_b" ]; then
-                        mount /dev/sde30 /firmware -o ro,context=u:r:qcfirmware.miscfile
+                        mount /dev/sde31 /firmware -o ro,context=u:r:qcfirmware.miscfile
                 else
                         mount /dev/sde6 /firmware -o ro,context=u:r:qcfirmware.miscfile
                 fi
@@ -170,12 +170,8 @@ else
         mount -t ext4 /dev/block/bootdevice/by-name/cache /cache -o noatime,data=ordered,noauto_da_alloc,discard,noexec,nodev,nosuid,noauto,context=u:r:cache.miscfile
         mount -t ext4 /dev/block/bootdevice/by-name/systemrw /overlay -o noatime,data=ordered,noauto_da_alloc,discard,noexec,nodev,nosuid,noauto
         mount -t ext4 /dev/block/bootdevice/by-name/userdata /data
-                if [ $CURRENT_SLOT == "_b" ]; then
-                        mount /dev/block/bootdevice/by-name/bluetooth_b /bt_firmware -o rw,context=u:r:qcfirmware.miscfile
-                else
-                        mount /dev/block/bootdevice/by-name/bluetooth /bt_firmware -o rw,context=u:r:qcfirmware.miscfile
-                fi
-                if [[ -f /etc/os-release ]] && grep -qi "prplOs" /etc/os-release 2>/dev/null; then
+        mount /dev/block/bootdevice/by-name/bluetooth$CURRENT_SLOT /bt_firmware -o ro,context=u:r:qcfirmware.miscfile
+        if [[ -f /etc/os-release ]] && grep -qi "prplOs" /etc/os-release 2>/dev/null; then
             mount -t ext4 /dev/block/bootdevice/by-name/lcm_data /lcm
             mount -t ext4 /dev/block/bootdevice/by-name/securestore /cfg
         fi
