@@ -17,13 +17,11 @@ ifeq ($(USER_VARIANT),1)
 CONFIGURE_ARGS += --disable-adb-root
 endif
 
-ifneq ($(CONFIG_PACKAGE_selinux-policy),y)
-CONFIGURE_ARGS += --disable-selinux-mode
-endif
-
 ifeq ($(CONFIG_PACKAGE_selinux-policy),y)
+CONFIGURE_ARGS += --enable-selinux-policy
 ADBD_DEPENDS:= +core-include +liblog +libcutils +libselinux +libmincrypt +libbase +fs_mgr +ext4_utils
 else
+CONFIGURE_ARGS += --disable-selinux-policy
 ADBD_DEPENDS:= +core-include +liblog +libcutils +libmincrypt +libbase +fs_mgr +ext4_utils
 endif
 

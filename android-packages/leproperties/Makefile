@@ -14,13 +14,13 @@ ifeq ($(BOARD), sdx35)
 	TARGET_CFLAGS += -DPROP_TRIGGER
 endif
 
-ifneq ($(CONFIG_PACKAGE_selinux-policy),y)
-CONFIGURE_ARGS += --disable-selinux-mode
-endif
+
 
 ifeq ($(CONFIG_PACKAGE_selinux-policy),y)
+CONFIGURE_ARGS += --enable-selinux-policy
 LEPROP_DEPENDS:= +libselinux +libcutils +liblog
 else
+CONFIGURE_ARGS += --disable-selinux-policy
 LEPROP_DEPENDS:= +libcutils +liblog
 endif
 
