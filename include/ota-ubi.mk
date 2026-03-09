@@ -28,6 +28,10 @@ ifeq ($(CONFIG_TARGET_sdx75), y)
         SYSTEMRW_UPDATE = "--systemrw_update"
 endif
 
+ifeq ($(CONFIG_TARGET_sdx85), y)
+        SYSTEMRW_UPDATE = "--systemrw_update"
+endif
+
 define Ota/Build/gen_ota_full_zip_ubi
 	(cd $(BUILD_DIR)/OTA/ota-scripts; \
 	rm -rf update_ubi.zip; \

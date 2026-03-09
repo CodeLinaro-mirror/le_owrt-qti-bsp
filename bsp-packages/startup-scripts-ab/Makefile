@@ -64,7 +64,6 @@ ifeq ($(filter $(BOARD),sdx75 sdx85),$(BOARD))
 	$(INSTALL_BIN) ../startup-scripts/files/data-config-restore.init $(1)/etc/init.d/
 endif
 ifneq ($(BOARD), sdx35)
-	$(INSTALL_BIN) ./files/partition-symlinks.init $(1)/etc/init.d/
 	$(INSTALL_BIN) ./files/partition-symlinks.sh $(1)/etc/scripts
 endif
 	$(INSTALL_BIN) ../startup-scripts/files/automountsdcard.sh $(1)/etc/scripts
@@ -77,10 +76,12 @@ endif
 ifeq ($(BOARD), sdx85)
 	$(INSTALL_DIR) $(1)/etc/hotplug.d/devcoredump
 	$(INSTALL_DATA) ../startup-scripts/files/devcd_rule $(1)/etc/hotplug.d/devcoredump/
+	$(INSTALL_BIN) ../startup-scripts/files/lvm_conf.json $(1)/etc/lvm_ota.json
 endif
 
 	$(INSTALL_BIN) ../startup-scripts/files/proxy_vote.init $(1)/etc/init.d/
-
+	$(INSTALL_DIR) $(1)/usr/bin
+	$(INSTALL_BIN) ../startup-scripts/files/mount-userdata.sh $(1)/usr/bin/
 endef
 
 $(eval $(call BuildPackage,usb-composition-ab))
