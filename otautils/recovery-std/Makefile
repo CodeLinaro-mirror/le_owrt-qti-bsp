@@ -1,8 +1,8 @@
 include $(TOPDIR)/rules.mk
 
-PKG_NAME:=recovery-ab
+PKG_NAME:=recovery-std
 PKG_VERSION:=1.0
-PKG_LICENSE:=Apache-2.0,BSD-3-Clause
+PKG_LICENSE:=Apache-2.0,BSD-3-Clause-Clear
 PKG_RELEASE:=1
 PKG_FIXUP:=autoreconf
 
@@ -10,22 +10,9 @@ include $(INCLUDE_DIR)/package.mk
 
 SOURCE_DIR:=$(TOPDIR)/src/OTA/recovery
 
-CONFIGURE_ARGS += TARGET_SUPPORTS_AB=true
-CONFIGURE_ARGS += TARGET_NAND_AB_BOOT=true
-ifeq ($(CONFIG_TARGET_sdx75), y)
-CONFIGURE_ARGS += TARGET_SUPPORTS_MIRROR_AB_COPY=true
-endif
-
-ifeq ($(CONFIG_PACKAGE_selinux-policy),y)
-CONFIGURE_ARGS += --enable-selinux-policy
-APPLYPATCH_DEPENDS:=+libbase +libstdcpp +libbz2 +libcutils +libmincrypt +libselinux +libopenssl +zlib
-else
-CONFIGURE_ARGS += --disable-selinux-policy
-APPLYPATCH_DEPENDS:=+libbase +libstdcpp +libbz2 +libcutils +libmincrypt +libopenssl +zlib
-endif
+CONFIGURE_ARGS += CONFIG_RECOVERY_STD=true
 
 ifeq ($(CONFIG_TARGET_sdx85), y)
-CONFIGURE_ARGS += TARGET_SUPPORTS_MIRROR_AB_COPY=true
 CONFIGURE_ARGS += TARGET_SUPPORTS_LVM=true
 endif
 
@@ -35,49 +22,41 @@ define Package/libfusesideload
   TITLE:=libfusesideload
 endef
 
-define Package/recovery-ab
+define Package/recovery-std
   SECTION:=external
   CATEGORY:=OTA
-  TITLE:=recovery-ab
-  DEPENDS:= +abctl +libbase +libsparse +libbz2 +adbd +libopenssl +ext4_utils +libmincrypt +libstdcpp +zlib
+  TITLE:=recovery-std
+  DEPENDS:= +libbase +libsparse +libbz2 +adbd +libopenssl +ext4_utils +libmincrypt +libstdcpp +zlib
 endef
 
 ifeq ($(CONFIG_OTA_PACKAGE_VERIFICATION), y)
 	CONFIGURE_ARGS += TARGET_SUPPORTS_OTA_VERIFICATION=true
-  define Package/recovery-ab/generate_public_key
+  define Package/recovery-std/generate_public_key
 	$(STAGING_DIR_HOST)/bin/openssl pkcs8 -inform DER -nocrypt -in $(TOPDIR)/src/OTA/recovery/tests/testdata/testkey.pk8 -out $(TOPDIR)/src/OTA/build/tools/releasetools/private.pem
 	mkdir -p $(PKG_BUILD_DIR)/ipkg-$(PKGARCH)/$(PKG_NAME)/etc
 	$(STAGING_DIR_HOST)/bin/openssl rsa -in $(TOPDIR)/src/OTA/build/tools/releasetools/private.pem -outform PEM -pubout > $(PKG_BUILD_DIR)/ipkg-$(PKGARCH)/$(PKG_NAME)/etc/public.pem
   endef
 endif
 
-define Package/edify-ab
+define Package/edify-std
   SECTION:=external
   CATEGORY:=OTA
-  TITLE:=edify-ab
+  TITLE:=edify-std
   DEPENDS:=+libbase +libstdcpp
 endef
 
-define Package/applypatch-ab
+define Package/applypatch-std
   SECTION:=external
   CATEGORY:=OTA
-  TITLE:=applypatch-ab
-  DEPENDS:= $(APPLYPATCH_DEPENDS)
+  TITLE:=applypatch-std
+  DEPENDS:= +libbase +libstdcpp +libbz2 +libcutils +libmincrypt +libselinux +libopenssl +zlib
 endef
 
-define Package/updater-ab
+define Package/updater-std
   SECTION:=external
   CATEGORY:=OTA
-  TITLE:=updater-ab
-  DEPENDS:= +abctl +librecovery-updater-msm +libbase +libstdcpp +libbz2 +libmincrypt +libopenssl +zlib +ext4_utils +liblog
-endef
-
-define Package/mirror-copy-ab
-  SECTION:=external
-  CATEGORY:=OTA
-  TITLE:=mirror-copy-ab
-  DEPENDS:= +abctl +librecovery-updater-msm +libbase +libstdcpp +libbz2 +libmincrypt +libopenssl +zlib +ext4_utils +liblog
-
+  TITLE:=updater-std
+  DEPENDS:= +librecovery-updater-msm +libbase +libstdcpp +libbz2 +libmincrypt +libopenssl +zlib +ext4_utils +liblog
 endef
 
 define Build/Prepare
@@ -97,39 +76,32 @@ define Package/libfusesideload/install
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/.libs/libfusesideload.a $(1)/usr/lib
 endef
 
-define Package/recovery-ab/install
-	$(Package/recovery-ab/generate_public_key)
+define Package/recovery-std/install
+	$(Package/recovery-std/generate_public_key)
 	$(INSTALL_DIR) $(1)/usr/bin/
 	$(INSTALL_DIR) $(1)/etc/init.d/
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/recovery $(1)/usr/bin/recovery
 	$(INSTALL_BIN) ./files/fstab_AB_cache_ext4 $(1)/etc/recovery_volume_config
 endef
 
-define Package/edify-ab/install
+define Package/edify-std/install
 	$(INSTALL_DIR) $(1)/usr/bin/
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/edify/edify $(1)/usr/bin/edify
 endef
 
-define Package/applypatch-ab/install
+define Package/applypatch-std/install
 	$(INSTALL_DIR) $(1)/usr/bin/
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/applypatch/applypatch $(1)/usr/bin/applypatch
 endef
 
-define Package/updater-ab/install
+define Package/updater-std/install
 	$(INSTALL_DIR) $(1)/usr/bin/
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/updater/updater $(1)/usr/bin/updater
 endef
 
-define Package/mirror-copy-ab/install
-	$(INSTALL_DIR) $(1)/usr/bin/
-	$(INSTALL_DIR) $(1)/etc/init.d/
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/mirror_copy/mirror_copy $(1)/usr/bin/mirror_copy
-	$(INSTALL_BIN) ./files/mirror_copy.init $(1)/etc/init.d/mirror_copy.init
-endef
 
-$(eval $(call BuildPackage,recovery-ab))
+$(eval $(call BuildPackage,recovery-std))
 $(eval $(call BuildPackage,libfusesideload))
-$(eval $(call BuildPackage,edify-ab))
-$(eval $(call BuildPackage,applypatch-ab))
-$(eval $(call BuildPackage,updater-ab))
-$(eval $(call BuildPackage,mirror-copy-ab))
+$(eval $(call BuildPackage,edify-std))
+$(eval $(call BuildPackage,applypatch-std))
+$(eval $(call BuildPackage,updater-std))

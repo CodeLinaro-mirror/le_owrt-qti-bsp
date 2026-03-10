@@ -1,0 +1,6 @@
+#Copyright (c) Qualcomm Technologies, Inc. and/or its subsidiaries.
+#SPDX-License-Identifier: BSD-3-Clause-Clear
+
+# cache and userdata entries only
+/dev/block/bootdevice/by-name/cache       /cache     ext4     defaults     0  0
+/dev/block/bootdevice/by-name/userdata    /data      ext4     defaults     0  0
