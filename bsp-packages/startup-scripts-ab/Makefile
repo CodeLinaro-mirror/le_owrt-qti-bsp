@@ -37,6 +37,7 @@ endef
 
 define Package/usb-composition-ab/install
 	$(INSTALL_DIR) $(1)/etc/usb
+	$(INSTALL_DIR) $(1)/bt_firmware/image
 	$(INSTALL_BIN) -b -m 0644 /dev/null $(1)/etc/usb/boot_hsic_comp
 	$(INSTALL_BIN) -b -m 0644 /dev/null $(1)/etc/usb/boot_hsusb_comp
 	echo $(USB_COMPOSITION) > $(1)/etc/usb/boot_hsusb_comp
