@@ -27,9 +27,9 @@
 # OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
 # IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#Changes from Qualcomm Innovation Center are provided under the following license:
-#Copyright (c) 2021-2023 Qualcomm Innovation Center, Inc. All rights reserved.
-#SPDX-License-Identifier: BSD-3-Clause-Clear
+# Changes from Qualcomm Technologies, Inc. are provided under the following license:
+# Copyright (c) Qualcomm Technologies, Inc. and/or its subsidiaries.
+# SPDX-License-Identifier: BSD-3-Clause-Clear
 
 #
 # find_recovery_partitions        Script to find and mount partitions used in recovery
@@ -37,6 +37,10 @@
 
 # set selinux to permissive mode in recovery mode
 /usr/sbin/setenforce 0
+
+source /usr/bin/mount-userdata.sh
+exec >> /dev/kmsg 2>&1
+echo "Bulbul: inside script "
 
 emmc_dir=/dev/block/bootdevice/by-name
 mtd_file=/proc/mtd
@@ -211,18 +215,23 @@ if [ -f /proc/mtd ] && [ `cat /proc/mtd | wc -l` -ge "2" ]; then
     eval FindAndMountUBI usrfs   /data    0
     eval FindAndMountUBI cachefs /cache   0
     eval FindAndMountMTD misc    /misc
+    mount_overlay data
 else
     fstype="EXT4"
     create_symlinks mmc
     eval FindAndMountEXT4 system   /system   1
-    eval FindAndMountEXT4 userdata /data     0
     eval FindAndMountEXT4 cache    /cache    0
+    {
+      mount_userdata
+      rc=$?   # capture return code
+    } >>"/cache/lvm.log" 2>&1
+    
+    if [ "$rc" -eq 0 ]; then
+        UpdateRecoveryVolume "userdata" "/data" "ext4" "/dev/block/bootdevice/by-name/userdata"
+    else
+        UpdateRecoveryVolume "usrfs" "/data" "ext4" "/dev/block/bootdevice/by-name/usrfs"
+    fi
     eval FindAndUpdateMisc misc    /misc
 fi
-
-mkdir -p /data/overlay-work-rec
-mkdir -p /data/overlay-work-rec/etc-upper
-mkdir -p /data/overlay-work-rec/.etc-work
-mount -t overlay -o lowerdir=/etc,upperdir=/data/overlay-work-rec/etc-upper,workdir=/data/overlay-work-rec/.etc-work overlay /etc
 
 exit
