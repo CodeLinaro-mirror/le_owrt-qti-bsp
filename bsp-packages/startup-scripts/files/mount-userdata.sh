@@ -9,8 +9,8 @@ UPDATER_BIN="/usr/bin/recovery"
 LOG_FILE="/cache/lvm.log"
 FWUPDATE_PACKAGE_PATH="/cache/recovery/update_package_path"
 
-# Create new volumes in same group: lcm_data: 1GB, cfg: 16M, mfgdata: 4M
-# Reduce existing volume to accomodate all above volumes (To be reduced: 1G+16M+4M=1044M)
+# Create new volumes in same group: lcm_data: 1GB, cfg: 16M
+# Reduce existing volume to accomodate all above volumes (To be reduced: 1G+16M=1040M)
 #Sizes to be aligned with PE size i,e 4MB
 prpl_volumes_size=1044M
 
@@ -296,7 +296,6 @@ create_lvm()
  VG_NAME="vgdata"
  LV_lcm="lcm_data"
  LV_cfg="securestore"
- LV_mfg="mfgdata"
 
  if [ ! -b "$BLK_NODE" ]; then
     log "Block device not found!"
@@ -317,8 +316,8 @@ create_lvm()
             count=$(lvs --noheadings --options lv_name "$VG_NAME" | wc -l)
             log "prpl build. Count = $count"
             if [ "$count" -eq 1 ]; then
-              # Create new volumes in same group: lcm_data: 1GB, cfg: 16M, mfgdata: 1M
-              # Reduce existing volume to accomodate all above volumes (To be reduced: 1G+16M+1M=1041M)
+              # Create new volumes in same group: lcm_data: 1GB, cfg: 16M
+              # Reduce existing volume to accomodate all above volumes (To be reduced: 1G+16M=1040M)
               current_size="$(lv_size_bytes "/dev/${VG_NAME}/${LV_NAME}")"
               reduce_bytes="$(to_bytes "$prpl_volumes_size")"
               new_size="$(expr "$current_size" - "$reduce_bytes" 2>/dev/null)"
@@ -332,7 +331,6 @@ create_lvm()
               #create new volumes
               lvcreate -n "$LV_lcm" -L 1G "$VG_NAME"
               lvcreate -n "$LV_cfg" -L 16M "$VG_NAME"
-              lvcreate -n "$LV_mfg" -L 4M "$VG_NAME"
               log "New volumes created for prplOS."
               activate_lv ${VG_NAME} ${LV_NAME}
               mkfs.ext4 "/dev/$VG_NAME/$LV_lcm"
@@ -349,7 +347,6 @@ create_lvm()
         if [[ -f /etc/os-release ]] && grep -qi "prplOs" /etc/os-release 2>/dev/null; then
             lvcreate -n "$LV_lcm" -L 1G "$VG_NAME"
             lvcreate -n "$LV_cfg" -L 16M "$VG_NAME"
-            lvcreate -n "$LV_mfg" -L 1M "$VG_NAME"
         fi
         lvcreate -n "$LV_NAME" -l 100%FREE "$VG_NAME"
 
