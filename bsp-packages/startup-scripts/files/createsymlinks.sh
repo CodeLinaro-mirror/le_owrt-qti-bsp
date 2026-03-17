@@ -3,10 +3,7 @@
 #Copyright (c) Qualcomm Technologies, Inc. and/or its subsidiaries.
 #SPDX-License-Identifier: BSD-3-Clause-Clear
 
-source /usr/bin/mount-userdata.sh
 FILES=/sys/class/block/
-exec >> /dev/kmsg 2>&1
-echo "Bulbul: inside script "
 
 # SELinux context options (cleared for prpl builds)
 cache_context=",context=u:r:cache.miscfile"
@@ -21,6 +18,13 @@ if [ -f /etc/os-release ] && grep -qi "prplOs" /etc/os-release 2>/dev/null; then
     persist_context=""
     firmware_context=""
 fi
+
+
+if [ "$prplos_build" -eq 1 ]; then
+    source /usr/bin/mount-userdata.sh
+    exec >> /dev/kmsg 2>&1
+fi
+
 
 create_symlinks()
 {
@@ -115,12 +119,16 @@ else
     if [ -f /proc/mtd ] && [ `cat /proc/mtd | wc -l` -ge "2" ]; then
        echo "usrfs is a logical volume on ubi0"
     else
-       : > "/cache/lvm.log"
-    {
-       create_lvm
-       mount_userdata
-    } >>"/cache/lvm.log" 2>&1
-    setup_ext_bind_mount
+       if [ "$prplos_build" -ne 1 ]; then
+          mount -t ext4 /dev/block/bootdevice/by-name/userdata /data
+       else
+           : > "/cache/lvm.log"
+       {
+           create_lvm
+           mount_userdata
+       } >>"/cache/lvm.log" 2>&1
+          setup_ext_bind_mount
+       fi
     fi
 fi
 if [ "$prplos_build" -ne 1 ]; then
