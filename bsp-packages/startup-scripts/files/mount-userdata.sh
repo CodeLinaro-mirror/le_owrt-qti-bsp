@@ -7,6 +7,7 @@ STATUS_FILE="/cache/recovery/ota_status"
 CONFIG_JSON="${1:-/etc/lvm_ota.json}"
 UPDATER_BIN="/usr/bin/recovery"
 LOG_FILE="/cache/lvm.log"
+FWUPDATE_PACKAGE_PATH="/cache/recovery/update_package_path"
 
 # Create new volumes in same group: lcm_data: 1GB, cfg: 16M, mfgdata: 4M
 # Reduce existing volume to accomodate all above volumes (To be reduced: 1G+16M+4M=1044M)
@@ -263,8 +264,14 @@ update_vol()
      return
  fi
  log "Calling updater script.."
-
- "$UPDATER_BIN" "--update_package=/data/update.zip;--lvm_updation" || { log "updater failed"; echo "OTA_FAILED" > "$STATUS_FILE"; return; }
+  
+ # Extract the firmware update zip file path
+ UPDATE_PACKAGE=$(sed -n 's/.*--update_package=\([^;]*\).*/\1/p' $FWUPDATE_PACKAGE_PATH)
+ if [ -x /sbin/abctl ]; then
+    "$UPDATER_BIN" "--update_package=$UPDATE_PACKAGE;--lvm_updation" || { log "updater failed"; echo "OTA_FAILED" > "$STATUS_FILE"; return; }
+ else
+    "$UPDATER_BIN" "--update_package=$UPDATE_PACKAGE;--lvm_updation" --update_binary_from_device || { log "updater failed"; echo "OTA_FAILED" > "$STATUS_FILE"; return; }
+ fi
 
  status="$(cat "$STATUS_FILE" 2>/dev/null || echo "")"
  if [ "$status" != "OTA_VOL_SUCCESS" ]; then
@@ -401,12 +408,13 @@ mount_userdata()
           mount -t ext4 "/dev/$VG_NAME/$LV_cfg" /cfg
           # Consider volume processing failed if /tmp/lvm_vol_progress exists
           # ToDo: Set ota_status to OTA_FAILED and fallback to previous slot 
-          if [ -x /sbin/abctl ]; then
-             if [ -f /tmp/lvm_vol_progress ]; then
+          if [ -f /tmp/lvm_vol_progress ]; then
                 echo "OTA_FAILED" > "$STATUS_FILE"
-                echo "Logical volume processing failed. Will fallback to previous slot in future builds.." >> /dev/kmsg
-                log "Logical volume processing failed. Will fall back to previous slot in future builds.."
-             fi
+                echo "Logical volume processing failed. " >> /dev/kmsg
+                log "Logical volume processing failed."
+            if [ -x /sbin/abctl ]; then
+                log "A/B build . ToDO: fallback to previous slot in case of A/B builds.."
+            fi
           fi
         fi
         ;;
@@ -418,4 +426,20 @@ mount_userdata()
         log "Unknown type, aborting."
         ;;
  esac
+}
+
+#bind mount /data/ext -> /ext
+setup_ext_bind_mount()
+{
+ if [[ -f /etc/os-release ]] && grep -qi "prplOs" /etc/os-release 2>/dev/null; then
+    EXT_BASE_DIR="/data/ext"
+    TARGET="/ext"
+    if [ ! -d "$EXT_BASE_DIR" ]; then
+        mkdir "$EXT_BASE_DIR"
+    fi
+
+    if [ -d "$TARGET" ]; then
+        mount -o bind "$EXT_BASE_DIR" "$TARGET"
+    fi
+ fi
 }
