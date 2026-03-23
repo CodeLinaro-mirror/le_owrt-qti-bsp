@@ -28,6 +28,7 @@ endef
 
 define Package/$(PKG_NAME)/install
 	$(INSTALL_BIN) ./files/init $(1)/init
+	$(INSTALL_BIN) ./files/init_verity.sh $(1)/init_verity.sh
 endef
 
 $(eval $(call BuildPackage,rd-init))

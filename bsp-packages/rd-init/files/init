@@ -87,15 +87,20 @@ else
             fi
         fi
     done
-    echo "Mounting the system partition"
-    /bin/mount -t ext4 -o ro "$partition" /mnt/system || {
-    if [ "$DEBUG" = "1" ]; then
-        echo "Mount failed for $partition"
-        start_rdshell
+    verityenabled=$(cat /proc/cmdline | grep -o 'verity=enabled')
+    if [ "$verityenabled" ]; then
+        ./init_verity.sh $partition
     else
-        /sbin/reboot -f
+        echo "Mounting the system partition"
+        /bin/mount -t ext4 -o ro "$partition" /mnt/system || {
+        if [ "$DEBUG" = "1" ]; then
+            echo "Mount failed for $partition"
+            start_rdshell
+        else
+            /sbin/reboot -f
+        fi
+        }
     fi
-    }
 fi
 
 echo "Switching to system partition"
