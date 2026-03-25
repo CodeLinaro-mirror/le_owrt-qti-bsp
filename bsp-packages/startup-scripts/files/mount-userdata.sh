@@ -336,8 +336,8 @@ create_lvm()
               mkfs.ext4 "/dev/$VG_NAME/$LV_lcm"
               mkfs.ext4 "/dev/$VG_NAME/$LV_cfg"
            fi
-           process_config
-      fi
+        fi
+        process_config
         ;;
     *"data"*)
         log "Empty partition, setting up LVM..."
@@ -399,8 +399,8 @@ mount_userdata()
         create_links
         mount -t ext4 "/dev/$VG_NAME/$LV_NAME" "$SRC_DIR"
         log "Userdata mounted successfully on usrfs logical volume."
+	update_vol
         if [[ -f /etc/os-release ]] && grep -qi "prplOs" /etc/os-release 2>/dev/null; then
-          update_vol
           mount -t ext4 "/dev/$VG_NAME/$LV_lcm" /lcm
           mount -t ext4 "/dev/$VG_NAME/$LV_cfg" /cfg
           # Consider volume processing failed if /tmp/lvm_vol_progress exists
