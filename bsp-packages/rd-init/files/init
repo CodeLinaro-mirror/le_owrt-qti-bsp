@@ -87,8 +87,9 @@ else
             fi
         fi
     done
+    normal_mode=$(cat /proc/cmdline | grep -o 'androidboot.force_normal_boot=1')
     verityenabled=$(cat /proc/cmdline | grep -o 'verity=enabled')
-    if [ "$verityenabled" ]; then
+    if [ -n "$verityenabled" ] && [ -n "$normal_mode" ]; then
         ./init_verity.sh $partition
     else
         echo "Mounting the system partition"
