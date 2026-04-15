@@ -6,7 +6,6 @@
 source /usr/bin/mount-userdata.sh
 FILES=/sys/class/block/
 exec >> /dev/kmsg 2>&1
-echo "Bulbul: inside script "
 
 # SELinux context options (cleared for prpl builds)
 cache_context=",context=u:r:cache.miscfile"
