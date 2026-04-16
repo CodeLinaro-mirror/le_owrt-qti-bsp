@@ -6,7 +6,6 @@
 source /usr/bin/mount-userdata.sh
 FILES=/sys/class/block/
 exec >> /dev/kmsg 2>&1
-echo "Bulbul: inside script "
 
 # SELinux context options (cleared for prpl builds)
 cache_context=",context=u:r:cache.miscfile"
@@ -120,7 +119,7 @@ else
        create_lvm
        mount_userdata
     } >>"/cache/lvm.log" 2>&1
-
+    setup_ext_bind_mount
     fi
 fi
 if [ "$prplos_build" -ne 1 ]; then

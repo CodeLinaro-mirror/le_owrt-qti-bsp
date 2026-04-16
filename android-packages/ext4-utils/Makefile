@@ -14,14 +14,12 @@ SOURCE_DIR:= $(TOPDIR)/src/system/extras/$(PKG_NAME)/
 
 PKG_BUILD_DEPENDS:= ext4-utils/host
 
-ifneq ($(CONFIG_PACKAGE_selinux-policy),y)
-CONFIGURE_ARGS += --disable-selinux-mode
-endif
-
 ifeq ($(CONFIG_PACKAGE_selinux-policy),y)
+HOST_CONFIGURE_ARGS += --enable-selinux-policy
 HOST_BUILD_DEPENDS:= libselinux/host libsparse/host libcutils/host
 EXT4_DEPENDS:= +libselinux +libsparse +libcutils +libpcre +core-include
 else
+HOST_CONFIGURE_ARGS += --disable-selinux-policy
 HOST_BUILD_DEPENDS:= libsparse/host libcutils/host
 EXT4_DEPENDS:= +libsparse +libcutils +libpcre +core-include
 endif

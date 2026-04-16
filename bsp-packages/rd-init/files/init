@@ -1,0 +1,115 @@
+#!/bin/sh
+# Copyright (C) 2006 OpenWrt.org
+export INITRAMFS=1
+DEBUG=0
+
+# Fallback interactive shell for recovery/debugging
+start_rdshell() {
+    echo "Starting ramdisk shell ...!"
+    exec /bin/sh
+}
+
+do_mounts()
+{
+    echo "mount sysfs"
+    /bin/mount -t sysfs sysfs /sys
+
+    echo "mount debugfs"
+    /bin/mount -t debugfs debugfs /sys/kernel/debug
+
+    echo "mount proc"
+    /bin/mount proc /proc -t proc
+
+    echo "mount devtmpfs"
+    /bin/mount -t devtmpfs devtmpfs /dev
+}
+
+
+echo "Executing initramfs init file"
+
+do_mounts
+
+/bin/mkdir -p /mnt/system
+
+# Try NAND/UBI path first: presence of /proc/mtd and at least 2 lines
+if [ -f /proc/mtd ] && [ `cat /proc/mtd | wc -l` -ge "2" ]; then
+    mtd_block_device=`cat /proc/mtd | grep -i system  | awk -F ':' '{print $1}'`
+    echo "Detected the mtd partition for system at :" $mtd_block_device
+    if [ -z "$mtd_block_device" ]; then
+        if [ "$DEBUG" = "1" ]; then
+            echo "No system partition found, fall back to ramdisk shell"
+            start_rdshell
+        else
+           /sbin/reboot -f
+        fi
+    fi
+    timeout=60
+    while [ ! -e /dev/ubi0_0 ]; do
+        echo "Waiting for UBI volume rootfs..."
+        /bin/sleep 1
+        timeout=$((timeout - 1))
+        if [ "$timeout" -le 0 ]; then
+            if [ "$DEBUG" = "1" ]; then
+                echo "Timeout waiting for UBI volume rootfs"
+                start_rdshell
+                break
+            else
+                /sbin/reboot -f
+            fi
+        fi
+    done
+    echo "Mounting the system partition"
+    /bin/mount -t ubifs -o ro ubi0:rootfs /mnt/system || start_rdshell
+else
+    # Try eMMC path: parse kernel cmdline for /mmcblk* block device
+    partition=$(cat /proc/cmdline | grep -o 'root=/dev/mmcblk[^ ]*' | cut -d= -f2)
+    echo "Detected system partition at : "$partition
+    if [ -z "$partition" ]; then
+        if [ "$DEBUG" = "1" ]; then
+            echo "No system partition found, fall back to ramdisk shell"
+            start_rdshell
+        else
+            /sbin/reboot -f
+        fi
+    fi
+    timeout=60
+    while [ ! -b $partition ]; do
+        echo "Waiting for $partition to appear..."
+        /bin/sleep 1
+        timeout=$((timeout - 1))
+        if [ $timeout -le 0 ]; then
+            if [ "$DEBUG" = "1" ]; then
+                echo "Timeout waiting for $partition"
+                start_rdshell
+                break
+            else
+                /sbin/reboot -f
+            fi
+        fi
+    done
+    normal_mode=$(cat /proc/cmdline | grep -o 'androidboot.force_normal_boot=1')
+    verityenabled=$(cat /proc/cmdline | grep -o 'verity=enabled')
+    if [ -n "$verityenabled" ] && [ -n "$normal_mode" ]; then
+        ./init_verity.sh $partition
+    else
+        echo "Mounting the system partition"
+        /bin/mount -t ext4 -o ro "$partition" /mnt/system || {
+        if [ "$DEBUG" = "1" ]; then
+            echo "Mount failed for $partition"
+            start_rdshell
+        else
+            /sbin/reboot -f
+        fi
+        }
+    fi
+fi
+
+echo "Switching to system partition"
+exec /sbin/switch_root /mnt/system /sbin/init || {
+    if [ "$DEBUG" = "1" ]; then
+        echo "switch_root failed."
+        start_rdshell
+    else
+        /sbin/reboot -f
+    fi
+    }
