@@ -102,3 +102,16 @@ if [ -c /dev/input/event0 ]; then
         chown system:plugdev /dev/input/event0
         chmod 0664 /dev/input/event0
 fi
+
+if [ -e /sys/class/remoteproc/remoteproc0/coredump ]; then
+        chown system:system /sys/class/remoteproc/remoteproc0/coredump
+fi
+
+if [ -e /sys/kernel/dload/dload_mode ]; then
+        chown system:system /sys/kernel/dload/dload_mode
+fi
+
+if [ -e /sys/module/qcom_ramdump/parameters/enable_dump_collection ]; then
+        chown system:system /sys/module/qcom_ramdump/parameters/enable_dump_collection
+fi
+

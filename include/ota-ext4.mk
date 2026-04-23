@@ -21,6 +21,10 @@ ifeq ($(CONFIG_TARGET_sdx75), y)
         SYSTEMRW_UPDATE = "--systemrw_update"
 endif
 
+ifeq ($(CONFIG_TARGET_sdx85), y)
+        SYSTEMRW_UPDATE = "--systemrw_update"
+endif
+
 define Ota/Build/compute_sha1
 	mkdir -p ${TARGET_DIR}/recoveryupgrade; \
 	sha1sum ${IMAGE_PRODUCTS_DIR}/boot.img | cut -f 1 -d ' ' > ${TARGET_DIR}/recoveryupgrade/recoveryimg_sha1; \
@@ -88,9 +92,13 @@ define Ota/Build/target-files-zip-ext4
 	cp $(IMAGE_PRODUCTS_DIR)/boot.img $(OTA_TARGET_IMAGE_ROOTFS_EXT4)/BOOTABLE_IMAGES/recovery.img
 	cp $(IMAGE_PRODUCTS_DIR)/system.img $(OTA_TARGET_IMAGE_ROOTFS_EXT4)/IMAGES/system.img
 	stat --printf="system_image_size=%s\n" ${IMAGE_PRODUCTS_DIR}/system.img >> ${OTA_TARGET_IMAGE_ROOTFS_EXT4}/META/misc_info.txt
+	cp $(IMAGE_PRODUCTS_DIR)/system.map $(OTA_TARGET_IMAGE_ROOTFS_EXT4)/IMAGES/system.map
         cp $(IMAGE_PRODUCTS_DIR)/systemrw.img $(OTA_TARGET_IMAGE_ROOTFS_EXT4)/IMAGES/systemrw.img
         stat --printf="systemrw_image_size=%s\n" ${IMAGE_PRODUCTS_DIR}/systemrw.img >> ${OTA_TARGET_IMAGE_ROOTFS_EXT4}/META/misc_info.txt
         if [ "$(CONFIG_TARGET_sdx75)" = "y" ]; then \
+                cp $(IMAGE_PRODUCTS_DIR)/systemrw.map $(OTA_TARGET_IMAGE_ROOTFS_EXT4)/IMAGES/systemrw.map; \
+        fi
+        if [ "$(CONFIG_TARGET_sdx85)" = "y" ]; then \
                 cp $(IMAGE_PRODUCTS_DIR)/systemrw.map $(OTA_TARGET_IMAGE_ROOTFS_EXT4)/IMAGES/systemrw.map; \
         fi
 	cp $(IMAGE_PRODUCTS_DIR)/userdata.img $(OTA_TARGET_IMAGE_ROOTFS_EXT4)/IMAGES/userdata.img
@@ -154,6 +162,9 @@ define Ota/Build/target-files-zip-ext4
 
     # set block img diff version to v3
 	echo "blockimgdiff_versions=3" >> ${OTA_TARGET_IMAGE_ROOTFS_EXT4}/META/misc_info.txt
+
+    # Copy lvm_conf.json to META directory
+	cp ${TOPDIR}/owrt-qti-bsp/bsp-packages/startup-scripts/files/lvm_conf.json ${OTA_TARGET_IMAGE_ROOTFS_EXT4}/META/.
 	cd ${OTA_TARGET_IMAGE_ROOTFS_EXT4} && zip -qry ${OTA_TARGET_FILES_EXT4_PATH} *
 endef
 

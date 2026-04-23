@@ -14,11 +14,17 @@ SOURCE_DIR:= $(TOPDIR)/src/system/core/base/
 
 TARGET_CFLAGS += -DUSE_MUSL
 
+ifeq ($(CONFIG_PACKAGE_selinux-policy),y)
+LBASE_DEPENDS:= +core-include +libcutils +libselinux
+else
+LBASE_DEPENDS:= +core-include +libcutils
+endif
+
 define Package/libbase
 	SECTION:=QTI
 	CATEGORY:=QTI-PACKAGES
 	TITLE:= libbase
-	DEPENDS:= +core-include +libcutils +libselinux
+	DEPENDS:= $(LBASE_DEPENDS)
 endef
 
 define Package/libbase/description

@@ -45,6 +45,9 @@ if [ -d "/overlay/etc-upper${slot}" ] && [ "$(ls -A /overlay/etc-upper${slot})" 
         chmod 600 "$backup_target"
     else
         echo "Backup failed. Exiting.."
+	if [ -f "$backup_target" ]; then
+            rm -f "$backup_target"
+        fi
         exit 1
     fi
 else
