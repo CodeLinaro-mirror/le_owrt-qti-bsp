@@ -37,11 +37,30 @@ STOP=89
 
 USE_PROCD=1
 
+bring_up_loopback() {
+        OS_NAME=$(grep "^NAME=" /etc/os-release 2>/dev/null | cut -d'=' -f2 | tr -d '"')
+        if [ "$OS_NAME" != "prplOS" ]; then
+                return
+        fi
+        VENDOR_PROFILE=$(grep "^VENDOR_PROFILE=" /build.prop | cut -d'=' -f2)
+        if [ "$VENDOR_PROFILE" = "recovery" ]; then
+           if ip link show lo >/dev/null 2>&1; then
+                if ! ip link set lo up 2>/dev/null; then
+                echo "Warning: Failed to bring up loopback interface"
+                fi
+           else
+                echo "Warning: Loopback interface not present"
+           fi
+        fi
+}
+
 start_service() {
         procd_open_instance
         procd_set_param command /sbin/adbd
         procd_set_param respawn ${respawn_threshold:-3600} ${respawn_timeout:-5} ${respawn_retry:-10}
         procd_close_instance
+        #Bring up loopback interface if VENDOR_PROFILE is set to recovery and if PRPL build
+        bring_up_loopback
 }
 
 stop_service() {
