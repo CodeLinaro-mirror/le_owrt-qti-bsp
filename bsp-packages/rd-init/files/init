@@ -153,6 +153,8 @@ else
         fi
     done
 
+    partition_name=$(basename $partition)
+    sectors=$(cat /sys/class/block/$partition_name/size)
     normal_mode=0
     non_ab_mode=$(cat /proc/cmdline | grep -o 'androidboot.force_normal_boot=1')
     ab_mode=$(cat /proc/cmdline | grep -o 'SLOT_SUFFIX')
@@ -172,6 +174,15 @@ else
         /sbin/losetup -o "$offset" /dev/loop0 "$partition" || \
             debug_or_reboot "losetup failed for $partition at offset $offset"
         partition="/dev/loop0"
+        offset_sector=$((offset / 512))
+        sectors=$((sectors - offset_sector))
+    fi
+
+    if [ "$normal_mode" = "1" ]; then
+        if [ -e "./init_decrypt.sh" ]; then
+            ./init_decrypt.sh $partition $sectors
+            partition=/dev/mapper/cryptroot
+        fi
     fi
 
     verityenabled=$(cat /proc/cmdline | grep -o 'verity=enabled')
