@@ -40,7 +40,6 @@
 
 source /usr/bin/mount-userdata.sh
 exec >> /dev/kmsg 2>&1
-echo "Bulbul: inside script "
 
 emmc_dir=/dev/block/bootdevice/by-name
 mtd_file=/proc/mtd
