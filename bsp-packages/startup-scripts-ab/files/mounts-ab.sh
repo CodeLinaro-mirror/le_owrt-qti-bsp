@@ -133,7 +133,7 @@ if [ ! -d /firmware/image ]; then
         else
 
                 if [ $CURRENT_SLOT == "_b" ]; then
-                        mount /dev/sde31 /firmware -o ro,context=u:r:qcfirmware.miscfile
+                        mount /dev/sde29 /firmware -o ro,context=u:r:qcfirmware.miscfile
                 else
                         mount /dev/sde6 /firmware -o ro,context=u:r:qcfirmware.miscfile
                 fi
@@ -180,15 +180,15 @@ fi
 
 if [ $soc_id == "570" ] || [ $soc_id == "571" ]; then
     mkdir -p /data/overlay-work
-    mkdir -p /data/overlay-work/etc-upper$CURRENT_SLOT
-    mkdir -p /data/overlay-work/.etc-work$CURRENT_SLOT
-    chcon -t file.conffile /data/overlay-work/.etc-work$CURRENT_SLOT
-    mount -t overlay -o lowerdir=/etc,upperdir=/data/overlay-work/etc-upper$CURRENT_SLOT,workdir=/data/overlay-work/.etc-work$CURRENT_SLOT overlay /etc
+    mkdir -p /data/overlay-work/etc-upper
+    mkdir -p /data/overlay-work/.etc-work
+    chcon -t file.conffile /data/overlay-work/.etc-work
+    mount -t overlay -o lowerdir=/etc,upperdir=/data/overlay-work/etc-upper,workdir=/data/overlay-work/.etc-work overlay /etc
 else
-    mkdir -p /overlay/etc-upper$CURRENT_SLOT
-    mkdir -p /overlay/.etc-work$CURRENT_SLOT
-    chcon -t file.conffile /overlay/.etc-work$CURRENT_SLOT
-    mount -t overlay -o lowerdir=/etc,upperdir=/overlay/etc-upper$CURRENT_SLOT,workdir=/overlay/.etc-work$CURRENT_SLOT overlay /etc
+    mkdir -p /overlay/etc-upper
+    mkdir -p /overlay/.etc-work
+    chcon -t file.conffile /overlay/.etc-work
+    mount -t overlay -o lowerdir=/etc,upperdir=/overlay/etc-upper,workdir=/overlay/.etc-work overlay /etc
 fi
 
 # Need Restorecon for /persist & /firmware
