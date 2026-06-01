@@ -20,6 +20,7 @@ HOST_BUILD_DEPENDS:= libselinux/host libsparse/host libcutils/host
 EXT4_DEPENDS:= +libselinux +libsparse +libcutils +libpcre +core-include
 else
 HOST_CONFIGURE_ARGS += --disable-selinux-policy
+CONFIGURE_ARGS += --disable-selinux-policy
 HOST_BUILD_DEPENDS:= libsparse/host libcutils/host
 EXT4_DEPENDS:= +libsparse +libcutils +libpcre +core-include
 endif
