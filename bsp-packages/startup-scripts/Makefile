@@ -66,6 +66,10 @@ define Package/usb-composition/install
 	$(INSTALL_BIN) ./files/ntp.init $(1)/etc/init.d/
 	$(INSTALL_BIN) ./files/ntp.config.sh $(1)/etc/init.d/
 
+ifneq ($(PRPL_VERSION),)
+	sed -i 's/^START=03/START=01/' $(1)/etc/init.d/create-firmwarelinks.init
+endif
+
 ifeq ($(filter $(BOARD),sdx75 sdx85),$(BOARD))
 	$(INSTALL_DIR) $(1)/usr/bin
 	$(INSTALL_BIN) ./files/overlay_backup.sh $(1)/usr/bin/

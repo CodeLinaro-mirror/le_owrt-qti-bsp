@@ -111,6 +111,8 @@ fail_reboot()
        reboot -f
 }
 
+echo "Mounting starts"
+
 if [ ! -d /firmware/image ]; then
         if [ "$has_mtd" -eq 1 ]; then
                 if [ "$is_overlay_on_data" -eq 1 ]; then
@@ -227,6 +229,8 @@ else
     fi
 
 fi
+
+echo "Mounting completed"
 
 if [ "$prplos_build" -ne 1 ]; then
 # Need Restorecon for /persist & /firmware
