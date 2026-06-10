@@ -153,8 +153,15 @@ else
         fi
     done
 
-    normal_mode=$(cat /proc/cmdline | grep -o 'androidboot.force_normal_boot=1')
-    if [ "$USE_FIT_OFFSET" = "1" ] && [ -n "$normal_mode" ]; then
+    normal_mode=0
+    non_ab_mode=$(cat /proc/cmdline | grep -o 'androidboot.force_normal_boot=1')
+    ab_mode=$(cat /proc/cmdline | grep -o 'SLOT_SUFFIX')
+
+    if [ -n "$ab_mode" ] || [ -n "$non_ab_mode" ]; then
+        normal_mode=1
+    fi
+
+    if [ "$USE_FIT_OFFSET" = "1" ] && [ "$normal_mode" = "1" ]; then
         echo "Mounting the system partition via FIT offset (USE_FIT_OFFSET=1)"
         offset=$(get_offset "$partition")
         if [ $? -ne 0 ]; then
@@ -168,7 +175,7 @@ else
     fi
 
     verityenabled=$(cat /proc/cmdline | grep -o 'verity=enabled')
-    if [ -n "$verityenabled" ] && [ -n "$normal_mode" ]; then
+    if [ -n "$verityenabled" ] && [ "$normal_mode" = "1" ]; then
         ./init_verity.sh $partition
     else
         /bin/mount -t ext4 -o ro "$partition" /mnt/system || \
