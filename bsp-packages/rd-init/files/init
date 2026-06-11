@@ -1,0 +1,193 @@
+#!/bin/sh
+# Copyright (C) 2006 OpenWrt.org
+
+# Export USE_FIT_OFFSET=1 if rootfs is in FIT format
+# USE_FIT_OFFSET=1 AND normal_mode set?
+#      └─ YES (BOTH SET)   → get_offset() → losetup → Use /dev/loop0 for rootfs
+#      └─ NO  (EITHER UNSET) → get partition entry where rootfs is flashed.
+
+# Is verityenabled + normal_mode set?
+#    └─ YES → run init_verity.sh which internally take care of mounting rootfs
+#    └─ NO  → mount partition directly
+
+
+
+export INITRAMFS=1
+DEBUG=0
+USE_FIT_OFFSET=0
+
+# Fallback interactive shell for recovery/debugging
+start_rdshell() {
+    echo "Starting ramdisk shell ...!"
+    exec /bin/sh
+}
+
+# If DEBUG=1, print message and drop to shell, otherwise reboot
+debug_or_reboot() {
+    if [ "$DEBUG" = "1" ]; then
+        echo "$1"
+        start_rdshell
+    else
+        /sbin/reboot -f
+    fi
+}
+
+do_mounts()
+{
+    echo "mount sysfs"
+    /bin/mount -t sysfs sysfs /sys
+
+    echo "mount debugfs"
+    /bin/mount -t debugfs debugfs /sys/kernel/debug
+
+    echo "mount proc"
+    /bin/mount proc /proc -t proc
+
+    echo "mount devtmpfs"
+    /bin/mount -t devtmpfs devtmpfs /dev
+}
+
+# Any errors are written to GET_OFFSET_ERR_FILE so the caller
+# (running in the main shell) can read and pass them to debug_or_reboot.
+GET_OFFSET_ERR_FILE=/tmp/get_offset_err
+
+# Return 1 in case of error, otherwise return offset
+get_offset() {
+    DEV="$1"
+    OUT=/tmp/fit_hdr.dtb
+    rm -f "$GET_OFFSET_ERR_FILE"
+
+    if [ -z "$DEV" ]; then
+        echo "get_offset: no device argument supplied" > "$GET_OFFSET_ERR_FILE"
+        return 1
+    fi
+
+    # Read the first 8 bytes of the FDT/FIT binary header as raw bytes.
+    # hexdump -v -e '8/1 "%02x"' formats each of the 8 bytes as a 2-digit lowercase hex
+    # character, producing a single 16-character hex string, e.g. "d00dfeed00001a30".
+    hdr=$(dd if="$DEV" bs=1 count=8 2>/dev/null | hexdump -v -e '8/1 "%02x"')
+
+    # Validate that we got exactly 16 hex characters
+    if [ ${#hdr} -ne 16 ]; then
+        echo "get_offset: failed to read valid header (got ${#hdr} chars, expected 16)" > "$GET_OFFSET_ERR_FILE"
+        return 1
+    fi
+
+    # Extract chars 1-8  → first 4 bytes  → FDT/FIT magic number (must be 0xD00DFEED)
+    magic=$(echo "$hdr" | cut -c1-8)
+    # Extract chars 9-16 → next  4 bytes  → totalsize field (big-endian), i.e. full FDT blob size
+    ts_be=$(echo "$hdr" | cut -c9-16)     # big-endian totalsize in hex
+
+    if [ "$magic" != "d00dfeed" ]; then
+        echo "get_offset: not FIT/FDT at offset 0 (magic=$magic, expected=d00dfeed)" > "$GET_OFFSET_ERR_FILE"
+        return 1
+    fi
+
+    ts_dec=$((0x$ts_be))
+
+    # Sanity check: FIT header size should be reasonable (typically < 100KB, max 10MB)
+    # If empty/corrupted partition, ts_dec could be a zero or garbage value
+    if [ $ts_dec -lt 64 ] || [ $ts_dec -gt 10485760 ]; then
+        echo "get_offset: invalid FIT totalsize=$ts_dec (expected 64 to 10485760 bytes)" > "$GET_OFFSET_ERR_FILE"
+        return 1
+    fi
+
+    dd if="$DEV" of=$OUT bs=1 count=$ts_dec 2>/dev/null
+
+    if [ ! -f "$OUT" ]; then
+        echo "get_offset: failed to create $OUT" > "$GET_OFFSET_ERR_FILE"
+        return 1
+    fi
+
+    # Query the offset from header only
+    offset=$(fdtget -ti "$OUT" /images/rootfs data-position 2>/dev/null)
+    if [ $? -ne 0 ] || [ -z "$offset" ]; then
+        echo "get_offset: fdtget failed on $OUT" > "$GET_OFFSET_ERR_FILE"
+        rm -f "$OUT"
+        return 1
+    fi
+    rm -f "$OUT"
+    echo "$offset"
+}
+
+echo "Executing initramfs init file"
+
+do_mounts
+
+/bin/mkdir -p /mnt/system
+
+# Try NAND/UBI path first: presence of /proc/mtd and at least 2 lines
+if [ -f /proc/mtd ] && [ `cat /proc/mtd | wc -l` -ge "2" ]; then
+    mtd_block_device=`cat /proc/mtd | grep -i system  | awk -F ':' '{print $1}'`
+    echo "Detected the mtd partition for system at :" $mtd_block_device
+    if [ -z "$mtd_block_device" ]; then
+        debug_or_reboot "No system partition found, fall back to ramdisk shell"
+    fi
+    timeout=60
+    while [ ! -e /dev/ubi0_0 ]; do
+        echo "Waiting for UBI volume rootfs..."
+        /bin/sleep 1
+        timeout=$((timeout - 1))
+        if [ "$timeout" -le 0 ]; then
+            debug_or_reboot "Timeout waiting for UBI volume rootfs"
+            break
+        fi
+    done
+    echo "Mounting the system partition"
+    /bin/mount -t ubifs -o ro ubi0:rootfs /mnt/system || start_rdshell
+else
+    # Try eMMC path: parse kernel cmdline for /mmcblk* block device
+    partition=$(cat /proc/cmdline | grep -o 'root=/dev/mmcblk[^ ]*' | cut -d= -f2)
+    echo "Detected system partition at : "$partition
+    if [ -z "$partition" ]; then
+        debug_or_reboot "No system partition found, fall back to ramdisk shell"
+    fi
+    timeout=60
+    while [ ! -b "$partition" ]; do
+        echo "Waiting for $partition to appear..."
+        /bin/sleep 1
+        timeout=$((timeout - 1))
+        if [ $timeout -le 0 ]; then
+            debug_or_reboot "Timeout waiting for $partition"
+            break
+        fi
+    done
+
+    normal_mode=0
+    non_ab_mode=$(cat /proc/cmdline | grep -o 'androidboot.force_normal_boot=1')
+    ab_mode=$(cat /proc/cmdline | grep -o 'SLOT_SUFFIX')
+
+    if [ -n "$ab_mode" ] || [ -n "$non_ab_mode" ]; then
+        normal_mode=1
+    fi
+
+    if [ "$USE_FIT_OFFSET" = "1" ] && [ "$normal_mode" = "1" ]; then
+        echo "Mounting the system partition via FIT offset (USE_FIT_OFFSET=1)"
+        offset=$(get_offset "$partition")
+        if [ $? -ne 0 ]; then
+            err=$(cat "$GET_OFFSET_ERR_FILE" 2>/dev/null)
+            rm -f "$GET_OFFSET_ERR_FILE"
+            debug_or_reboot "${err:-get_offset failed for $partition}"
+        fi
+        /sbin/losetup -o "$offset" /dev/loop0 "$partition" || \
+            debug_or_reboot "losetup failed for $partition at offset $offset"
+        partition="/dev/loop0"
+    fi
+
+    verityenabled=$(cat /proc/cmdline | grep -o 'verity=enabled')
+    if [ -n "$verityenabled" ] && [ "$normal_mode" = "1" ]; then
+        ./init_verity.sh $partition
+    else
+        /bin/mount -t ext4 -o ro "$partition" /mnt/system || \
+            debug_or_reboot "Mount failed for $partition (USE_FIT_OFFSET = "$USE_FIT_OFFSET")"
+    fi
+fi
+
+
+
+if [ ! -x /mnt/system/sbin/switch_root ] || [ ! -x /mnt/system/sbin/init ]; then
+    debug_or_reboot "switch_root or init not found."
+fi
+
+echo "Switching to system partition"
+exec /sbin/switch_root /mnt/system /sbin/init
