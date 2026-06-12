@@ -123,10 +123,10 @@ if [ -f /proc/mtd ] && [ `cat /proc/mtd | wc -l` -ge "2" ]; then
     if [ -z "$mtd_block_device" ]; then
         debug_or_reboot "No system partition found, fall back to ramdisk shell"
     fi
-    timeout=60
+    timeout=600              # 600 × 100ms = 60s
+    echo "Waiting for UBI volume rootfs..."
     while [ ! -e /dev/ubi0_0 ]; do
-        echo "Waiting for UBI volume rootfs..."
-        /bin/sleep 1
+        /bin/sleep 0.1
         timeout=$((timeout - 1))
         if [ "$timeout" -le 0 ]; then
             debug_or_reboot "Timeout waiting for UBI volume rootfs"
@@ -142,10 +142,10 @@ else
     if [ -z "$partition" ]; then
         debug_or_reboot "No system partition found, fall back to ramdisk shell"
     fi
-    timeout=60
+    timeout=600              # 600 × 100ms = 60s
+    echo "Waiting for $partition to appear..."
     while [ ! -b "$partition" ]; do
-        echo "Waiting for $partition to appear..."
-        /bin/sleep 1
+        /bin/sleep 0.1
         timeout=$((timeout - 1))
         if [ $timeout -le 0 ]; then
             debug_or_reboot "Timeout waiting for $partition"
