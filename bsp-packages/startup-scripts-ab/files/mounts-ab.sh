@@ -204,6 +204,7 @@ fi
 
 if [ "$is_overlay_on_data" -eq 1 ]; then
     mkdir -p "/data/overlay-work/etc-upper$CURRENT_SLOT" "/data/overlay-work/.etc-work$CURRENT_SLOT"
+    chcon -t file.conffile "/data/overlay-work/etc-upper$CURRENT_SLOT"
     chcon -t file.conffile "/data/overlay-work/.etc-work$CURRENT_SLOT"
     mount -t overlay \
         -o lowerdir=/etc,upperdir=/data/overlay-work/etc-upper$CURRENT_SLOT,workdir=/data/overlay-work/.etc-work$CURRENT_SLOT \
