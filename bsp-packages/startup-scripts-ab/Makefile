@@ -82,6 +82,10 @@ endif
 	$(INSTALL_BIN) ../startup-scripts/files/proxy_vote.init $(1)/etc/init.d/
 	$(INSTALL_DIR) $(1)/usr/bin
 	$(INSTALL_BIN) ../startup-scripts/files/mount-userdata.sh $(1)/usr/bin/
+ifneq ($(PRPL_VERSION),)
+	sed -i 's/^START=03/START=01/' $(1)/etc/init.d/create-firmwarelinks-ab.init
+endif
+
 endef
 
 $(eval $(call BuildPackage,usb-composition-ab))
