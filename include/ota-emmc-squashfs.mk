@@ -110,7 +110,7 @@ define Ota/Build/target-files-zip-emmc-sqsh
 	echo "owrt_target_supports_squashfs=1" >> ${OTA_TARGET_IMAGE_ROOTFS_EMMC_SQSH}/META/misc_info.txt
 
     # Copy lvm_conf.json to META directory
-	cp ${TOPDIR}/owrt-qti-bsp/bsp-packages/startup-scripts/files/lvm_conf.json ${OTA_TARGET_IMAGE_ROOTFS_EXT4}/META/.
+	cp ${TOPDIR}/owrt-qti-bsp/bsp-packages/startup-scripts/files/lvm_conf.json ${OTA_TARGET_IMAGE_ROOTFS_EMMC_SQSH}/META/.
 
 	cd ${OTA_TARGET_IMAGE_ROOTFS_EMMC_SQSH} && zip -qry ${OTA_TARGET_FILES_EMMC_SQSH_PATH} *
 endef
