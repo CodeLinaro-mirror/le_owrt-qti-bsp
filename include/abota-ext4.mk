@@ -115,6 +115,9 @@ define Ota/Build/target-files-zip-ext4-ab
 	# Targets that support A/B boot do not need recovery(fs)-updater
 	echo le_target_supports_ab=1 >> ${OTA_TARGET_IMAGE_ROOTFS_EXT4_AB}/META/misc_info.txt
 
+    # Copy lvm_conf.json to META directory
+	cp ${TOPDIR}/owrt-qti-bsp/bsp-packages/startup-scripts/files/lvm_conf.json ${OTA_TARGET_IMAGE_ROOTFS_EXT4_AB}/META/.
+
 	cd ${OTA_TARGET_IMAGE_ROOTFS_EXT4_AB} && zip -qry ${OTA_TARGET_FILES_EXT4_AB_PATH} *
 
 endef

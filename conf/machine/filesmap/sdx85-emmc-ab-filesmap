@@ -32,9 +32,6 @@
 # filename              partition
 
 NON-HLOS.bin            /dev/block/bootdevice/by-name/modem
-tools.fv                /dev/block/bootdevice/by-name/toolsfv
-quantumsdk.fv           /dev/block/bootdevice/by-name/quantumsdk
-Quantum.fv              /dev/block/bootdevice/by-name/quantumfv
 tz.mbn                  /dev/block/bootdevice/by-name/tz
 devcfg.mbn              /dev/block/bootdevice/by-name/tz_devcfg
 apdp.mbn                /dev/block/bootdevice/by-name/apdp
@@ -46,9 +43,7 @@ aop.mbn                 /dev/block/bootdevice/by-name/aop
 hypvm.mbn               /dev/block/bootdevice/by-name/qhee
 abl.elf                 /dev/block/bootdevice/by-name/abl
 uefi.elf                /dev/block/bootdevice/by-name/uefi
-sec.elf                 /dev/block/bootdevice/by-name/sec
 ipa_fws.elf             /dev/block/bootdevice/by-name/ipa_fw
-logfs_ufs_8mb.bin       /dev/block/bootdevice/by-name/logfs
 aop_devcfg.mbn          /dev/block/bootdevice/by-name/aop_devcfg
 cmnlib64.mbn            /dev/block/bootdevice/by-name/cmnlib64
 qdsp6sw.mbn             /dev/block/bootdevice/by-name/core_nhlos

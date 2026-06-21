@@ -1,6 +1,6 @@
 #!/bin/sh /etc/rc.common
 
-#Copyright (c) 2023 Qualcomm Innovation Center, Inc. All rights reserved.
+#Copyright (c) Qualcomm Technologies, Inc. and/or its subsidiaries.
 #SPDX-License-Identifier: BSD-3-Clause-Clear
 
 
@@ -8,7 +8,11 @@ START=03
 STOP=96
 
 start() {
-        /etc/scripts/find_recovery_partitions.sh
+	if [ -c /dev/kmsg ]; then
+		chown root:kmsg /dev/kmsg
+		chmod 0664 /dev/kmsg
+	fi
+        /etc/scripts/find_recovery_partitions.sh >> /dev/kmsg 2>&1
 }
 
 stop() {

@@ -162,6 +162,9 @@ define Ota/Build/target-files-zip-ext4
 
     # set block img diff version to v3
 	echo "blockimgdiff_versions=3" >> ${OTA_TARGET_IMAGE_ROOTFS_EXT4}/META/misc_info.txt
+
+    # Copy lvm_conf.json to META directory
+	cp ${TOPDIR}/owrt-qti-bsp/bsp-packages/startup-scripts/files/lvm_conf.json ${OTA_TARGET_IMAGE_ROOTFS_EXT4}/META/.
 	cd ${OTA_TARGET_IMAGE_ROOTFS_EXT4} && zip -qry ${OTA_TARGET_FILES_EXT4_PATH} *
 endef
 

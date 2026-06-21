@@ -14,6 +14,14 @@ SOURCE_DIR:=$(TOPDIR)/src/OTA/recovery
 PKG_BUILD_DEPENDS += recovery/host
 HOST_BUILD_DEPENDS += bzip2/host
 
+ifeq ($(CONFIG_PACKAGE_selinux-policy),y)
+CONFIGURE_ARGS += --enable-selinux-policy
+APPLYPATCH_DEPENDS:=+libbase +libstdcpp +libbz2 +libcutils +libmincrypt +libselinux +libopenssl +zlib
+else
+CONFIGURE_ARGS += --disable-selinux-policy
+APPLYPATCH_DEPENDS:=+libbase +libstdcpp +libbz2 +libcutils +libmincrypt +libopenssl +zlib
+endif
+
 define Package/libfusesideload
   SECTION:=libs
   CATEGORY:=OTA
@@ -47,7 +55,7 @@ define Package/applypatch
   SECTION:=external
   CATEGORY:=OTA
   TITLE:=applypatch
-  DEPENDS:= +libbase +libstdcpp +libbz2 +libcutils +libmincrypt +libselinux +libopenssl +zlib
+  DEPENDS:= $(APPLYPATCH_DEPENDS)
 endef
 
 define Package/updater

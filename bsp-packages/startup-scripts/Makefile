@@ -66,6 +66,10 @@ define Package/usb-composition/install
 	$(INSTALL_BIN) ./files/ntp.init $(1)/etc/init.d/
 	$(INSTALL_BIN) ./files/ntp.config.sh $(1)/etc/init.d/
 
+ifneq ($(PRPL_VERSION),)
+	sed -i 's/^START=03/START=01/' $(1)/etc/init.d/create-firmwarelinks.init
+endif
+
 ifeq ($(filter $(BOARD),sdx75 sdx85),$(BOARD))
 	$(INSTALL_DIR) $(1)/usr/bin
 	$(INSTALL_BIN) ./files/overlay_backup.sh $(1)/usr/bin/
@@ -76,10 +80,13 @@ endif
 ifeq ($(BOARD), sdx85)
 	$(INSTALL_DIR) $(1)/etc/hotplug.d/devcoredump
 	$(INSTALL_DATA) ./files/devcd_rule $(1)/etc/hotplug.d/devcoredump/
+	$(INSTALL_BIN) ./files/lvm_conf.json $(1)/etc/lvm_ota.json
 endif
 	$(INSTALL_BIN) ./files/proxy_vote.init $(1)/etc/init.d/
 	$(INSTALL_DIR) $(1)/etc/hotplug.d/usb
 	$(INSTALL_DATA) $(SOURCE_DIR)/usb-bind-rules $(1)/etc/hotplug.d/usb
+	$(INSTALL_DIR) $(1)/usr/bin
+	$(INSTALL_BIN) ./files/mount-userdata.sh $(1)/usr/bin/
 endef
 
 $(eval $(call BuildPackage,usb-composition))
