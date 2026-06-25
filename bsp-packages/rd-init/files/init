@@ -177,8 +177,11 @@ else
     verityenabled=$(cat /proc/cmdline | grep -o 'verity=enabled')
     if [ -n "$verityenabled" ] && [ "$normal_mode" = "1" ]; then
         ./init_verity.sh $partition
-    else
+    elif [ "$normal_mode" = "0" ]; then
         /bin/mount -t ext4 -o ro "$partition" /mnt/system || \
+            debug_or_reboot "Mount failed for $partition "
+    else
+        /bin/mount -t squashfs -o ro "$partition" /mnt/system || \
             debug_or_reboot "Mount failed for $partition (USE_FIT_OFFSET = "$USE_FIT_OFFSET")"
     fi
 fi
