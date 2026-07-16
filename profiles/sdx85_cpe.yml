@@ -25,6 +25,7 @@ additional_packages:
 
 packages:
   - busybox
+  - ethtool-full
   - procd
   - iptables-mod-conntrack-extra
   - kmod-ipt-ipopt
@@ -173,3 +174,4 @@ diffconfig: |
   CONFIG_SAH_AMX_TR181_CELLULAR_ORDER=25
   CONFIG_PREINITOPT=y
   CONFIG_TARGET_PREINIT_DISABLE_FAILSAFE=y
+  CONFIG_LOCALMIRROR="file:///prj/qct/quic/oe_filer_scratch/DOWNLOADS/OWRT_PRPL_DL"

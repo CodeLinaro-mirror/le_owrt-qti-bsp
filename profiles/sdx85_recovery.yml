@@ -60,3 +60,4 @@ diffconfig: |
   CONFIG_VERSION_MANUFACTURER_URL="https://prplfoundation.org"
   CONFIG_VERSION_BUG_URL="https://jira.prplfoundation.org"
   CONFIG_VERSION_SUPPORT_URL="https://jira.prplfoundation.org"
+  CONFIG_LOCALMIRROR="file:///prj/qct/quic/oe_filer_scratch/DOWNLOADS/OWRT_PRPL_DL"
