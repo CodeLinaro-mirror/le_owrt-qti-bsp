@@ -101,6 +101,8 @@ if [ ! -d /cache ]; then
         mkdir -p /cache
 fi
 
+echo "Mounting starts"
+
 if [ "$has_mtd" -eq 1 ]; then
         mount -t ubifs ubi0:cachefs /cache -o bulk_read$cache_context
 
@@ -142,6 +144,8 @@ else
         echo "usrfs is a logical volume on ubi0"
     fi
 fi
+
+echo "Mounting completed"
 
 if [ "$prplos_build" -ne 1 ]; then
     RESTORECON=/sbin/restorecon
