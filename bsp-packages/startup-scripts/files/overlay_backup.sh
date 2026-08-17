@@ -6,6 +6,16 @@ set -e
 
 # Create backup of overlay/etc-upper of current running slot
 
+# Auto-detect overlay base path from actual /etc overlay mount
+OVERLAY_BASE=$(awk '/overlay \/etc/ {for(i=1;i<=NF;i++) if($i ~ /upperdir=/) print $i}' /proc/mounts | sed 's/.*upperdir=//;s|/etc-upper.*||')
+if [ -z "$OVERLAY_BASE" ]; then
+    # Fallback: check known paths
+    if [ -d "/data/overlay-work" ]; then
+        OVERLAY_BASE="/data/overlay-work"
+    else
+        OVERLAY_BASE="/overlay"
+    fi
+fi
 
 # Initialize slot variable
 slot=""
@@ -34,11 +44,17 @@ else
 fi
 
 # Construct the backup path
-backup_source="/overlay/etc-upper${slot}/"
+backup_source="${OVERLAY_BASE}/etc-upper${slot}/"
 backup_target="/data/etc_backup.tar.gz"
 
+# Check available space on /data before backup (warn if < 1MB free)
+avail_kb=$(df /data 2>/dev/null | awk 'NR==2 {print $4}')
+if [ -n "$avail_kb" ] && [ "$avail_kb" -lt 1024 ] 2>/dev/null; then
+    echo "WARNING: Low free space on /data (${avail_kb}KB). Backup may fail."
+fi
+
 # Check if the source directory exists and is not empty
-if [ -d "/overlay/etc-upper${slot}" ] && [ "$(ls -A /overlay/etc-upper${slot})" ]; then
+if [ -d "${OVERLAY_BASE}/etc-upper${slot}" ] && [ "$(ls -A ${OVERLAY_BASE}/etc-upper${slot})" ]; then
     echo "Backing up from $backup_source to $backup_target..."
     if tar -czpf "$backup_target" -C "$backup_source" .; then
         echo "Backup completed successfully."
@@ -51,12 +67,12 @@ if [ -d "/overlay/etc-upper${slot}" ] && [ "$(ls -A /overlay/etc-upper${slot})" 
         exit 1
     fi
 else
-    echo "Source directory /overlay/etc-upper${slot} is missing or empty. No Backup created."
+    echo "Source directory ${OVERLAY_BASE}/etc-upper${slot} is missing or empty. No Backup created."
 fi
 
 #Inactive slot overlay
-inactive_slot_path="/overlay/etc-upper${inactive_slot}/"
-inactive_work_path="/overlay/.etc-work${inactive_slot}/"
+inactive_slot_path="${OVERLAY_BASE}/etc-upper${inactive_slot}/"
+inactive_work_path="${OVERLAY_BASE}/.etc-work${inactive_slot}/"
 # Erase the non-running slot overlay to prepare for OTA, if A/B device
 if [ -n "$slot" ]; then
     if [ -d "$inactive_slot_path" ]; then
