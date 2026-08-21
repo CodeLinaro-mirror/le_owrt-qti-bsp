@@ -333,7 +333,7 @@ create_lvm()
               lvcreate -n "$LV_cfg" -L 16M "$VG_NAME"
               log "New volumes created for prplOS."
               activate_lv ${VG_NAME} ${LV_NAME}
-              mkfs.ext4 "/dev/$VG_NAME/$LV_lcm"
+              mkfs.ext4 -O encrypt  "/dev/$VG_NAME/$LV_lcm"
               mkfs.ext4 "/dev/$VG_NAME/$LV_cfg"
            fi
         fi
@@ -355,7 +355,7 @@ create_lvm()
 
         mkfs.ext4 "/dev/$VG_NAME/$LV_NAME"
         if [[ -f /etc/os-release ]] && grep -qi "prplOs" /etc/os-release 2>/dev/null; then
-            mkfs.ext4 "/dev/$VG_NAME/$LV_lcm"
+            mkfs.ext4 -O encrypt "/dev/$VG_NAME/$LV_lcm"
             mkfs.ext4 "/dev/$VG_NAME/$LV_cfg"
         fi
         if [ -d "$OUT_MOUNT" ]; then
