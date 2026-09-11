@@ -25,8 +25,8 @@
 # OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
 # IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-# Changes from Qualcomm Innovation Center, Inc. are provided under the following license:
-# Copyright (c) 2023-2024 Qualcomm Innovation Center, Inc. All rights reserved.
+# Changes from Qualcomm Technologies, Inc. are provided under the following license:
+# Copyright (c) Qualcomm Technologies, Inc. and/or its subsidiaries.
 # SPDX-License-Identifier: BSD-3-Clause-Clear
 
 # filename              partition
@@ -53,3 +53,4 @@ km41.mbn                /dev/block/bootdevice/by-name/keymaster
 qupv3fw.elf             /dev/block/bootdevice/by-name/qupfw
 shrm.elf                /dev/block/bootdevice/by-name/shrm
 xbl_s.melf              /dev/block/bootdevice/by-name/xbl
+fspapp.mbn              /dev/block/bootdevice/by-name/pkcs11

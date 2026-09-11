@@ -29,6 +29,9 @@ endef
 define Package/$(PKG_NAME)/install
 	$(INSTALL_BIN) ./files/init $(1)/init
 	$(INSTALL_BIN) ./files/init_verity.sh $(1)/init_verity.sh
+ifeq ($(CONFIG_PACKAGE_encrypt-utils), y)
+	$(INSTALL_BIN) ./files/init_decrypt.sh $(1)/init_decrypt.sh
+endif
 endef
 
 $(eval $(call BuildPackage,rd-init))
