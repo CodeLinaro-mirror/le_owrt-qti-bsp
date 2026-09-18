@@ -18,6 +18,12 @@ if [ -f /etc/os-release ] && grep -qi "prplOs" /etc/os-release 2>/dev/null; then
     firmware_context=""
 fi
 
+if [ "$prplos_build" -eq 1 ]; then
+    if [ -f /data/wrapped_key.mbn ]; then
+        source /usr/bin/secure-fscrypt.sh
+    fi
+fi
+
 CURRENT_SLOT=$(abctl --boot_slot)
 exec >> /dev/kmsg 2>&1
 
@@ -204,6 +210,7 @@ fi
 
 if [ "$is_overlay_on_data" -eq 1 ]; then
     mkdir -p "/data/overlay-work/etc-upper$CURRENT_SLOT" "/data/overlay-work/.etc-work$CURRENT_SLOT"
+    chcon -t file.conffile "/data/overlay-work/etc-upper$CURRENT_SLOT"
     chcon -t file.conffile "/data/overlay-work/.etc-work$CURRENT_SLOT"
     mount -t overlay \
         -o lowerdir=/etc,upperdir=/data/overlay-work/etc-upper$CURRENT_SLOT,workdir=/data/overlay-work/.etc-work$CURRENT_SLOT \
@@ -228,6 +235,12 @@ else
     setup_ext_bind_mount
     fi
 
+fi
+
+if [ "$prplos_build" -eq 1 ]; then
+    if [ -f /data/wrapped_key.mbn ]; then
+        start_secure_fscrypt
+    fi
 fi
 
 echo "Mounting completed"

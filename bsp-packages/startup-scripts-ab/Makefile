@@ -57,7 +57,7 @@ define Package/usb-composition-ab/install
 	$(INSTALL_DIR) $(1)/etc/scripts
 	$(INSTALL_DIR) $(1)/mnt/sdcard
 	$(INSTALL_BIN) ./files/mounts-ab.sh $(1)/etc/scripts
-ifeq ($(filter $(BOARD),sdx75 sdx85),$(BOARD))
+ifeq ($(filter $(BOARD),sdx35 sdx75 sdx85),$(BOARD))
 	$(INSTALL_DIR) $(1)/usr/bin
 	$(INSTALL_BIN) ../startup-scripts/files/overlay_backup.sh $(1)/usr/bin/
 	$(INSTALL_BIN) ../startup-scripts/files/overlay_restore.sh $(1)/usr/bin/
