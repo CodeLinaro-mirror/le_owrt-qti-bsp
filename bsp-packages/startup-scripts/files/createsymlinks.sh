@@ -21,6 +21,11 @@ if [ -f /etc/os-release ] && grep -qi "prplOs" /etc/os-release 2>/dev/null; then
     firmware_context=""
 fi
 
+if [ "$prplos_build" -eq 1 ]; then
+    if [ -f /data/wrapped_key.mbn ]; then
+        source /usr/bin/secure-fscrypt.sh
+    fi
+fi
 has_mtd=0
 if [ -f /proc/mtd ]; then
     mtd_lines=$(wc -l < /proc/mtd)
@@ -142,6 +147,12 @@ else
         setup_ext_bind_mount
     else
         echo "usrfs is a logical volume on ubi0"
+    fi
+fi
+
+if [ "$prplos_build" -eq 1 ]; then
+    if [ -f /data/wrapped_key.mbn ]; then
+        start_secure_fscrypt
     fi
 fi
 

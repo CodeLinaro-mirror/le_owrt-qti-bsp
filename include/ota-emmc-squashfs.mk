@@ -4,6 +4,7 @@ OTA_TARGET_FILES_EMMC_SQSH_DEST = "target-files-emmc-sqsh-dest.zip"
 OTA_FULL_UPDATE_EMMC_SQSH = "full_update_emmc_sqsh.zip"
 OTA_INCREMENTAL_UPDATE_EMMC_SQSH = "incremental_update_emmc_sqsh.zip"
 IMAGE_SYSTEM_MOUNT_POINT_EMMC_SQSH = "/system"
+IMAGE_SYSTEMRW_MOUNT_POINT_EMMC_EXT4 = "/overlay"
 OTA_TARGET_FILES_EMMC_SQSH_PATH = $(IMAGE_PRODUCTS_DIR)/$(OTA_TARGET_FILES_EMMC_SQSH)
 OTA_TARGET_FILES_EMMC_SQSH_DEST_PATH = $(IMAGE_PRODUCTS_DIR)/$(OTA_TARGET_FILES_EMMC_SQSH_DEST)
 OTA_FULL_UPDATE_EMMC_SQSH_PATH = $(IMAGE_PRODUCTS_DIR)/$(OTA_FULL_UPDATE_EMMC_SQSH)
@@ -59,6 +60,14 @@ define Ota/Build/target-files-zip-emmc-sqsh
 	stat --printf="boot_image_size=%s\n" ${IMAGE_PRODUCTS_DIR}/boot.img >> ${OTA_TARGET_IMAGE_ROOTFS_EMMC_SQSH}/META/misc_info.txt
 	squashfs2sparse $(IMAGE_PRODUCTS_DIR)/system.squashfs $(OTA_TARGET_IMAGE_ROOTFS_EMMC_SQSH)/IMAGES/system.img
 	stat --printf="system_image_size=%s\n" $(OTA_TARGET_IMAGE_ROOTFS_EMMC_SQSH)/IMAGES/system.img >> ${OTA_TARGET_IMAGE_ROOTFS_EMMC_SQSH}/META/misc_info.txt
+	cp $(IMAGE_PRODUCTS_DIR)/systemrw.img $(OTA_TARGET_IMAGE_ROOTFS_EMMC_SQSH)/IMAGES/systemrw.img
+	stat --printf="systemrw_image_size=%s\n" ${IMAGE_PRODUCTS_DIR}/systemrw.img >> ${OTA_TARGET_IMAGE_ROOTFS_EMMC_SQSH}/META/misc_info.txt
+	if [ "$(CONFIG_TARGET_sdx75)" = "y" ]; then \
+		cp $(IMAGE_PRODUCTS_DIR)/systemrw.map $(OTA_TARGET_IMAGE_ROOTFS_EMMC_SQSH)/IMAGES/systemrw.map; \
+	fi
+	if [ "$(CONFIG_TARGET_sdx85)" = "y" ]; then \
+		cp $(IMAGE_PRODUCTS_DIR)/systemrw.map $(OTA_TARGET_IMAGE_ROOTFS_EMMC_SQSH)/IMAGES/systemrw.map; \
+	fi
 	# copy the contents of system rootfs
 	cp -r $(IMAGE_ROOTFS)/. $(OTA_TARGET_IMAGE_ROOTFS_EMMC_SQSH)/SYSTEM/.
 	#cd $(OTA_TARGET_IMAGE_ROOTFS_EMMC_SQSH)/SYSTEM
@@ -73,6 +82,7 @@ define Ota/Build/target-files-zip-emmc-sqsh
 	echo #mount point fstype device [device2] >> $(OTA_TARGET_IMAGE_ROOTFS_EMMC_SQSH)/RECOVERY/recovery.fstab
 	echo /boot emmc /dev/block/bootdevice/by-name/boot >> $(OTA_TARGET_IMAGE_ROOTFS_EMMC_SQSH)/RECOVERY/recovery.fstab
 	echo ${IMAGE_SYSTEM_MOUNT_POINT_EMMC_SQSH} squashfs /dev/block/bootdevice/by-name/system >> $(OTA_TARGET_IMAGE_ROOTFS_EMMC_SQSH)/RECOVERY/recovery.fstab
+	echo ${IMAGE_SYSTEMRW_MOUNT_POINT_EMMC_EXT4} ext4 /dev/block/bootdevice/by-name/systemrw >> $(OTA_TARGET_IMAGE_ROOTFS_EMMC_SQSH)/RECOVERY/recovery.fstab
 
 	#Getting content for OTA folder
 	mkdir -p ${OTA_TARGET_IMAGE_ROOTFS_EMMC_SQSH}/OTA/bin
