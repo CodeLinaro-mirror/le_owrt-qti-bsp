@@ -21,6 +21,11 @@ if [ -f /etc/os-release ] && grep -qi "prplOs" /etc/os-release 2>/dev/null; then
     firmware_context=""
 fi
 
+if [ "$prplos_build" -eq 1 ]; then
+    if [ -f /data/wrapped_key.mbn ]; then
+        source /usr/bin/secure-fscrypt.sh
+    fi
+fi
 has_mtd=0
 if [ -f /proc/mtd ]; then
     mtd_lines=$(wc -l < /proc/mtd)
@@ -101,6 +106,8 @@ if [ ! -d /cache ]; then
         mkdir -p /cache
 fi
 
+echo "Mounting starts"
+
 if [ "$has_mtd" -eq 1 ]; then
         mount -t ubifs ubi0:cachefs /cache -o bulk_read$cache_context
 
@@ -142,6 +149,14 @@ else
         echo "usrfs is a logical volume on ubi0"
     fi
 fi
+
+if [ "$prplos_build" -eq 1 ]; then
+    if [ -f /data/wrapped_key.mbn ]; then
+        start_secure_fscrypt
+    fi
+fi
+
+echo "Mounting completed"
 
 if [ "$prplos_build" -ne 1 ]; then
     RESTORECON=/sbin/restorecon

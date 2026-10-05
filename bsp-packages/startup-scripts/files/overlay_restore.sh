@@ -9,6 +9,28 @@
 
 set -e
 
+# Ensure /data is mounted before proceeding (required for backup tar and overlay-work)
+wait_count=0
+while ! grep -q " /data " /proc/mounts 2>/dev/null; do
+    wait_count=$((wait_count + 1))
+    if [ $wait_count -ge 30 ]; then
+        echo "ERROR: /data not mounted after 30s, cannot restore." > /dev/kmsg
+        exit 1
+    fi
+    sleep 1
+done
+
+# Auto-detect overlay base path from actual /etc overlay mount
+OVERLAY_BASE=$(awk '/overlay \/etc/ {for(i=1;i<=NF;i++) if($i ~ /upperdir=/) print $i}' /proc/mounts | sed 's/.*upperdir=//;s|/etc-upper.*||')
+if [ -z "$OVERLAY_BASE" ]; then
+    # Fallback: check known paths
+    if [ -d "/data/overlay-work" ]; then
+        OVERLAY_BASE="/data/overlay-work"
+    else
+        OVERLAY_BASE="/overlay"
+    fi
+fi
+
 update_permissions()
 {
 while [ 1 ]
@@ -30,8 +52,10 @@ done
 #In case of MTD, change permissions for mtd block device
 if [ -f /proc/mtd ] && [ `cat /proc/mtd | wc -l` -ge "2" ]; then
         mtd_block_number=`cat /proc/mtd | grep -i recoveryinfo | sed 's/^mtd//' | awk -F ':' '{print $1}'`
-        chown system:disk /dev/mtd$mtd_block_number
-        chmod 660 /dev/mtd$mtd_block_number
+        if [ -n "$mtd_block_number" ]; then
+                chown system:disk /dev/mtd$mtd_block_number
+                chmod 660 /dev/mtd$mtd_block_number
+        fi
 fi
 }
 
@@ -44,7 +68,7 @@ fi
 inactive_slot=""
 
 
-target_path="/overlay/etc-upper$current_slot"
+target_path="${OVERLAY_BASE}/etc-upper$current_slot"
 sync
 #Restore after OTA
 if [ $# -eq 0 ]; then
@@ -103,7 +127,7 @@ if [ $# -eq 0 ]; then
         echo "Backup file deleted."
 
 	#remount
-	mount -o remount,lowerdir=/etc,upperdir=/overlay/etc-upper$current_slot,workdir=/overlay/.etc-work$current_slot /etc
+	mount -o remount,lowerdir=/etc,upperdir=${OVERLAY_BASE}/etc-upper$current_slot,workdir=${OVERLAY_BASE}/.etc-work$current_slot /etc
 	echo "remount done "
     else
         echo "ERROR: Backup Restoration failed after OTA. " > /dev/kmsg
@@ -128,7 +152,7 @@ else
     fi
 
     source_path="${target_path}/"
-    dest_path="/overlay/etc-upper$inactive_slot"
+    dest_path="${OVERLAY_BASE}/etc-upper$inactive_slot"
     if [ -d "$dest_path" ]; then
             echo "Erasing contents of $dest_path.."
             rm -rf $dest_path
